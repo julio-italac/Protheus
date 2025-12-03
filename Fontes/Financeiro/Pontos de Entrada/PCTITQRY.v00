@@ -1,0 +1,47 @@
+#Include "TOTVS.ch"
+#Include "RPTDEF.CH" 
+
+/*
+===============================================================================================================================
+Programa----------: PCTITQRY
+Autor-------------: Julio de Paula Paz
+Data da Criacao---: 02/12/2025
+Descrição---------: Ponto de entrada utilizado para alteração da query responsável pela listagem
+                    dos títulos no Portal do Cliente - FIN.
+Parametros--------: - Paramixb[1] (Character) = Query criada até o momento para listagem.
+                    - Paramixb[2] (Array) = Lista contendo a chave dos clientes selecionados no portal.
+Retorno-----------: - cNewQuery (Character) = Query com os filtros aplicados.
+===============================================================================================================================
+*/
+User Function PCTITQRY()
+Local _cNovaQuery := "" As Character
+Local _cQueryOrg  := Paramixb[1] As Array
+//Local _aChaveCli := Paramixb[2] As Array
+Local _nI        := 0 As Numeric
+Local _cQry1     := "" As Character
+Local _cQry2     := "" As Character
+Local _nTamQry   := 0  As Numeric
+
+Begin Sequence 
+   _cQueryOrg := Upper(AllTrim(_cQueryOrg))
+   _nTamQry   := Len(_cQueryOrg)
+   _nI := AT( "SE1.E1_VENCREA,", _cQueryOrg )
+
+   If _nI > 0
+      _cQry1 := SubStr(_cQueryOrg,1,_nI-1)
+      _cQry2 := SubStr(_cQueryOrg,_nI+15,_nTamQry)
+      _cNovaQuery := _cQry1 + " CASE WHEN TRIM(E1_I_DTPRO) <>' ' THEN E1_I_DTPRO ELSE E1_VENCTO END AS E1_VENCREA, " + _cQry2
+   Else
+      _nI := AT( "E1_VENCREA,", _cQueryOrg )
+      If _nI > 0
+         _cQry1 := SubStr(_cQueryOrg,1,_nI-1)
+         _cQry2 := SubStr(_cQueryOrg,_nI+11,_nTamQry)
+         _cNovaQuery := _cQry1 + " CASE WHEN TRIM(E1_I_DTPRO) <>' ' THEN E1_I_DTPRO ELSE E1_VENCTO END AS E1_VENCREA, " + _cQry2
+      Else 
+         _cNovaQuery := _cQueryOrg
+      EndIf 
+   EndIf 
+    
+End Sequence
+
+Return _cNovaQuery
