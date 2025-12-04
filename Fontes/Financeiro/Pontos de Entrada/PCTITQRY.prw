@@ -11,7 +11,7 @@ Descrição---------: Ponto de entrada utilizado para alteração da query responsáv
 Parametros--------: - Paramixb[1] (Character) = Query padrão criada até o momento para listagem.
                     - Paramixb[2] (Array) = Lista contendo a chave dos clientes selecionados no portal.
                                             Variável no formato Json/Array contendo a filial, código e loja de 
-                                            todos os clientes listados em tela.
+                                            todos os clientes listados em tela. 
                                             Exemplo:
                                             Paramixb[2][1] = Json
                                                     filial = "   "
@@ -40,9 +40,20 @@ Local _nTamQry   := 0  As Numeric
 Begin Sequence 
 
    //============================================================
-   // Define a exibição das informações do vencimento real.
+   // Define o filtro E1_NUMBCO.
    //============================================================
    _cQueryOrg := Upper(AllTrim(_cQueryOrg))
+   _nTamQry   := Len(_cQueryOrg)
+   _nI := AT( "ORDER BY", _cQueryOrg )
+   If _nI > 0
+      _cQry1 := SubStr(_cQueryOrg,1,_nI-1)
+      _cQry2 := SubStr(_cQueryOrg,_nI,_nTamQry)
+      _cQueryOrg := _cQry1 + " AND E1_NUMBCO <> ' ' " + _cQry2
+   EndIf
+   
+   //============================================================
+   // Define a exibição das informações do vencimento real.
+   //============================================================
    _nTamQry   := Len(_cQueryOrg)
    _nI := AT( "SE1.E1_VENCREA,", _cQueryOrg )
 
