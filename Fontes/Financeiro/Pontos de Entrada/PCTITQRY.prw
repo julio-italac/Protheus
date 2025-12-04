@@ -38,7 +38,6 @@ Local _cQry2     := "" As Character
 Local _nTamQry   := 0  As Numeric
 
 Begin Sequence 
-
    //============================================================
    // Define o filtro E1_NUMBCO.
    //============================================================
