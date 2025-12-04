@@ -7,14 +7,26 @@
 Lucas Borges  |27/05/2025| Chamado 50617. Revisões diversas visando padronizar os fontes
 Lucas Borges  |23/07/2025| Chamado 51340. Ajustar função para validação de ambiente de teste
 Julio Paz     |29/09/2024| Chamado 48652. Alterar campo de validação de usuário Italac na query de filtro, da eliminação de resíduo.
+Jose Gavetti  |18/11/2025| Chamado 52546. Perguntas Solicitacao e Comprador retirando a opção de até para multiplas seleções.
 ===============================================================================================================================
+Analista       - Programador   - Inicio   - Envio    - Chamado - Motivo da Alteração
+======================================================================================================================================================================================================================================================
+André Carvalho - Julio Paz     - 28/11/25 -          - 52546   - Realização de Melhorias na Performance da Rotina.
+======================================================================================================================================================================================================================================================
 */
 
 #Include "TOTVS.ch"
 #Include "FWBROWSE.CH"
 #Include 'FWMVCDef.ch'
 
-Static _cAliasMrk	:= ""
+Static _cAliasMrk	:= ""	As Character
+Static cProdDe      := " "	As Character
+Static cProdAte     := " "	As Character
+Static cFornDe		:= " "	As Character
+Static cFornAte		:= " "	As Character
+Static cNumSol	    := " " 	As Character
+Static cTpSoli      := " "  As Character
+Static cFilSel      := " "  As Character
 
 /*
 ===============================================================================================================================
@@ -28,63 +40,111 @@ Retorno-----------: Nenhum
 */
 User Function ACOM016()
 
-Local _aAlias		:= {} As Array
-Local _aColumns		:= {} As Array
-Local _cFilSalva    := cFilAnt As Character
-Private aRotina		:= Menudef() As Array
-Private _aRegsSC1	:= {} As Array
-Private _aRegsSC7	:= {} As Array
-Private _aRegsAll	:= {} As Array
-Private _cPerg		:= "ACOM016" As Character
-Private _bChkMarca	:= Nil As Codeblock
-Private _bSelMarca	:= Nil As Codeblock
-Private _bAllMarca	:= Nil As Codeblock
-Private _dEmissIni	:= "" As Character
-Private _dEmissFim	:= "" As Character
-Private _cSolicIni	:= "" As Character
-Private _cSolicFim	:= "" As Character
-Private _cProDe		:= "" As Character
-Private _cProAte	:= "" As Character
+Local _aAlias		:= {} 						As Array
+Local _aColumns		:= {} 						As Array
+Local aParAux 		:= {} 						As Array
+Local aParRet 		:= {} 						As Array
+Local _cFilSalva    := cFilAnt 					As Character 
+Local _bSelectSC  	:= {|| SelectSC() }		    As Codeblock
+Local bOK     		:= Nil						As Codeblock
+Local nI            := 0  						As Numeric
 
-_cPerg := PadR( _cPerg , 10 , " " ) 
+Private aRotina		:= Menudef() 				As Array
+Private _aRegsSC1	:= {} 						As Array
+Private _aRegsSC7	:= {} 						As Array
+Private _aRegsAll	:= {} 						As Array
+Private _cPerg		:= "ACOM016" 				As Character
+Private _bChkMarca	:= Nil 						As Codeblock
+Private _bSelMarca	:= Nil 						As Codeblock
+Private _bAllMarca	:= Nil 						As Codeblock
 
-_cFilSel:=cFilAnt:=_cFilSalva//POR CAUSA DO Loop
-If !Pergunte(_cPerg,.T.)
-	Return .F.
+MV_PAR01 := Space(100) 
+MV_PAR02 := dDataBase
+MV_PAR03 := dDataBase
+MV_PAR04 := dDataBase
+MV_PAR05 := dDataBase
+MV_PAR06 := "2-Solic. Compras"
+MV_PAR07 := Space(50)
+MV_PAR08 := Replicate('Z',TamSX3('B1_COD')[1])
+MV_PAR09 := Space(50)
+MV_PAR10 := Space(50)
+MV_PAR11 := Replicate('Z',TamSX3('A2_COD')[1])
+MV_PAR12 := Replicate('Z',TamSX3('A2_LOJA')[1])
+MV_PAR13 := Space(50)
+MV_PAR14 := 100
+
+_aItalac_F3	:= {} // Variável Private.
+AAdd(_aItalac_F3,{"MV_PAR13" ,_bSelectSC,{|Tab| (Tab)->C1_NUM }, {|Tab|DToC(SToD((Tab)->C1_EMISSAO))},,"Solicitações",,,60,.T.,, } )
+AAdd( aParAux , { 1 , "Filiais"             , MV_PAR01, "@!", ""  ,"LSTFIL", "" , 100 , .F. } ) 
+AAdd( aParAux , { 1 , "Dt Emissao Inic"  	, MV_PAR02, "@D", ""  , ""	   , "" , 050 , .F. } )
+AAdd( aParAux , { 1 , "Dt Emissao Fim"   	, MV_PAR03, "@D", ""  , ""	   , "" , 050 , .F. } )
+AAdd( aParAux , { 1 , "Dt Entrega De"  	    , MV_PAR04, "@D", ""  , ""	   , "" , 050 , .F. } )
+AAdd( aParAux , { 1 , "Dt Entrega Ate"   	, MV_PAR05, "@D", ""  , ""	   , "" , 050 , .F. } )
+AAdd( aParAux , { 2 , "Elimina Residuo por" , MV_PAR06, {"1-Ped. Compras","2-Solic. Compras",}, 060 , ".T." , .F. , ".T." } )
+AAdd( aParAux , { 1 , "Produto De"          , MV_PAR07, "@!", ""  ,"SB1ADD", "" , 060 , .F. } )
+AAdd( aParAux , { 1 , "Produto Ate"         , MV_PAR08, "@!", ""  ,"SB1ADD", "" , 060 , .F. } )
+AAdd( aParAux , { 1 , "Fornecedores De"     , MV_PAR09, "@!", ""  ,"SA2"   , "" , 060 , .F. } )
+AAdd( aParAux , { 1 , "Loja De"             , MV_PAR10, ""  , ""  ,""      , "" , 050 , .F. } )  
+AAdd( aParAux , { 1 , "Fornecedores Ate"    , MV_PAR11, "@!", ""  ,"SA2"   , "" , 060 , .F. } ) 
+AAdd( aParAux , { 1 , "Loja Ate"            , MV_PAR12, ""  , ""  ,""      , "" , 050 , .F. } ) 
+AAdd( aParAux , { 1 , "Sol./Ped. "      	, MV_PAR13, "@!", ""  ,"F3ITLC", "" , 060 , .F. } )
+AAdd( aParAux , { 1 , "Percentual Máximo"   , MV_PAR14, "@E 999.99", 0 , 0 , "" , 050 , .F. } )
+
+For nI := 1 To Len( aParAux )
+    AAdd( aParRet , aParAux[nI][03] )
+Next nI
+
+If !ParamBox( aParAux , "Elimina Residuos Sc/Pc" , @aParRet, bOK, /*aButtons*/,/*lCentered*/,/*nPosX*/,/*nPosy*/,/*oDlgWizard*/,/*cLoad*/,.T.         ,.T.          )
+	U_ItMsg( "Operação cancelada pelo usuário!" , "Atenção!",,1 )
+	Break
 EndIf
-
-If MV_PAR01 = 2
-	_cFilSel:=FWPesqSM0()
-	If Empty(_cFilSel) 
-		Return .F.
-	EndIf
-EndIf
-cFilAnt:=_cFilSel
 
 //======================================================================
 // Inicializando variáveis com os parametros do pergunte. 
 //======================================================================
-_dEmissIni		:= MV_PAR02
-_dEmissFim		:= MV_PAR03
-_cSolicIni		:= MV_PAR04
-_cSolicFim		:= MV_PAR05
-_cProDe		    := MV_PAR06
-_cProAte		:= MV_PAR07
+
+If Empty(MV_PAR01)
+   cFilSel := xFilial("SC1")
+Else 
+   cFilSel := ALLTrim(MV_PAR01)
+EndIf 
+
+cTpSoli := SubStr( MV_PAR06 , 1 , 1 )
+
+If !Empty(MV_PAR07)
+	cProdDe := MV_PAR07
+Endif
+
+If !Empty(MV_PAR08)
+	cProdAte := MV_PAR08
+Endif
+
+If !Empty(MV_PAR09)
+	cFornDe := MV_PAR09
+Endif
+
+If !Empty(MV_PAR11)
+	cFornAte := MV_PAR11
+Endif
+
+If !Empty(MV_PAR13)
+	cNumSol := FormatIn(AllTrim(MV_PAR13),";")
+EndIf
 
 //==================================================================
 //Carrega blocos de código para o browse
 //==================================================================
 
-If MV_PAR08 == 2 //Solicitação de compra
+If cTpSoli == "2" //Solicitação de compra
 	_bChkMarca	:= {|| IIf( aScan( _aRegsSC1 , { |x| x[1] + x[2] + x[3] == (_cAliasMrk)->C1_FILIAL + (_cAliasMrk)->C1_NUM + (_cAliasMrk)->C1_ITEM  } ) == 0 , 'LBNO' , 'LBOK' ) }
 	_bSelMarca	:= {|| ( IIf( ( nPos := aScan( _aRegsSC1 , { |x| x[1] + x[2] + x[3] == (_cAliasMrk)->C1_FILIAL + (_cAliasMrk)->C1_NUM + (_cAliasMrk)->C1_ITEM } ) ) == 0 ,;
-							 ( aAdd( _aRegsSC1 , { (_cAliasMrk)->C1_FILIAL, (_cAliasMrk)->C1_NUM, (_cAliasMrk)->C1_ITEM }  ) , lMarcou := .T. ) , ;
+							 ( AAdd( _aRegsSC1 , { (_cAliasMrk)->C1_FILIAL, (_cAliasMrk)->C1_NUM, (_cAliasMrk)->C1_ITEM }  ) , lMarcou := .T. ) , ;
 							 ( aDel( _aRegsSC1 , nPos ) , aSize( _aRegsSC1 , Len( _aRegsSC1 ) -1 ) ) ) ) }
 	_bAllMarca	:= {|| IIf( Empty( _aRegsSC1 ) , _aRegsSC1 := aClone( _aRegsAll ) , _aRegsSC1 := {} ) , oMrkBrowse:Refresh() , oMrkBrowse:GoTop() }
-ElseIf MV_PAR08 == 1 //Pedido de compra
+ElseIf cTpSoli == "1" //Pedido de compra
 	_bChkMarca	:= {|| IIf( aScan( _aRegsSC7 , { |x| x[1] + x[2] + x[3] == (_cAliasMrk)->C7_FILIAL + (_cAliasMrk)->C7_NUM + (_cAliasMrk)->C7_ITEM  } ) == 0 , 'LBNO' , 'LBOK' ) }
 	_bSelMarca	:= {|| ( IIf( ( nPos := aScan( _aRegsSC7 , { |x| x[1] + x[2] + x[3] == (_cAliasMrk)->C7_FILIAL + (_cAliasMrk)->C7_NUM + (_cAliasMrk)->C7_ITEM } ) ) == 0 ,;
-							 ( aAdd( _aRegsSC7 , { (_cAliasMrk)->C7_FILIAL, (_cAliasMrk)->C7_NUM, (_cAliasMrk)->C7_ITEM }  ) , lMarcou := .T. ) , ;
+							 ( AAdd( _aRegsSC7 , { (_cAliasMrk)->C7_FILIAL, (_cAliasMrk)->C7_NUM, (_cAliasMrk)->C7_ITEM }  ) , lMarcou := .T. ) , ;
 							 ( aDel( _aRegsSC7 , nPos ) , aSize( _aRegsSC7 , Len( _aRegsSC7 ) -1 ) ) ) ) }
 	_bAllMarca	:= {|| IIf( Empty( _aRegsSC7 ) , _aRegsSC7 := aClone( _aRegsAll ) , _aRegsSC7 := {} ) , oMrkBrowse:Refresh() , oMrkBrowse:GoTop() }
 EndIf
@@ -92,7 +152,8 @@ EndIf
 //--------------------------------------------------------
 //Retorna as colunas para o preenchimento da FWMarkBrowse
 //--------------------------------------------------------
-FWMsgRun( ,{|| _aAlias := ACOM016QRY() } , 'Aguarde!' , 'Verificando os registros...' )
+//FWMsgRun( ,{|| _aAlias := ACOM016QRY() } , 'Aguarde!' , 'Verificando os registros...' )
+Processa( {|| _aAlias := ACOM016QRY() } , 'Aguarde!' , 'Verificando os registros...' )
 	
 _cAliasMrk	:= _aAlias[1]
 _aColumns 	:= _aAlias[2]
@@ -118,16 +179,16 @@ If !Empty (_cAliasMrk)
 	Ferase(_cAliasMrk+OrdBagExt())
 	_cAliasMrk := ""
 	
-	If MV_PAR08 == 2 //Solicitação de compra
+	If cTpSoli == "2" //Solicitação de compra
 		DBSelectArea("SC1")
 		SC1->(DBSetOrder(1))
-	ElseIf MV_PAR08 == 1 //Pedido de compra
+	ElseIf cTpSoli == "1" //Pedido de compra
 		DBSelectArea("SC7")
 		SC7->(DBSetOrder(1))
 	EndIf
 EndIf
 
-cFilAnt:=_cFilSalva
+cFilAnt:=_cFilSalva 
 
 Return (.T.)
 
@@ -163,7 +224,7 @@ Private _cTempTab	:= "" As Character
 ProcRegua(0)
 IncProc('Inicializando a rotina...')
 
-If MV_PAR08 == 2 //Solicitação de compra
+If cTpSoli == "2" //Solicitação de compra
 	_aFields		:= {	'C1_FILIAL',;
 							'C1_EMISSAO',;
 							'C1_NUM',;
@@ -199,12 +260,12 @@ If MV_PAR08 == 2 //Solicitação de compra
 	//Tratamento da clausula where da filial
 	//======================================
 	_cWFilial := "%"
-	_cWFilial += " SC1.C1_FILIAL  = '" + xFilial("SC1") + "' "
+	_cWFilial += " SC1.C1_FILIAL IN " + FormatIn(cFilSel,";") 
 	_cWFilial += "%"
 
 	_cWhere := "%"
-	_cWhere += " SC1.C1_PRODUTO BETWEEN '" + _cProDe + "' AND '" + _cProAte + "' AND "
-	_cWhere += " (SC1.C1_QUANT - SC1.C1_QUJE) <= (SC1.C1_QUANT * " + AllTrim(Str(MV_PAR13/100)) + ")  AND "
+	_cWhere += " SC1.C1_PRODUTO BETWEEN '" + cProdDe + "' AND '" + cProdAte + "' AND "
+	_cWhere += " (SC1.C1_QUANT - SC1.C1_QUJE) <= (SC1.C1_QUANT * " + AllTrim(Str(MV_PAR14/100)) + ")  AND "
 	_cWhere += " (SC1.C1_COTACAO < '1' OR SC1.C1_COTACAO = 'XXXXXX') AND "   //Cotação não realizada ou realizado pedido direto que atualiza a C1_QUJE
 	_cWhere += " SC1.C1_RESIDUO <> 'S' AND"
 	_cWhere += " SC1.C1_QUJE < SC1.C1_QUANT"
@@ -222,7 +283,11 @@ If MV_PAR08 == 2 //Solicitação de compra
           _cWhere += " AND (SC1.C1_I_CDSOL = '" + AllTrim(__cUserId) + "' OR SC1.C1_I_CODAP = '" + AllTrim(__cUserId) + "' OR B1_TIPO NOT IN " + FormatIn(_cSuprLeit,";") + ") " // Compras (elimina resíduo de compras)
        EndIf
 	EndIf	
-	
+
+	If !Empty(cNumSol)
+		_cWhere += " AND  SC1.C1_NUM IN "+cNumSol+" "
+	EndIf
+
 	_cWhere += "%"
 	
 	BeginSql alias _cAliasTrb
@@ -271,10 +336,9 @@ If MV_PAR08 == 2 //Solicitação de compra
 	WHERE
 	
 	%Exp:_cWFilial% AND
-	SC1.C1_NUM BETWEEN %exp:_cSolicIni%		AND %exp:_cSolicFim%	AND
-	SC1.C1_EMISSAO BETWEEN %exp:_dEmissIni%	AND %exp:_dEmissFim%	AND	
-	SC1.C1_DATPRF  BETWEEN %exp:MV_PAR11%	AND %exp:MV_PAR12%	AND	
-	SC1.C1_FORNECE BETWEEN %exp:MV_PAR09%	AND %exp:MV_PAR10%	AND	
+	SC1.C1_EMISSAO BETWEEN %exp:MV_PAR02%	AND %exp:MV_PAR03%	AND	
+	SC1.C1_DATPRF  BETWEEN %exp:MV_PAR04%	AND %exp:MV_PAR05%	AND
+	SC1.C1_FORNECE BETWEEN %exp:cFornDe%	AND %exp:cFornAte%	AND		
 	SC1.C1_QUANT > 0 AND
 	%Exp:_cWhere%	AND
 	SC1.%notDel%
@@ -289,7 +353,7 @@ If MV_PAR08 == 2 //Solicitação de compra
 	EndSql
 	
 					
-ElseIf MV_PAR08 == 1 //Pedido de compra
+ElseIf cTpSoli == "1" //Pedido de compra
 
 	_aFields		:= {	'C7_FILIAL',;
 							'C7_EMISSAO',;
@@ -324,12 +388,12 @@ ElseIf MV_PAR08 == 1 //Pedido de compra
 	//Tratamento da clausula where da filial
 	//======================================
 	_cWFilial := "%"
-	_cWFilial += " SC7.C7_FILIAL  = '" + xFilial("SC7") + "' "
+	_cWFilial += " SC7.C7_FILIAL  IN " + FormatIn(cFilSel,";") 
 	_cWFilial += "%"
 
 	_cWhere := "%"
-	_cWhere += " SC7.C7_PRODUTO BETWEEN '" + _cProDe + "' AND '" + _cProAte + "' AND "
-	_cWhere += " (SC7.C7_QUANT - (SC7.C7_QUJE + (Case when SC7.C7_QTDACLA > 0 then SC7.C7_QTDACLA Else 0 end ))) <= (SC7.C7_QUANT * " + AllTrim(Str(MV_PAR13/100)) + ")  AND "
+	_cWhere += " SC7.C7_PRODUTO BETWEEN '" + cProdDe + "' AND '" + cProdAte + "' AND "
+	_cWhere += " (SC7.C7_QUANT - (SC7.C7_QUJE + (Case when SC7.C7_QTDACLA > 0 then SC7.C7_QTDACLA Else 0 end ))) <= (SC7.C7_QUANT * " + AllTrim(Str(MV_PAR14/100)) + ")  AND "
 	_cWhere += " SC7.C7_ENCER <> 'S' AND "
 	_cWhere += " SC7.C7_RESIDUO <> 'S' AND"
 	
@@ -346,7 +410,11 @@ ElseIf MV_PAR08 == 1 //Pedido de compra
        ElseIf _cTipoAdmR == "1" 
           _cWhere += " ( SC7.C7_USER = '" + AllTrim(__cUserId) + "' or  SAJ.AJ_GRCOM = C7_GRUPCOM OR B1_TIPO NOT IN " + FormatIn(_cSuprLeit,";") + ") AND " // Compras (elimina resíduo de compras)
 	   EndIf
-	EndIf	
+	EndIf
+
+	If !Empty(cNumSol)
+		_cWhere += " SC7.C7_NUM IN "+cNumSol+" AND  "
+	EndIf
 	
 	_cWhere += " SC7.C7_QTDACLA <= 0 AND"
 	_cWhere += " SC7.C7_QUJE < SC7.C7_QUANT"
@@ -397,10 +465,9 @@ ElseIf MV_PAR08 == 1 //Pedido de compra
 	WHERE
 	
 	%Exp:_cWFilial% AND
-	SC7.C7_NUM BETWEEN %exp:_cSolicIni%		AND %exp:_cSolicFim%	AND
-	SC7.C7_EMISSAO BETWEEN %exp:_dEmissIni%	AND %exp:_dEmissFim%	AND	
-	SC7.C7_DATPRF  BETWEEN %exp:MV_PAR11%	AND %exp:MV_PAR12%	AND	
-	SC7.C7_FORNECE BETWEEN %exp:MV_PAR09%	AND %exp:MV_PAR10%	AND	
+	SC7.C7_EMISSAO BETWEEN %exp:MV_PAR02%	AND %exp:MV_PAR03% AND	
+	SC7.C7_DATPRF  BETWEEN %exp:MV_PAR04%	AND %exp:MV_PAR05% AND	
+	SC7.C7_FORNECE BETWEEN %exp:cFornDe%	AND %exp:cFornAte% AND	
 	%Exp:_cWhere%	AND
 	SC7.%notDel%
 
@@ -447,10 +514,10 @@ While ! (_cAliasTrb)->(Eof())
    (_cAliasTrb)->(DBSkip())
 EndDo
 
-If MV_PAR08 == 2 //Solicitação de compra
+If cTpSoli == "2" //Solicitação de compra
 	(_cTempTab)->( DBGoTop() )
 	While (_cTempTab)->(!Eof())
-		aAdd( _aRegsAll , { (_cTempTab)->C1_FILIAL, (_cTempTab)->C1_NUM, (_cTempTab)->C1_ITEM } )
+		AAdd( _aRegsAll , { (_cTempTab)->C1_FILIAL, (_cTempTab)->C1_NUM, (_cTempTab)->C1_ITEM } )
 		//Bloqueia SC1 para não haver alterações com essa tela aberta
 		SC1->(DBGoTo((_cTempTab)->SC1RECNO))
 		SC1->(MSUnLock())	
@@ -463,7 +530,7 @@ If MV_PAR08 == 2 //Solicitação de compra
 
 	For _nX := 1 To Len(_aFields)
 		If	!_aFields[_nX] == "SC1_OK" .And. _aFields[_nX] $ _cSelect
-			aAdd(_aColumns,FWBrwColumn():New())
+			AAdd(_aColumns,FWBrwColumn():New())
 			_aColumns[Len(_aColumns)]:SetTitle(RetTitle(_aFields[_nX])) 
 			_aColumns[Len(_aColumns)]:SetSize(TamSX3(_aFields[_nX])[1]) 
 			_aColumns[Len(_aColumns)]:SetDecimal(TamSX3(_aFields[_nX])[2])
@@ -510,11 +577,11 @@ If MV_PAR08 == 2 //Solicitação de compra
 		EndIf
 	Next _nX
 
-ElseIf MV_PAR08 == 1 //Pedido de compra
+ElseIf cTpSoli == "1" //Pedido de compra
 
 	(_cTempTab)->( DBGoTop() )
 	While (_cTempTab)->(!Eof())
-		aAdd( _aRegsAll , { (_cTempTab)->C7_FILIAL, (_cTempTab)->C7_NUM, (_cTempTab)->C7_ITEM } )
+		AAdd( _aRegsAll , { (_cTempTab)->C7_FILIAL, (_cTempTab)->C7_NUM, (_cTempTab)->C7_ITEM } )
 		//Bloqueia SC7 para não haver alterações com essa tela aberta
 		SC7->(DBGoTo((_cTempTab)->SC7RECNO))
 		SC7->(MSUnLock())	
@@ -526,7 +593,7 @@ ElseIf MV_PAR08 == 1 //Pedido de compra
 
 	For _nX := 1 To Len(_aFields)
 		If	!_aFields[_nX] == "SC7_OK" .And. _aFields[_nX] $ _cSelect
-			aAdd(_aColumns,FWBrwColumn():New())
+			AAdd(_aColumns,FWBrwColumn():New())
 
 			_aColumns[Len(_aColumns)]:SetTitle(RetTitle(_aFields[_nX])) 
 			_aColumns[Len(_aColumns)]:SetSize(TamSX3(_aFields[_nX])[1]) 
@@ -581,7 +648,7 @@ Static Function MenuDef()
 
 Local aRot := {} As Array
 
-ADD OPTION aRot Title 'Eliminar Res.'			Action 'U_ACOM016E()'	OPERATION 2 ACCESS 0
+ADD OPTION aRot Title 'Eliminar Res.'			Action 'U_ACOM016R()'	OPERATION 2 ACCESS 0 // 'U_ACOM016E()'
 ADD OPTION aRot Title 'Visualizar'				Action 'U_ACOM016V()'	OPERATION 2 ACCESS 0
 ADD OPTION aRot Title 'Planilha'				Action 'U_ACOM016P()'	OPERATION 2 ACCESS 0
 
@@ -601,12 +668,12 @@ User Function ACOM016V()
 
 Local _aArea := FwGetArea() As Array
 
-If MV_PAR08 == 2 //Solicitação de compra
+If cTpSoli == "2" //Solicitação de compra
 	DBSelectArea("SC1")
 	SC1->(DBSetOrder(1))
 	SC1->(DBSeek(_aRegsAll[oMrkBrowse:OBROWSE:NAT][1] + _aRegsAll[oMrkBrowse:OBROWSE:NAT][2] + _aRegsAll[oMrkBrowse:OBROWSE:NAT][3]))
 	A110Visual("SC1",SC1->(Recno()),2)	
-ElseIf MV_PAR08 == 1 //Pedido de compra
+ElseIf cTpSoli == "1" //Pedido de compra
 	DBSelectArea("SC7")
 	SC7->(DBSetOrder(1))
 	SC7->(DBSeek(_aRegsAll[oMrkBrowse:OBROWSE:NAT][1] + _aRegsAll[oMrkBrowse:OBROWSE:NAT][2] + _aRegsAll[oMrkBrowse:OBROWSE:NAT][3]))
@@ -634,7 +701,7 @@ Local aLogPla	:= {} As Array
 Local nCont		:= 1 As Numeric
 Local _bUserN	:= {|x| UsrFullName(x)} As Codeblock
 
-If MV_PAR08 == 2 //Solicitação de compra
+If cTpSoli == "2" //Solicitação de compra
 	aCampPla	:= {	'Índice',;
 						'Filial',;
 						'Dt Emissão',;
@@ -665,7 +732,7 @@ If MV_PAR08 == 2 //Solicitação de compra
 	(_cAliasMrk)->(DBGoTop())
 
 	While !(_cAliasMrk)->(Eof())
-		aAdd( aLogPla , {	StrZero(nCont++,4),;																										//[1]Índice
+		AAdd( aLogPla , {	StrZero(nCont++,4),;																										//[1]Índice
 						(_cAliasMrk)->C1_FILIAL + " - " + AllTrim(FWFilialName(cEmpAnt,(_cAliasMrk)->C1_FILIAL,1)),;						//[2]Filial
 						SToD((_cAliasMrk)->C1_EMISSAO),;																							//[3]Emissão
 						(_cAliasMrk)->C1_NUM + " / " + (_cAliasMrk)->C1_ITEM,;																	//[4]SC		
@@ -696,7 +763,7 @@ If MV_PAR08 == 2 //Solicitação de compra
 
 	U_ITListBox( 'Geração Planilha' , aCampPla , aLogPla , .T. , 1 )
 
-ElseIf MV_PAR08 == 1 //Pedido de compra
+ElseIf cTpSoli == "1" //Pedido de compra
 	aCampPla	:= {	'Índice',;
 						'Filial',;
 						'Dt Emissão',;
@@ -721,7 +788,7 @@ ElseIf MV_PAR08 == 1 //Pedido de compra
 	(_cAliasMrk)->(DBGoTop())
 
 	While !(_cAliasMrk)->(Eof())
-		aAdd( 			aLogPla , {	StrZero(nCont++,4),;																	//[01]Índice
+		AAdd( 			aLogPla , {	StrZero(nCont++,4),;																	//[01]Índice
 						(_cAliasMrk)->C7_FILIAL + " - " + AllTrim(FWFilialName(cEmpAnt,(_cAliasMrk)->C7_FILIAL,1)),;	//[02]Filial
 						SToD((_cAliasMrk)->C7_EMISSAO),;																		//[03]Emissão
 						(_cAliasMrk)->C7_NUM,;																				//[04]Número SC
@@ -769,6 +836,11 @@ Local _aAlias 		:= {} As Array
 Local _aEmail 		:= {} As Array
 Local _cSolCpr		:= "" As Character
 Local _cAprSolCpr	:= "" As Character
+Local _cFilAtual    := "" As Character
+Local _nRegSM0      := 0 As Numeric
+
+_cFilAtual := cFilAnt 
+_nRegSM0   := SM0->(Recno())
 
 _lOK  :=.F.
 cMens1:= ""
@@ -798,12 +870,19 @@ If !_lOK//(U_ITMsg("Elimina por resíduo os registros selecionados?","Eliminar po
 	Return .T.
 EndIf
 	
-
-If MV_PAR08 == 2 //Solicitação de Compra
+If cTpSoli == "2" //Solicitação de Compra
+   
+   Procregua(Len(_aRegsSC1)) 
 
 	_aEmail := {}
-
+    SM0->(DbSetOrder(1))
 	For _nI := 1 to Len(_aRegsSC1)
+
+        Incproc("Eliminando resíduo Solicitação de Compras: "+ AllTrim(Str(_nI,8)) + " de " + AllTrim(Str(Len(_aRegsSC1),8))) 
+
+        cFilAnt := _aRegsSC1[_nI][1]   
+		SM0->(MsSeek("01"+ cFilAnt))
+
 		SC1->(DBSetOrder(1))
 		If SC1->(DBSeek(_aRegsSC1[_nI][1]+_aRegsSC1[_nI][2]+_aRegsSC1[_nI][3]))
 			
@@ -819,9 +898,11 @@ If MV_PAR08 == 2 //Solicitação de Compra
 				SC1->(MSUnLock())
 				LTNEWPROC:=.F.
 				//MA235SC(nPerc, dEmisDe  , dEmisAte         , cCodigoDe  , cCodigoAte , cProdDe  , cProdAte        , cFornDe, cFornAte, dDatPrfde, dDatPrfAte        , lSemOp, cItemDe     , cItemAte   ,aRecSC1)
-				MA235SC(100, CTOD("") ,CTOD("31/12/2030"), SC1->C1_NUM, SC1->C1_NUM,Space(15) ,"ZZZZZZZZZZZZZZZ",Space(6),"ZZZZZZ" ,CTOD("")  ,CTOD("31/12/2030") ,.T.    , SC1->C1_ITEM, SC1->C1_ITEM)
-							
-				aAdd(_aEmail,{SC1->C1_FILIAL+" - "+AllTrim( Posicione('SM0',1,"01"+SC1->C1_FILIAL,'M0_FILIAL') ),;
+				MA235SC(100, CTOD("") ,CTOD("31/12/2050"), SC1->C1_NUM, SC1->C1_NUM,Space(15) ,"ZZZZZZZZZZZZZZZ",Space(6),"ZZZZZZ" ,CTOD("")  ,CTOD("31/12/2050") ,.T.    , SC1->C1_ITEM, SC1->C1_ITEM)
+
+				_aEmail := {} 
+
+				AAdd(_aEmail,{SC1->C1_FILIAL+" - "+AllTrim( Posicione('SM0',1,"01"+SC1->C1_FILIAL,'M0_FILIAL') ),;
 						SC1->C1_NUM,;
 						cMens1,;
 						DToC(SC1->C1_I_DTELR),;
@@ -840,20 +921,31 @@ If MV_PAR08 == 2 //Solicitação de Compra
 						AllTrim(Transform(SC1->C1_QUANT - SC1->C1_QUJE,PesqPict("SC1","C1_QUANT")))})		
 
 				END TRANSACTION
+                
+				//--------------------------------------------------------
+                //Envio do Email aos Responsáveis
+                //--------------------------------------------------------
+                ACOM016M(_aEmail,If(cTpSoli == "1",1,2)) 
 			EndIf
 	Next _nI
 		
-ElseIf MV_PAR08 == 1 //Pedido de Compra
+ElseIf cTpSoli == "1" //Pedido de Compra
 
 	_acontrol := {}
 	_aEmail := {}
 	ZY1->(DBSetOrder(1))
 	SC7->(DBSetOrder(1))
+	SB2->(DBSetOrder(1))
+	SC1->(DBSetOrder(1))
 	
-	Begin Sequence
+	Procregua(Len(_aRegsSC7)) 
+
 	BEGIN TRANSACTION
 	
 	For _nI := 1 to Len(_aRegsSC7)
+
+        Incproc("Eliminando residuo Pedido de Compras: "+ AllTrim(Str(_nI,8)) + " de " + AllTrim(Str(Len(_aRegsSC7),8))) 
+
 		//Marca pedido de compra como eliminado por residuo
 		If SC7->(DBSeek(_aRegsSC7[_nI][1]+_aRegsSC7[_nI][2]+_aRegsSC7[_nI][3]))
 			SC7->(RecLock("SC7",.F.))
@@ -867,9 +959,8 @@ ElseIf MV_PAR08 == 1 //Pedido de Compra
 				SC7->C7_I_JUERE	:= cMens1
 			EndIf 
 			SC7->(MSUnLock())
-			
+
 			//Atualiza B2_SALPEDI
-			SB2->(DBSetOrder(1))
 			If SB2->(DBSeek(SC7->C7_FILIAL+SC7->C7_PRODUTO+SC7->C7_LOCAL))
 				If SB2->B2_SALPEDI - (SC7->C7_QUANT - SC7->C7_QUJE) >= 0
 					SB2->(RecLock("SB2",.F.))
@@ -882,13 +973,14 @@ ElseIf MV_PAR08 == 1 //Pedido de Compra
 				EndIf
 				
 				//Busca Sol Cpr 
-				SC1->(DBSetOrder(1))
 				If SC1->(DBSeek(SC7->C7_FILIAL+SC7->C7_NUMSC + SC7->C7_ITEMSC))
 					_cSolCpr    := AllTrim(SC1->C1_USER)
 					_cAprSolCpr := AllTrim(SC1->C1_I_CODAP)
 				EndIf
 
-				aAdd(_aEmail,{SC7->C7_FILIAL +" - "+AllTrim( Posicione('SM0',1,"01"+SC7->C7_FILIAL,'M0_FILIAL') ),;
+                _aEmail := {} 
+
+				AAdd(_aEmail,{SC7->C7_FILIAL +" - "+AllTrim( Posicione('SM0',1,"01"+SC7->C7_FILIAL,'M0_FILIAL') ),;
 						SC7->C7_NUM,;
 						SC7->C7_FORNECE + " - " + SC7->C7_LOJA + " " + Posicione("SA2",1,xFilial("SA2")+SC7->C7_FORNECE+SC7->C7_LOJA,"A2_NREDUZ"),;
 						U_ITRetBox( SC7->C7_I_APLIC , "C7_I_APLIC" ) ,; //Aplicação
@@ -906,7 +998,12 @@ ElseIf MV_PAR08 == 1 //Pedido de Compra
 						AllTrim(Transform(SC7->C7_PRECO,PesqPict("SC7","C7_PRECO"))) ,;
 						AllTrim(Transform(SC7->C7_QUJE,PesqPict("SC7","C7_QUJE"))) ,;
 						DToC(SC7->C7_DATPRF),;
-						AllTrim(Transform(SC7->C7_QUANT - SC7->C7_QUJE,PesqPict("SC7","C7_QUANT")))})		
+						AllTrim(Transform(SC7->C7_QUANT - SC7->C7_QUJE,PesqPict("SC7","C7_QUANT")))})	
+				
+                //--------------------------------------------------------
+                //Envio do Email aos Responsáveis
+                //--------------------------------------------------------
+                ACOM016M(_aEmail,If(cTpSoli == "1",1,2)) 
 			Else
 				FWAlertError("Falha de atualização de saldo de produtos!. Processamento não será efetuado","ACOM01602")
 				Disarmtransaction()
@@ -917,7 +1014,7 @@ ElseIf MV_PAR08 == 1 //Pedido de Compra
 		//Alimenta ou atualiza controle de pedidos parciais
 		_npos := aScan(_acontrol,{|_vAux|_vAux[2] == _aRegsSC7[_nI][2]})
 		If   _npos == 0
-			aAdd(_acontrol,{_aRegsSC7[_nI][1],_aRegsSC7[_nI][2],IIf(SC7->C7_QUJE> 0,1,0)})
+			AAdd(_acontrol,{_aRegsSC7[_nI][1],_aRegsSC7[_nI][2],IIf(SC7->C7_QUJE> 0,1,0)})
 		Else
 			If SC7->C7_QUJE > 0
 				_acontrol[_npos][3] := 1
@@ -947,19 +1044,20 @@ ElseIf MV_PAR08 == 1 //Pedido de Compra
 			EndIf
 		EndIf
 	EndIf
+
+	DBSelectArea("SCR")
+	SCR->(DBSetOrder(1))
+
+	SC7->(DBSetOrder(1))
 	
 	//Repassa pedidos de compra e apaga SCR de pedidos de compras 
 	//eliminados por resíduos que não tiveram entrega parcial
 	For _nI := 1 to Len(_acontrol)
 	
-		DBSelectArea("SCR")
-		SCR->(DBSetOrder(1))
-		SCR->(DBGoTop())
 		If _acontrol[_nI][3] == 0 .And. SCR->(DBSeek(_acontrol[_nI][1]+"PC"+_acontrol[_nI][2]))
 		
 			//Verifica se tem aprovado
 			_ltemaprov := .F.
-			SC7->(DBSetOrder(1))
 			If SC7->(DBSeek(SCR->CR_FILIAL+AllTrim(SCR->CR_NUM)))
 				While SC7->C7_FILIAL == SCR->CR_FILIAL .And. SC7->C7_NUM == AllTrim(SCR->CR_NUM)
 					If SC7->C7_CONAPRO == "L"
@@ -986,22 +1084,21 @@ ElseIf MV_PAR08 == 1 //Pedido de Compra
 	Next _nI
 	
 	END TRANSACTION	
-	End Sequence
 	
 EndIf
 
 //--------------------------------------------------------
 //Envio do Email aos Responsáveis
 //--------------------------------------------------------
-If Len(_aEmail) > 0
-	ACOM016M(_aEmail,If(MV_PAR08 == 1,1,2))
-EndIf
-
+//If Len(_aEmail) > 0 
+//	ACOM016M(_aEmail,If(cTpSoli == "1",1,2))
+//EndIf
 
 //--------------------------------------------------------
 //Retorna as colunas para o preenchimento da FWMarkBrowse
 //--------------------------------------------------------
-FWMsgRun( ,{|| _aAlias := ACOM016QRY() } , 'Aguarde!' , 'Verificando os registros...' )
+//FWMsgRun( ,{|| _aAlias := ACOM016QRY() } , 'Aguarde!' , 'Verificando os registros...' )
+Processa( {|| _aAlias := ACOM016QRY() } , 'Aguarde!' , 'Verificando os registros...' )
 	
 _cAliasMrk	:= _aAlias[1]
 _aColumns 	:= _aAlias[2]
@@ -1012,6 +1109,9 @@ _aColumns 	:= _aAlias[2]
 oMrkBrowse:SetAlias(_cAliasMrk)
 oMrkBrowse:Refresh()
 oMrkBrowse:Gotop()
+
+cFilAnt  := _cFilAtual
+SM0->(DbGoto(_nRegSM0))
 
 FWAlertSuccess("Processamento concluido","ACOM01603")
 
@@ -1029,33 +1129,7 @@ Retorno-----------: Nenhum
 */
 Static Function ACOM016M(_aDados As Array,_nTipo As Numeric)
 
-Local _aMensag    := {} As Array
-Local _nColUser   := 0 As Numeric
-Local _nColItem   := 0 As Numeric
-Local _nColFilial := 0 As Numeric
-Local _nColDoc    := 0 As Numeric
-Local _nM         := 0 As Numeric
-
-_nColUser   := IIf(_nTipo=1,8,6)
-_nColItem   := IIf(_nTipo=1,11,8)
-_nColFilial := 1
-_nColDoc    := 2
-
-aSort(_aDados,,,{|x,y| x[_nColUser]+x[_nColFilial]+x[_nColDoc]+x[_nColItem] < y[_nColUser]+y[_nColFilial]+y[_nColDoc]+y[_nColItem]})
-
-_cRespAnt := _aDados[1,_nColUser] + _aDados[1,1] + _aDados[1,2]
-
-For _nM := 1 to Len(_aDados)
-	If (_aDados[_nM,_nColUser] + _aDados[_nM,1] + _aDados[_nM,2]) <> _cRespAnt
-		ACOM016J(_nTipo,_aMensag)
-		_aMensag := {}
-	EndIf
-	
-	aAdd(_aMensag,_aDados[_nM])
-	_cRespAnt := _aDados[_nM,_nColUser] + _aDados[_nM,1] + _aDados[_nM,2]
-Next
-
-ACOM016J(_nTipo,_aMensag)
+ACOM016J(_nTipo , _aDados) 
 
 Return .T.
 
@@ -1094,37 +1168,37 @@ _nColAut := IIf(_nTipo = 1, 7,5)
 
 If Len(_aCabec) = 0
 	//Monta os titulos das colunas
-	aAdd(_aCabec,{"Filial","04","left"})
-	aAdd(_aCabec,{IIf(_nTipo=1,"Pedido","Solic. Compra"),"04","left"})
+	AAdd(_aCabec,{"Filial","04","left"})
+	AAdd(_aCabec,{IIf(_nTipo=1,"Pedido","Solic. Compra"),"04","left"})
 
 	If _nTipo = 1
-		aAdd(_aCabec,{"Fornecedor","04","left"})
-		aAdd(_aCabec,{IIf(_nTipo=1,"Aplicação","Legenda do tipo de compra"),"04","left"})		//04
+		AAdd(_aCabec,{"Fornecedor","04","left"})
+		AAdd(_aCabec,{IIf(_nTipo=1,"Aplicação","Legenda do tipo de compra"),"04","left"})		//04
 	EndIf
 
-	aAdd(_aCabec,{"Justificativa","11","left"})
-	aAdd(_aCabec,{"Data da Elimanação","11","left"})
-	aAdd(_aCabec,{"Autor da Eliminação","11","left"})
-	aAdd(_aCabec,{If(_nTipo = 1,"Comprador","Solicitante"),"22","left"} )
+	AAdd(_aCabec,{"Justificativa","11","left"})
+	AAdd(_aCabec,{"Data da Elimanação","11","left"})
+	AAdd(_aCabec,{"Autor da Eliminação","11","left"})
+	AAdd(_aCabec,{If(_nTipo = 1,"Comprador","Solicitante"),"22","left"} )
 	
 	If _nTipo = 1
-		aAdd(_aCabec,{"Solicitante","11","left"})
+		AAdd(_aCabec,{"Solicitante","11","left"})
 	EndIf
-	aAdd(_aCabec,{"Aprovador","11","left"})
-	aAdd(_aCabec,{"Item","04","left"})
+	AAdd(_aCabec,{"Aprovador","11","left"})
+	AAdd(_aCabec,{"Item","04","left"})
 
 	If _nTipo = 2
-		aAdd(_aCabec,{"Fornecedor","04","left"})
+		AAdd(_aCabec,{"Fornecedor","04","left"})
 	EndIf
 
-	aAdd(_aCabec,{"Produto","10","left"})
-	aAdd(_aCabec,{"Descrição",If(_nTipo = 1,"38","28"),"left"})
-	aAdd(_aCabec,{"Unid","08","center"})
-	aAdd(_aCabec,{"Qtd","08","center"})
-	aAdd(_aCabec,{"Preço","08","center"})
-	aAdd(_aCabec,{"Qtd Entregue","08","center"})
-	aAdd(_aCabec,{IIf(_nTipo=1,"Dt Entrega","Data prev. da Necessidade"),"08","left"})//13 
-	aAdd(_aCabec,{"Qtd de Residuo","08","center"})
+	AAdd(_aCabec,{"Produto","10","left"})
+	AAdd(_aCabec,{"Descrição",If(_nTipo = 1,"38","28"),"left"})
+	AAdd(_aCabec,{"Unid","08","center"})
+	AAdd(_aCabec,{"Qtd","08","center"})
+	AAdd(_aCabec,{"Preço","08","center"})
+	AAdd(_aCabec,{"Qtd Entregue","08","center"})
+	AAdd(_aCabec,{IIf(_nTipo=1,"Dt Entrega","Data prev. da Necessidade"),"08","left"})//13 
+	AAdd(_aCabec,{"Qtd de Residuo","08","center"})
 EndIf 
 
 cGetPara  := LOWER(AllTrim(UsrRetMail(Subs(_aMensag[1,_nColAut+1],1,_nTam))))
@@ -1223,3 +1297,106 @@ If !Empty(_cEmail_4)
 EndIf
 
 Return 
+
+/*
+===============================================================================================================================
+Programa----------: SelectSC
+Autor-------------: Jose Gavetti
+Data da Criacao---: 31/10/2025
+Descrição---------: Retorna select das SC1 conforme filtros da tela de seleção
+Parametros--------: Nenhum
+Retorno-----------: Nenhum
+===============================================================================================================================
+*/
+Static Function SelectSC()
+	
+	Local cQrySC 	 := "" 							As Character
+	Local cSolPed    := SubStr( MV_PAR06 , 1 , 1 )  As Character
+	Local cAliasQry  := GetNextAlias()              As Character
+	Local cPref      := "" 							As Character
+	Local _cFilialSC := "" 							As Character
+
+	If cSolPed == "1"// Pedido compras
+		cPref:= "7"
+		cTipo := "Pedidos de Compras"
+		_aItalac_F3[1][6] := "Pedidos"
+		If _nNewChave == 0 //Troco o bloco de execução da pergunta MV_PAR11 para função ITF3GEN
+			_nNewChave := {|TAB| (TAB)->C7_NUM }
+			_nNewDesc  := {|TAB|DTOC(STOD((TAB)->C7_EMISSAO))}
+		Endif
+	Else // Solicitação de Compras
+		cPref:= "1"
+		cTipo := "Solicitações de Compras"	
+		_aItalac_F3[1][6] := "Solicitações"
+		If _nNewChave == 0 //Troco o bloco de execução da pergunta MV_PAR11 para função ITF3GEN
+			_nNewChave := {|TAB| (TAB)->C1_NUM }
+			_nNewDesc  := {|TAB|DTOC(STOD((TAB)->C1_EMISSAO))}
+		Endif
+	EndIf
+
+	cQrySC := "SELECT DISTINCT C"+cPref+"_NUM , C"+cPref+"_EMISSAO FROM "+RETSQLNAME("SC"+cPref+"")+" SC"+cPref+" "
+	cQrySC += "WHERE C"+cPref+"_RESIDUO <> 'S' AND D_E_L_E_T_ = ' ' "
+	cQrySC += " AND C"+cPref+"_QUJE < C"+cPref+"_QUANT"
+
+	//Filtra Filial
+	If Empty(MV_PAR01) 
+	   _cFilialSC := xFilial("SC1")
+	Else 
+       _cFilialSC := AllTrim(MV_PAR01)
+	EndIf 
+	cQrySC += " AND C"+cPref+"_FILIAL  IN " + FormatIn(MV_PAR01,";")
+
+	If cSolPed == "1" // Pedido compras
+		cQrySC += " AND C"+cPref+"_ENCER <> 'S'"
+		cQrySC += " AND C"+cPref+"_QTDACLA <= 0"
+	Endif
+
+	//Filtra Data Emissao
+	If !Empty(MV_PAR03)
+		cQrySC += " AND C"+cPref+"_EMISSAO BETWEEN '" + DToS(MV_PAR02) + "' AND '" + DToS(MV_PAR03) + "' "
+	ElseIf !Empty(MV_PAR02)
+		cQrySC += " AND C"+cPref+"_EMISSAO >= '" + DToS(MV_PAR02) + "' "
+	EndIf
+
+	//Filtra Data Entrega
+	If !Empty(MV_PAR05)
+		cQrySC += " AND C"+cPref+"_DATPRF BETWEEN '" + DToS(MV_PAR04) + "' AND '" + DToS(MV_PAR05) + "' "
+	ElseIf !Empty(MV_PAR04)
+		cQrySC += " AND C"+cPref+"_DATPRF >= '" + DToS(MV_PAR04) + "' "
+	EndIf
+
+	//Filtra Produtos
+	cQrySC += " AND C"+cPref+"_PRODUTO BETWEEN '" + MV_PAR07 + "' AND '" + MV_PAR08 + "' "
+	
+	//Filtra Fornecedores
+	cQrySC += " AND C"+cPref+"_FORNECE BETWEEN '" + MV_PAR09 + "' AND '" + MV_PAR11 + "' "
+
+	cQrySC += " ORDER BY 1 " 
+	
+	cQrySC := ChangeQuery(cQrySC)
+	MPSysOpenQuery(cQrySC,cAliasQry)
+
+	If !(cAliasQry)->(Eof())
+		lRet := .T.
+	Else
+		lRet := .F.
+		U_ITMsg("Não foram localizados "+cTipo+" com os filtros selecionados","Atenção",,1)
+	EndIf
+
+Return cQrySC
+
+/*
+===============================================================================================================================
+Programa----------: ACOM016R
+Autor-------------: Julio de Paula Paz
+Data da Criacao---: 28/11/2025
+Descrição---------: Roda a rotina Eliminar Residuos com barra de progresso.
+Parametros--------: Nenhum
+Retorno-----------: Nenhum
+===============================================================================================================================
+*/
+User Function ACOM016R() 
+
+Processa( {|| U_ACOM016E() } , 'Aguarde!' , 'Eliminando residuos...' )
+
+Return Nil 
