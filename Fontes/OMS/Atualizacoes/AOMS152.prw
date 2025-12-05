@@ -1,4 +1,4 @@
-#Include "Protheus.Ch"
+#Include "Totvs.Ch"
 #Include "FWMVCDef.Ch"
 
 STATIC _lScheduler :=.F.
