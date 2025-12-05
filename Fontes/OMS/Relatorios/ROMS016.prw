@@ -1,19 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-       Autor      |    Data    |                                             Motivo                                           
--------------------------------------------------------------------------------------------------------------------------------
- Josué Danich     | 04/04/2019 | Recriação de página de parâmetros - Chamado 28783      
--------------------------------------------------------------------------------------------------------------------------------
- Josué Danich     | 28/05/2019 | Ajuste de página de parametros - Chamado 29387
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  	  | 17/10/2019 | Removidos os Warning na compilação da release 12.1.25. Chamado 28346
-===============================================================================================================================
-*/
-//====================================================================================================
-// Definicoes de Includes e Defines da Rotina.
-//====================================================================================================
 #Include "TOTVS.ch"
 
 /*
@@ -51,9 +35,11 @@ Private _nqbrPagina  	:= 2200
 Private _nLinInBox		:= 0
 Private _nSaltoLinha 	:= 50
 
+SET DATE FORMAT TO "DD/MM/YY"
+
 If Pergunte( _cPerg )
-    
-	_oPrint:= TMSPrinter():New("RELATORIO MOVIMENTACAO")
+	//_oPrint:= TMSPrinter():New("RELATORIO MOVIMENTACAO")
+	_oPrint:= FWMSPrinter():New("Movimentos_estoques.rel", ,.F.)
 	_oPrint:SetPaperSize(9)		// Seta para papel A4
 	
 	//================================================================================
@@ -106,7 +92,7 @@ Static Function ROMS016CAB( _lImpAux )
 
 Local _cRaizServer	:= If(issrvunix(), "/", "\")
 Local _nColuna		:= 0
-Local _cTitulo		:= "RELATÓRIO DE MOVIMENTAÇÃO IIf"+ IIF(MV_PAR12 == 1,"SAÍDA","ENTRIIf") + IIF(MV_PAR01 == 1," - SINTÉTICO"," - ANALÍTICO") +" - Período de: "+ DToC(MV_PAR04) +" Até "+ DToC(MV_PAR05)
+Local _cTitulo		:= "RELATÓRIO DE MOVIMENTAÇÃO - "+ IIF(MV_PAR12 == 1,"SAÍDA","ENTRADA") + IIF(MV_PAR01 == 1," - SINTÉTICO"," - ANALÍTICO") +" - Período de: "+ DToC(MV_PAR04) +" Até "+ DToC(MV_PAR05)
 
 If MV_PAR01 == 1
 	_nColuna := 2360
