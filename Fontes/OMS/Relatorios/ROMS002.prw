@@ -1,20 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Igor Melgaço  |16/09/2025| Chamado 51434. Ajustes para inclusão do campo C6_I_VLIBB
-Lucas Borges  |14/09/2025| Chamado 51799. Implementada função para validar ambiente de teste totvs.framework.environment.Type.get()
-Lucas Borges  |02/10/2025| Chamado 51526. Modificada forma para recuperar a matrícula do usuário.
-Jose Gavetti  |26/11/2025| Chamado 51341. __cUserId não deve ter seu conteúdo alterado orientação TOTVS. 
-===========================================================================================================================================================================================================================================================================
-Analista         - Programador   - Inicio   - Envio    - Chamado - Motivo da Alteração
-===========================================================================================================================================================================================================================================================================
-Vanderlei        - Alex Wallauer - 21/10/25 -          - 52163   - Melhoria para permitir acompanhar se a entrega ao cliente foi feita dentro do prazo esperado, esta data é um dos elementos para a construção do indicador OTIF. campo novo ZEL_TMPOPE
-===========================================================================================================================================================================================================================================================================
-*/
-
 #Include "report.ch"
 #Include "TOTVS.ch"
 #Include "rptdef.ch"
@@ -1097,8 +1080,7 @@ If MV_PAR23 == 1 //Estoque Bloqueado
 ElseIf MV_PAR23 == 2 //Liberados
     cFilBloqueio += " AND SC9.C9_BLEST = ' ' "	
 EndIf
-
-cFilBloqueio += " LEFT JOIN " + retSqlName("ZZL") + " ZZL ON SC9.C9_I_USLIB = ZZL.ZZL_CODUSU "
+cFilBloqueio += " LEFT JOIN " + retSqlName("ZZL") + " ZZL ON Substr(SC9.C9_I_USLIB,3,6) = ZZL.ZZL_CODUSU "
 cFilBloqueio += " AND ZZL.D_E_L_E_T_ =  ' ' "	
 
 cFilBloqueio += "%" 
@@ -3543,16 +3525,13 @@ Retorno-----------: _cRet     = Nome do usuário que liberou o Pedido de Vendas.
 */
 User Function ROMS002U(_cCodUser)
 
-Local _cRet := "       "
+Local _cRet := "       " As Character
 
-Begin Sequence
-   If Empty(_cCodUser)
-      Break
-   EndIf 
-   _cRet := Posicione("ZZL",1,xFilial("ZZL")+_cCodUser,"ZZL_NOME")
-End Sequence
+If !Empty(_cCodUser)
+    _cRet := FWSFAllUsers({_cCodUser},{"USR_NOME"})[1][3]
+EndIf
 
-Return _cRet 
+Return _cRet
  
 /*
 ===============================================================================================================================
