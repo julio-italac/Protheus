@@ -2729,17 +2729,15 @@ _cped2 := ZF9->ZF9_PEDIDO
 ZZL->( DBSetOrder(3) )
 
 If ZZL->( DBSeek( xFilial('ZZL') + _cusrlo ) )
-    _cEmail := AllTrim( ZZL->ZZL_EMAIL )
+    _cEmail :=FWSFAllUsers({_cusrlo},{"USR_EMAIL"})[1][3]
 EndIf
-
-ZZL->( DBSetOrder(3) )
 
 If ZZL->( DBSeek( xFilial('ZZL') + _cusrco ) )
     If !Empty(_cEmail)
         _cEmail += ','
     EndIf
 
-    _cEmail += AllTrim( ZZL->ZZL_EMAIL )
+    _cEmail += FWSFAllUsers({_cusrco},{"USR_EMAIL"})[1][3]
 
     If !lret
         If _nprogs == 1
