@@ -2552,7 +2552,8 @@ Begin Sequence
 	  DAK->DAK_TRANSP := _cCnpjTran // _cCodTransp // SA2->A2_COD      // SA2->A2_COD que tenha a2_cgc  igual a cnpj de transportadora do xml
 	  DAK->DAK_I_VRPE := _nValPedag  // U_CARGA:PEDAGIO
 
-	  _cMailUsrCarga := Posicione("ZZL",5,xFilial("ZZL")+_cCodUsuario,"ZZL_EMAIL") //Posicione("ZZL",5,xFilial("ZZL")+AllTrim(Str(U_CARGA:USUCAD,_nTamCodUser)),"ZZL_EMAIL") // E-mail do usuário que criou a carga utilizado na rotina de envio de e-mail da carga.
+	  _cMailUsrCarga := FWSFAllUsers({_cCodUsuario},{"USR_EMAIL"})[1][3]
+
 	  If Empty(_cMailUsrCarga)
 	     _cMailUsrCarga := ""
 	  EndIf
