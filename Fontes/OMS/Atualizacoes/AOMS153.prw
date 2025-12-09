@@ -1,18 +1,11 @@
 /*
-=========================================================================================================================================================
-                          ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-=========================================================================================================================================================
-Analista         - Programador       - Inicio     - Envio    - Chamado - Motivo da Alteração
----------------------------------------------------------------------------------------------------------------------------------------------------------
-Vanderlei/Jerry  - Alex Wallauer     - 02/09/2025 -          - 50463   - Novo campos de detalhes para mostrar do Z40.
+===============================================================================================================================
+ Jerry  - Alex Wallauer  - 09/12/2025 - 44092 - correção da duplicidade na copia de registros
 =========================================================================================================================================================
 */
 
-#Include "FWMBROWSE.CH"
 #Include "FWMVCDEF.CH"
 #Include "TOTVS.ch"
-#Include "TOPCONN.CH"
-#Include "RWMAKE.CH"
 
 
 /*
@@ -20,12 +13,7 @@ Vanderlei/Jerry  - Alex Wallauer     - 02/09/2025 -          - 50463   - Novo ca
 Programa----------: AOMS153
 Autor-------------: Igor Melgaço
 Data da Criacao---: 28/12/2021
-===============================================================================================================================
 Descrição---------: Cadastro de Premissas. Chamado: 50568 
-===============================================================================================================================
-Parametros--------: 
-===============================================================================================================================
-Retorno-----------:  
 ===============================================================================================================================
 */ 
 User Function AOMS153()
@@ -45,12 +33,7 @@ Return
 Programa----------: MenuDef
 Autor-------------: Igor Melgaço
 Data da Criacao---: 28/12/2022
-===============================================================================================================================
 Descrição---------: Rotina de definição automática do menu via MVC
-===============================================================================================================================
-Parametros--------: 
-===============================================================================================================================
-Retorno-----------: aRotina - Definições do menu principal da Rotina.
 ===============================================================================================================================
 */
 Static Function MenuDef()
@@ -89,7 +72,7 @@ Local _aZ39Rel := {}
 Local _aZ40Rel := {}
 
 _oStruZ38:AddField( ;
-        AllTrim('Bloqueado?') , ;             // [01] C Titulo do campo
+        AllTrim('Bloqueado?') , ;   // [01] C Titulo do campo
         AllTrim('') , ;             // [02] C ToolTip do campo
         'Z38_MSBLQL' , ;            // [03] C identificador (ID) do Field
         'C' , ;                     // [04] C Tipo do campo
@@ -118,6 +101,7 @@ aAdd(_aZ39Rel, {'Z39_PERIOD', 'Z38MASTER.Z38_PERIOD'})
 
 _oModel:AddGrid("Z39DETAIL" , "Z38MASTER" , _oStruZ39 , )
 _oModel:SetRelation( "Z39DETAIL" , _aZ39Rel , Z39->( IndexKey( 1 ) ) )
+_oModel:GetModel('Z39DETAIL'):SetOnlyQuery(.T.)
 
 aAdd(_aZ40Rel, {'Z40_FILIAL', 'Z38MASTER.Z38_FILIAL'} )
 aAdd(_aZ40Rel, {'Z40_COD'   , 'Z38MASTER.Z38_COD'})
@@ -128,17 +112,17 @@ _oModel:SetRelation( "Z40DETAIL" , _aZ40Rel , Z40->( IndexKey( 1 ) ) )
 
 
 _oModel:GetModel('Z40DETAIL'):SetNoInsertLine( .T. )
-//_oModel:GetModel('SE1DETAIL'):SetNoDeleteLine( .T. )
+_oModel:GetModel('SE1DETAIL'):SetNoDeleteLine( .T. )
 _oModel:GetModel('Z40DETAIL'):SetNoUpdateLine( .T. )
 _oModel:GetModel('Z40DETAIL'):SetOptional(.T.)
-//_oModel:GetModel('Z40DETAIL'):SetOnlyQuery(.T.)
+_oModel:GetModel('Z40DETAIL'):SetOnlyQuery(.T.)
 //_oModel:GetModel('Z40DETAIL'):SetOnlyView(.T.) 
 
 _oModel:GetModel('Z39DETAIL'):SetNoInsertLine( .T. )
-//_oModel:GetModel('Z39DETAIL'):SetNoDeleteLine( .T. )
+_oModel:GetModel('Z39DETAIL'):SetNoDeleteLine( .T. )
 _oModel:GetModel('Z39DETAIL'):SetNoUpdateLine( .T. )
 _oModel:GetModel('Z39DETAIL'):SetOptional(.T.)
-//_oModel:GetModel('Z39DETAIL'):SetOnlyQuery(.T.)
+_oModel:GetModel('Z39DETAIL'):SetOnlyQuery(.T.)
 //_oModel:GetModel('Z39DETAIL'):SetOnlyView(.T.) 
 
 _oModel:SetPrimaryKey( {'Z38_FILIAL','Z38_COD','Z38_PERIOD' } )
@@ -195,7 +179,7 @@ _oStruZ39:RemoveField('Z39_DESC')
 _oView := FWFormView():New()
 _oView:SetModel(_oModel)
 
-_oView:AddField( "VIEW_MASTER", _oStruZ38	, "Z38MASTER" )
+_oView:AddField( "VIEW_MASTER" , _oStruZ38	, "Z38MASTER" )
 _oView:AddGrid(  "VIEW_DETAIL1", _oStruZ39	, "Z39DETAIL" )
 _oView:AddGrid(  "VIEW_DETAIL2", _oStruZ40	, "Z40DETAIL" )
 

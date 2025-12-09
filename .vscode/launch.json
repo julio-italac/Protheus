@@ -2,15 +2,21 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-            "type": "totvs_language_web_debug",
-            "request": "launch",
-            "name": "Smart Client Web Debug",
-            "program": "${command:AskForProgramName}",
-            "cwb": "${workspaceFolder}",
-            "isMultiSession": true,
-            "enableTableSync": true,
-            "enableMultiThread": true,
-            "webNavigator": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
-			}
-		]
+			"type": "totvs_language_web_debug",
+			"request": "launch",
+			"name": "Smart Client Web Debug",
+			"program": "${command:AskForProgramName}",
+			"cwb": "${workspaceFolder}",
+			"isMultiSession": true,
+			"enableTableSync": true,
+			"enableMultiThread": true,
+			"webNavigator": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+		}
+	],
+	"lastPrograms": [
+		{
+			"label": "SIGAADV"
+		}
+	],
+	"lastProgramExecuted": "SIGAADV"
 }
