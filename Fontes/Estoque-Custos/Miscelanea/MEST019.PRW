@@ -1,16 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  |23/07/2025| Chamado 51340. Ajustar função para validação de ambiente de teste
-Lucas Borges  |01/08/2025| Chamado 51453. Substituir função U_ITEncode por FWHttpEncode
-Lucas Borges  |14/09/2025| Chamado 51799. Implementada função para validar ambiente de teste totvs.framework.environment.Type.get()
-Jose Gavetti  |26/11/2025  Chamado 51341. cEmpAnt não devem ter seus conteúdos alterados orientação TOTVS.
-===============================================================================================================================
-*/ 
-
 #Include "TOTVS.ch"
 #Include "FWMVCDef.ch"
 
@@ -43,7 +30,7 @@ Retorno-----------: Nenhum
 User Function MEST019(oProc)
 
 Local _aTables	 := {"SCP","SCR","ZZ7","ZZ8","ZZI","CTT","ZZL","ZP1"}
-Local lWFHTML	 := .T. , R , _aRegs
+Local lWFHTML	 := .T. , _nR , _aRegs
 Private _cHostWF := ""
 Private _lCriaAmb:= .F.
 
@@ -80,14 +67,14 @@ _cTot:=AllTrim(Str(Len(_aRegs)))
 aLog:={}
 _aControleEnv:={}
 
-For R := 1 TO Len(_aRegs)
+For _nR := 1 TO Len(_aRegs)
     If ValType(oProc) = "O"
-	    oProc:cCaption := "Lendo dados: "+StrZero(R,5) +" de "+ _cTot 
+	    oProc:cCaption := "Lendo dados: "+StrZero(_nR,5) +" de "+ _cTot 
 	    ProcessMessages()    
     EndIf
 
-    MEST019S(_aRegs[R,1]) //Rotina responsável por montar o formulário de aprovação e o envio do link gerado.
-Next        
+    MEST019S(_aRegs[_nR,1]) //Rotina responsável por montar o formulário de aprovação e o envio do link gerado.
+Next _nR       
 
 PutMV("MV_WFHTML",lWFHTML)
 
@@ -163,9 +150,9 @@ cFilSA	:= SCP->CP_FILIAL + " - " + AllTrim(FWFilialName(cEmpAnt, SCP->CP_FILIAL,
 cNUMSA	:= SCP->CP_NUM
 cSolic	:= Posicione("ZZL",4,xFilial("ZZL")+Trim(SCP->CP_SOLICIT),"ZZL_NOME")
 dDtEmi	:= DToC(SCP->CP_EMISSAO)
-cAprNom	:= Posicione("ZZL",3,xFilial("ZZL")+Trim(SCR->CR_USER),"ZZL_NOME")//nome completo
+cAprNom	:= FWSFAllUsers({SCR->CR_USER},{"USR_NOME"})[1][3]//nome completo
 cAprov	:= SCR->CR_APROV+" - "+cAprNom//Pega na avaliacao
-cEmail	:= UsrRetMail(SCR->CR_USER) //SCR->CR_USER//vai pegar o e-mail
+cEmail	:= FWSFAllUsers({SCR->CR_USER},{"USR_EMAIL"})[1][3] //SCR->CR_USER//vai pegar o e-mail
 cObsGen	:= AllTrim(SCP->CP_OBS)
 cCcust	:= SCP->CP_CC +" - "+ AllTrim(Posicione("CTT",1,xFilial("CTT") + SCP->CP_CC,"CTT_DESC01"))
 
@@ -348,7 +335,7 @@ cFilSA	:= SCP->CP_FILIAL + " - " + AllTrim(FWFilialName(cEmpAnt, SCP->CP_FILIAL,
 cNUMSA	:= SCP->CP_NUM
 cSolic	:= Posicione("ZZL",4,xFilial("ZZL")+Trim(SCP->CP_SOLICIT),"ZZL_NOME")
 dDtEmi	:= DToC(SCP->CP_EMISSAO)
-cEmail	:= UsrRetMail(SCR->CR_USER) //SCR->CR_USER//vai pegar o e-mail
+cEmail	:= FWSFAllUsers({SCR->CR_USER},{"USR_EMAIL"})[1][3] //SCR->CR_USER//vai pegar o e-mail
 cObsGen	:= AllTrim(SCP->CP_OBS)
 cCcust	:= SCP->CP_CC +" - "+ AllTrim(Posicione("CTT",1,xFilial("CTT") + SCP->CP_CC,"CTT_DESC01"))
 cLocInves:= AllTrim(SCP->CP_I_LOCIN)
@@ -659,7 +646,7 @@ Else
 EndIf
 
 _cSolic := Posicione("ZZL",4,xFilial("ZZL")+Trim(SCP->CP_SOLICIT),"ZZL_NOME")
-_cEmail := UsrRetMail(ZZL->ZZL_CODUSU)
+_cEmail := FWSFAllUsers({ZZL->ZZL_CODUSU},{"USR_EMAIL"})[1][3]
 _cCcust := SCP->CP_CC +" - "+ AllTrim(Posicione("CTT",1,xFilial("CTT") + SCP->CP_CC,"CTT_DESC01"))
 
 // Criamos o link para o arquivo que foi gerado na tarefa anterior.  
@@ -831,7 +818,7 @@ For _nAprv := 1 TO Len(_aRegs)
       cFilSA	 := SCP->CP_FILIAL + " - " + AllTrim(FWFilialName(cEmpAnt, SCP->CP_FILIAL, 1 ))
       cNUMSA	 := SCP->CP_NUM
       cSolic	 := Posicione("ZZL",4,xFilial("ZZL")+Trim(SCP->CP_SOLICIT),"ZZL_NOME")//Login
-      cAprNom	 := Posicione("ZZL",3,xFilial("ZZL")+Trim(SCR->CR_USER   ),"ZZL_NOME")//Codigo
+      cAprNom	 := FWSFAllUsers({SCR->CR_USER},{"USR_NOME"})[1][3]//Codigo
       cAprov	 := SCR->CR_APROV+" - "+cAprNom
       cCcust	 := SCP->CP_CC + " - " + AllTrim(Posicione("CTT",1,xFilial("CTT") + SCP->CP_CC,"CTT_DESC01"))
       _cAssunto := "Aprovação da Solicitação de Armazem Filial "+cFilSA
@@ -906,7 +893,7 @@ For _nAprv := 1 TO Len(_aRegs)
 
 	// Iniciamos a tarefa e enviamos o email ao destinatário.
 	_oProcess:Start()
-Next
+Next _nAprv
 
 PutMV("MV_WFHTML",lWFHTML)
 
@@ -1021,7 +1008,8 @@ If SCR->(DBSeek(cFil + cTipo + PadR(_cNum, nLenSCR) + _cAprovador))
    nRegSCR:=SCR->(RECNO())
 
    //INICA A VARIAVEL cUserName para usar dentro da função RetCodUsr() usada dentro do programa MATA094
-   cUserName:=Posicione("ZZL",3,xFilial("ZZL")+AllTrim(SCR->CR_USER),"ZZL_USER")
+   cUserName:= FWSFAllUsers({SCR->CR_USER})[1][3]
+
    //GRAVA LOG NO SERVER
    FWLogMsg("INFO"/*cSeverity*/, /*cTransactionId*/, "MEST019"/*cGroup*/, FunName()/*cCategory*/, /*cStep*/, "MEST01957"/*cMsgId*/, "MEST01957 - MYEXEC094 - cFilAnt .....: " + cFilAnt/*cMessage*/, /*nMensure*/, /*nElapseTime*/, /*aMessage*/)
    FWLogMsg("INFO"/*cSeverity*/, /*cTransactionId*/, "MEST019"/*cGroup*/, FunName()/*cCategory*/, /*cStep*/, "MEST01958"/*cMsgId*/, "MEST01958 - MYEXEC094 - RECNO SCR ...: " + AlltoChar(nRegSCR)/*cMessage*/, /*nMensure*/, /*nElapseTime*/, /*aMessage*/)
