@@ -1,20 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  |14/09/2025| Chamado 50617. Modificada a chamada dos parâmetros para a SX6
-Jose Gavetti  |26/11/2025| Chamado 51341. __cUserId não deve ter seu conteúdo alterado orientação TOTVS.
-===============================================================================================================================
-Analista         - Programador       - Inicio     - Envio      - Chamado - Motivo da Alteração
----------------------------------------------------------------------------------------------------------------------------------------------------------
-Vanderlei Alves  -  Julio Paz        - 05/02/24   - 10/06/25   - 45229   - Desenvolvimento das rotinas Integração Webservice Cargas/Veiculos/Motoristas.
-Vanderlei Alves  -  Julio Paz        - 05/02/24   - 12/06/25   - 45229   - Correções na rotina de integração de Cargas.
-Vanderlei Alves  -  Igor Melgaco     - 27/06/25   - 27/06/25   - 45229   - Correcao de url.
-=========================================================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 #Include "APWEBSRV.CH"
 #Include "TBICONN.CH"
