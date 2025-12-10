@@ -1,15 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  |31/02/2025| Chamado 50016. Ajustar exibição da média da matéria gorda
-Lucas Borges  |22/04/2025| Chamado 50505. Alterada a picture do CNPJ para contemplar campo alfanumérico
-Lucas Borges  |01/10/2025| Chamado 52143. Incluido filtro para fornecedore Centro Leite
-===============================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 #Include "FWPrintSetup.ch" 
 #Include "RPTDEF.CH"
@@ -469,6 +457,7 @@ Local _nExtrato	:= 0 As Numeric
 Local _nMatGExc	:= 0 As Numeric
 Local _nTotPgMg	:= 0 As Numeric
 Local _nFaixa	:= 0 As Numeric
+Local _nDifLtr	:= 0 As Numeric
 Private _oFont12	:= Nil As Object
 Private _oFont08	:= Nil As Object
 Private _oFont07	:= Nil As Object
