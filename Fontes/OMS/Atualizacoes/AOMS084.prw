@@ -991,7 +991,7 @@ Begin Sequence
 
             aAdd(_aDadosZFQ,ZFQ->(Recno()))
 
-          ElseIf SC5->C5_FILIAL == '40' .Or. (SC5->C5_FILIAL == '01') .Or. ( SC5->C5_FILIAL = '90' .And. SC6->C6_Local == '36') .Or. SC5->C5_FILIAL == '20' .Or. SC5->C5_FILIAL == '23' .Or. SC5->C5_FILIAL == '93'  .Or. SC5->C5_FILIAL == '10' .Or. SC5->C5_FILIAL == '31' .Or. SC5->C5_FILIAL == '30' // ( SC5->C5_FILIAL = '90' .And. SC6->C6_Local == '36')
+          ElseIf SC5->C5_FILIAL == '40' .Or. (SC5->C5_FILIAL == '01') .Or. ( SC5->C5_FILIAL = '90' .And. SC6->C6_LOCAL == '36') .Or. SC5->C5_FILIAL == '20' .Or. SC5->C5_FILIAL == '23' .Or. SC5->C5_FILIAL == '93'  .Or. SC5->C5_FILIAL == '10' .Or. SC5->C5_FILIAL == '31' .Or. SC5->C5_FILIAL == '30' // ( SC5->C5_FILIAL = '90' .And. SC6->C6_LOCAL == '36')
 
              If Empty(SC5->C5_NOTA) //Só manda o que ainda não tem nota
 
@@ -1012,7 +1012,7 @@ Begin Sequence
                                   SC9->(DBSetOrder(1))
                                   While SC5->C5_FILIAL == SC6->C6_FILIAL .And. SC5->C5_NUM == SC6->C6_NUM
 
-                                     If SC6->C6_Local == '40' .Or. SC6->C6_Local == '42' .Or. SC6->C6_Local == '50' .Or. SC6->C6_Local == '52'
+                                     If SC6->C6_LOCAL == '40' .Or. SC6->C6_LOCAL == '42' .Or. SC6->C6_LOCAL == '50' .Or. SC6->C6_LOCAL == '52'
 
                                         _ltem40 := .T.
 
@@ -1868,7 +1868,7 @@ Begin Sequence
       ZFR->ZFR_USUARI	:= __cUserId			       // Codigo do Usuário
       ZFR->ZFR_DATAAL	:= Date()			          // Data de Alteração
       ZFR->ZFR_SITUAC	:= If(Empty(_cSituacao),"N",_cSituacao)//AWF-11/05/17 - Mudei para "N"		           // Situação do Registro = Aguardando Liberação
-      ZFR->ZFR_CODARM   := SC6->C6_Local            // Codigo do Armazem.
+      ZFR->ZFR_CODARM   := SC6->C6_LOCAL            // Codigo do Armazem.
       ZFR->ZFR_CODEMP	:= _cCodEmpWS			       // Codigo Empresa WebServer
       ZFR->ZFR_FLUXO    := "PROTHEUS ENVIA RDC"
       ZFR->ZFR_FATOPA   := _nFatConvPa              // Fator de convesão de Pallets.
@@ -2632,7 +2632,7 @@ If pergunte('AOMS084',.T.)
 
         //Do Armazem
         If ! Empty(MV_PAR06)
-           cQuery += " AND SC6.C6_Local IN " + FormatIn(MV_PAR06,";")
+           cQuery += " AND SC6.C6_LOCAL IN " + FormatIn(MV_PAR06,";")
         EndIf
 
         //UF Cliente
