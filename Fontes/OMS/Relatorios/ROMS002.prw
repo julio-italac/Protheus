@@ -246,7 +246,7 @@ DEFINE CELL NAME "B1_I_BIMIX" OF oSC5B_1 ALIAS "SB1" TITLE "Grupo Mix"       SIZ
 DEFINE CELL NAME "C5_I_FILFT"    OF oSC5B_1 ALIAS ""    TITLE "Filial Fat."     BLOCK {|| If(QRY1->C5_I_TRCNF=="S",QRY1->C5_I_FILFT+"-"+U_ROMS002F(QRY1->C5_I_FILFT)," ")} PICTURE "@!"  SIZE 14 
 DEFINE CELL NAME "C5_I_FLFNC"    OF oSC5B_1 ALIAS ""    TITLE "Filial Carr."    BLOCK {|| If(QRY1->C5_I_TRCNF=="S",QRY1->C5_I_FLFNC+"-"+U_ROMS002F(QRY1->C5_I_FLFNC)," ")} PICTURE "@!"  SIZE 14 
 DEFINE CELL NAME "SITUACAO"      OF oSC5B_1 ALIAS ""    TITLE "Situação"        BLOCK {|| QRY1->SITUACAO } SIZE 14 
-DEFINE CELL NAME "LOCALCID"      OF oSC5B_1 ALIAS ""    TITLE "Cidade Entrega"  BLOCK {|| If(QRY1->C5_I_OPER=="02",U_ROMS002H(QRY1->C6_FILIAL,QRY1->C5_NUM,"CIDADE"),AllTrim(SubStr(QRY1->A1_MUN,1,15)))}
+DEFINE CELL NAME "LOCALCID"      OF oSC5B_1 ALIAS ""    TITLE "Cidade Entrega"  BLOCK {|| If(QRY1->C5_I_OPER=="02",U_ROMS002H(QRY1->C6_FILIAL,QRY1->C5_NUM,"CIDADE"),AllTrim(SUBSTR(QRY1->A1_MUN,1,15)))}
 DEFINE CELL NAME "LOCALUF"       OF oSC5B_1 ALIAS ""    TITLE "UF Entrega"      BLOCK {|| If(QRY1->C5_I_OPER=="02",U_ROMS002H(QRY1->C6_FILIAL,QRY1->C5_NUM,"UF"),AllTrim(QRY1->A1_EST))}
 DEFINE CELL NAME "C5_CONDPAG"    OF oSC5B_1 ALIAS ""    TITLE "Cond.Pgto"       BLOCK {|| QRY1->C5_CONDPAG } SIZE 10
 DEFINE CELL NAME "E4_DESCRI"     OF oSC5B_1 ALIAS ""    TITLE "Descr.Cond.Pgto" BLOCK {|| QRY1->E4_DESCRI }  SIZE 14
@@ -1080,7 +1080,7 @@ If MV_PAR23 == 1 //Estoque Bloqueado
 ElseIf MV_PAR23 == 2 //Liberados
     cFilBloqueio += " AND SC9.C9_BLEST = ' ' "	
 EndIf
-cFilBloqueio += " LEFT JOIN " + retSqlName("ZZL") + " ZZL ON Substr(SC9.C9_I_USLIB,3,6) = ZZL.ZZL_CODUSU "
+cFilBloqueio += " LEFT JOIN " + retSqlName("ZZL") + " ZZL ON SUBSTR(SC9.C9_I_USLIB,3,6) = ZZL.ZZL_CODUSU "
 cFilBloqueio += " AND ZZL.D_E_L_E_T_ =  ' ' "	
 
 cFilBloqueio += "%" 
@@ -2959,7 +2959,7 @@ If Len(_aProdutos) > 0
         EndIf
     
            oReport:Say(nRow,_ColIni       ,_aProdutos[x,1]																		   ,oFont11)   
-        oReport:Say(nRow,_ColIni + 260 ,SubStr(_aProdutos[x,2],1,39)														   ,oFont11)
+        oReport:Say(nRow,_ColIni + 260 ,SUBSTR(_aProdutos[x,2],1,39)														   ,oFont11)
         oReport:Say(nRow,_ColIni + 1010,Transform(_aProdutos[x,3],"@E 999,999,999,999.99")									   ,oFont11)
         oReport:Say(nRow,_ColIni + 1330,Transform(_aProdutos[x,8]/(_aProdutos[x,3] - _aProdutos[x,7]),"@E 999,999,999.9999"),oFont11)
         oReport:Say(nRow,_ColIni + 1700,_aProdutos[x,4]																	   ,oFont11)
@@ -3512,26 +3512,6 @@ Begin Sequence
 End Sequence
 
 Return _cRet 
-
-/*
-===============================================================================================================================
-Programa----------: ROMS002U
-Autor-------------: Julio de Paula Paz
-Data da Criacao---: 17/03/2023
-Descrição---------: Rotina para retornar o Nome do Usuário que liberou o Pedido de Vendas.
-Parametros--------: _cCodUser = Código do Usuário que liberou o Pedido de Vendas.
-Retorno-----------: _cRet     = Nome do usuário que liberou o Pedido de Vendas.
-===============================================================================================================================
-*/
-User Function ROMS002U(_cCodUser)
-
-Local _cRet := "       " As Character
-
-If !Empty(_cCodUser)
-    _cRet := FWSFAllUsers({_cCodUser},{"USR_NOME"})[1][3]
-EndIf
-
-Return _cRet
  
 /*
 ===============================================================================================================================
@@ -4022,7 +4002,7 @@ BeginSql alias _cAlias
        SF2V.F2_CHVNFE  V_F2_CHVNFE,
        SM0.M0_FILIAL,
         (
-            SELECT TRIM(ZY3_2.ZY3_COMENT) ||' POR ' || SubStr(ZY3_2.ZY3_NOMUSR,1,10) || ' EM : ' || SubStr(ZY3_2.ZY3_DTMONI, 7, 2) || '/' || SubStr(ZY3_2.ZY3_DTMONI, 5, 2) || '/' || SubStr(ZY3_2.ZY3_DTMONI, 1, 4) || ' AS ' || ZY3_2.ZY3_HRMONI 
+            SELECT TRIM(ZY3_2.ZY3_COMENT) ||' POR ' || SUBSTR(ZY3_2.ZY3_NOMUSR,1,10) || ' EM : ' || SUBSTR(ZY3_2.ZY3_DTMONI, 7, 2) || '/' || SUBSTR(ZY3_2.ZY3_DTMONI, 5, 2) || '/' || SUBSTR(ZY3_2.ZY3_DTMONI, 1, 4) || ' AS ' || ZY3_2.ZY3_HRMONI 
             FROM (
                     SELECT ZY3_FILFT,ZY3_NUMPV, ZY3_NOMUSR,ZY3_DTMONI,ZY3_HRMONI, MAX(R_E_C_N_O_) AS RECNO 
                     FROM %Table:ZY3% ZY3
@@ -4038,7 +4018,7 @@ BeginSql alias _cAlias
             AND ZY3.ZY3_FILFT = SC5.C5_FILIAL
         )  AS USR_DTENT,
         ( 
-            SELECT TRIM(ZY3_2.ZY3_COMENT) ||' POR ' || SubStr(ZY3_2.ZY3_NOMUSR,1,10) || ' EM : ' ||  SubStr(ZY3_2.ZY3_DTMONI, 7, 2) || '/' || SubStr(ZY3_2.ZY3_DTMONI, 5, 2) || '/' || SubStr(ZY3_2.ZY3_DTMONI, 1, 4) || ' AS ' || ZY3_2.ZY3_HRMONI 
+            SELECT TRIM(ZY3_2.ZY3_COMENT) ||' POR ' || SUBSTR(ZY3_2.ZY3_NOMUSR,1,10) || ' EM : ' ||  SUBSTR(ZY3_2.ZY3_DTMONI, 7, 2) || '/' || SUBSTR(ZY3_2.ZY3_DTMONI, 5, 2) || '/' || SUBSTR(ZY3_2.ZY3_DTMONI, 1, 4) || ' AS ' || ZY3_2.ZY3_HRMONI 
             FROM (
                     SELECT ZY3_FILFT,ZY3_NUMPV, ZY3_NOMUSR,ZY3_DTMONI,ZY3_HRMONI, MAX(R_E_C_N_O_) AS RECNO 
                     FROM %Table:ZY3% ZY3
@@ -4197,7 +4177,7 @@ While (_cAlias)->(!Eof())
     aAdd(_aLinha,If((_cAlias)->C5_I_TRCNF=="S",(_cAlias)->C5_I_FILFT+"-"+U_ROMS002F((_cAlias)->C5_I_FILFT)," ") )
     aAdd(_aLinha,If((_cAlias)->C5_I_TRCNF=="S",(_cAlias)->C5_I_FLFNC+"-"+U_ROMS002F((_cAlias)->C5_I_FLFNC)," ") ) 
     aAdd(_aLinha,(_cAlias)->SITUACAO   ) 
-    aAdd(_aLinha,If((_cAlias)->C5_I_OPER=="02",U_ROMS002H((_cAlias)->C6_FILIAL,(_cAlias)->C5_NUM,"CIDADE"),AllTrim(SubStr((_cAlias)->A1_MUN,1,15)))   ) 
+    aAdd(_aLinha,If((_cAlias)->C5_I_OPER=="02",U_ROMS002H((_cAlias)->C6_FILIAL,(_cAlias)->C5_NUM,"CIDADE"),AllTrim(SUBSTR((_cAlias)->A1_MUN,1,15)))   ) 
     aAdd(_aLinha,If((_cAlias)->C5_I_OPER=="02",U_ROMS002H((_cAlias)->C6_FILIAL,(_cAlias)->C5_NUM,"UF"),AllTrim((_cAlias)->A1_EST)))
     aAdd(_aLinha,(_cAlias)->C5_CONDPAG ) 
     aAdd(_aLinha,(_cAlias)->E4_DESCRI  ) 

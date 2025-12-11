@@ -1,8 +1,6 @@
 #Include "TOTVS.ch"
 #Include 'FWMVCDef.ch'
 
-#Define CRLF	Chr(13)+Chr(10)
-
 /*
 ===============================================================================================================================
 Programa--------: AOMS028
@@ -1542,7 +1540,7 @@ ElseIf _nOpc == 7
 				
 				If ParamBox( _aParBox , "Informar o usuário da logística que receberá as programações:" , @_aParRet , {|| AOMS028VUL( _aParRet[01] ) } ,, .T. , , , , , .F. , .F. )
 					
-					If U_ITMsg(	'Confirma a transferência das programações para o usuário: '+ CRLF		+;
+					If U_ITMsg(	'Confirma a transferência das programações para o usuário: '		+;
 									_aParRet[01] +' - '+ Capital( AllTrim( EVAL(bFullName,  _aParRet[01] ) ) )	,;
 									'Atenção!',,3,2,2																 )
 						
@@ -2980,20 +2978,11 @@ If Empty(_cStatus)
 	
 EndIf
 
-DBSelectArea('ZZL')
-ZZL->( DBSetOrder(3) )
-If ZZL->( DBSeek( xFilial('ZZL') + ZF7->ZF7_USRLOG ) )
-
-	_cEmail := FWSFAllUsers({ZF7->ZF7_USRLOG},{"USR_EMAIL"})[1][3]
-
+_cEmail := FWSFAllUsers({ZF7->ZF7_USRLOG},{"USR_EMAIL"})[1][3]
+If !Empty(_cEmail)
+	_cEmail += ','
 EndIf
-
-If ZZL->( DBSeek( xFilial('ZZL') + ZF7->ZF7_USRPRG ) )
-
-	IIf( !Empty(_cEmail) , _cEmail += ',' , Nil )
-	_cEmail += FWSFAllUsers({ZF7->ZF7_USRPRG},{"USR_EMAIL"})[1][3]
-
-EndIf
+_cEmail += FWSFAllUsers({ZF7->ZF7_USRPRG},{"USR_EMAIL"})[1][3]
 
 If Empty( _cEmail )
 	
