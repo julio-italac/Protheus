@@ -1128,13 +1128,13 @@ For _nI := 1 To Len( _aDados )
 	_nDifAux := _aTotAux[07] - _nTotAux
 	_nDifAux -= _nValLtr
 	_nDifAux += _nLtrCom
-	_nDifAux -= _nNFDTot
+	_nDifAux -= _nNFDTot*(1-0.015)
 	
 	For _nX := 1 To Len( _aNFCom )
 		_nDifAux += _aNFCom[_nX][04]
 	Next _nX
 	_nDevVal := ( IIf( ( _aTotAux[04] - _aTotAux[05] ) > 0 , _aTotAux[04] - _aTotAux[05] , 0 ) * _nValUlt ) + IIf( _nDifAux > 0 , _nDifAux , 0 )
-	_nValPen := _nDevVal - _nNFDTot
+	_nValPen := _nDevVal - _nNFDTot*(1-0.015)
 
 	If _lPdf
 		_nLinha += 25
@@ -1188,7 +1188,7 @@ For _nI := 1 To Len( _aDados )
 
 	_nDifAux := _aTotAux[07] - _nTotAux
 	_nDifAux += IIf( _nLtrCom > 0 , _nLtrCom , 0 )
-	_nDifAux -= _nNFDTot
+	_nDifAux -= _nNFDTot*(1-0.015)
 	_nDifAux -= _nValPen
 	
 	For _nX := 1 To Len( _aNFCom )
