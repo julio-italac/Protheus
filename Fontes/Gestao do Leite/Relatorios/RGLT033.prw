@@ -363,7 +363,7 @@ SELECT ZZX.ZZX_FILIAL, ZZX.ZZX_CODPRD, SX5.X5_DESCRI DESCRI, ZLX.ZLX_TIPOLT,
                AND X.D1_COD = D.D1_COD
                /*AND X.D1_ITEMORI = D.D1_ITEM*/
                )),0) 
-               - NVL(SUM((SELECT SUM(ROUND(D2_BASEINS*0.015,2)) /*SUM(X.D2_VLSENAR + X.D2_VALFUN + X.D2_VALINS) NAO TENTE ENTENDER. CONSIDERE OS IMPOSTOS CALCULADOS*/ 
+               - NVL(SUM((SELECT SUM(ROUND(D2_TOTAL*0.015,2)) /*Os impostos não são calculados na devolução mas são cobrados do fornecedor, logo, preciso calcula-los manualmente*/ 
                FROM %Table:SD2% X
                WHERE X.D_E_L_E_T_ = ' '
                AND X.D2_FILIAL = D.D1_FILIAL
