@@ -458,6 +458,7 @@ Local _nMatGExc	:= 0 As Numeric
 Local _nTotPgMg	:= 0 As Numeric
 Local _nFaixa	:= 0 As Numeric
 Local _nDifLtr	:= 0 As Numeric
+
 Private _oFont12	:= Nil As Object
 Private _oFont08	:= Nil As Object
 Private _oFont07	:= Nil As Object
@@ -1128,13 +1129,17 @@ For _nI := 1 To Len( _aDados )
 	_nDifAux := _aTotAux[07] - _nTotAux
 	_nDifAux -= _nValLtr
 	_nDifAux += _nLtrCom
-	_nDifAux -= _nNFDTot*(1-0.015)
-	
 	For _nX := 1 To Len( _aNFCom )
 		_nDifAux += _aNFCom[_nX][04]
 	Next _nX
-	_nDevVal := ( IIf( ( _aTotAux[04] - _aTotAux[05] ) > 0 , _aTotAux[04] - _aTotAux[05] , 0 ) * _nValUlt ) + IIf( _nDifAux > 0 , _nDifAux , 0 )
-	_nValPen := _nDevVal - _nNFDTot*(1-0.015)
+	
+	If _nDifAux > 0
+		_nDifAux := _nDifAux*(1-0.015)
+	EndIf
+	_nDifAux -= _nNFDTot
+	If _nNFDTot > 0
+		_nDifAux := _nDifAux/(1-0.015)//Adiciono o valor do funrural para calcular o valor total a devolver
+	EndIf
 
 	If _lPdf
 		_nLinha += 25
@@ -1188,13 +1193,17 @@ For _nI := 1 To Len( _aDados )
 
 	_nDifAux := _aTotAux[07] - _nTotAux
 	_nDifAux += IIf( _nLtrCom > 0 , _nLtrCom , 0 )
-	_nDifAux -= _nNFDTot*(1-0.015)
-	_nDifAux -= _nValPen
-	
 	For _nX := 1 To Len( _aNFCom )
 		_nDifAux += _aNFCom[_nX][04]
 	Next _nX
-	
+	If _nDifAux > 0
+		_nDifAux := _nDifAux*(1-0.015)
+	EndIf
+	_nDifAux -= _nNFDTot
+	If _nNFDTot > 0
+		_nDifAux := _nDifAux/(1-0.015)//Adiciono o valor do funrural para calcular o valor total a devolver
+	EndIf
+
 	If _lPdf
 		_nLinha += 25
 		_oPrinter:Say(_nLinha + 20, 0050, 'Compl. Ref. Diferença de Valor', _oFont07:oFont)

@@ -1,15 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  |10/04/2025| Chamado 50420. Incluída a coluna de estado
-Lucas Borges  |25/04/2025| Chamado 50532. Incluído filtro de CFOP
-Lucas Borges  |01/10/2025| Chamado 52143. Incluido filtro para fornecedore Centro Leite
-===============================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 
 /*
@@ -375,7 +363,8 @@ SELECT ZZX.ZZX_FILIAL, ZZX.ZZX_CODPRD, SX5.X5_DESCRI DESCRI, ZLX.ZLX_TIPOLT,
                AND X.D1_COD = D.D1_COD
                /*AND X.D1_ITEMORI = D.D1_ITEM*/
                )),0) 
-               - NVL(SUM((SELECT SUM(X.D2_VLSENAR+X.D2_VALFUN+X.D2_VALINS) FROM %Table:SD2% X
+               - NVL(SUM((SELECT SUM(ROUND(D2_BASEINS*0.015,2)) /*SUM(X.D2_VLSENAR + X.D2_VALFUN + X.D2_VALINS) NAO TENTE ENTENDER. CONSIDERE OS IMPOSTOS CALCULADOS*/ 
+               FROM %Table:SD2% X
                WHERE X.D_E_L_E_T_ = ' '
                AND X.D2_FILIAL = D.D1_FILIAL
                AND X.D2_NFORI = D.D1_DOC
