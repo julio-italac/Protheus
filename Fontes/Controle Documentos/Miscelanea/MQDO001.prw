@@ -1,15 +1,6 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-===============================================================================================================================
-*/
-
 #Include "MSOLE.CH"
 #Include "TOTVS.ch"
-//#Include "QDOA090.CH"
+
 
 /*
 ===============================================================================================================================
@@ -480,9 +471,6 @@ Local _nLinha:=05
 Local _nPula :=20
 Local _nCol1 :=10
 Local _nCol2 :=_nCol1+60
-//Local _nCol3 :=_nCol1+150
-//Local _nTam	 :=55
-//Local nLarg	 :=_nTam
 Local nAltu	 :=120
 Local _cTit	 :="SELECAO DE ARQUIVOS PARA GUARDAR"
 Local _bValid := {|| NaoVazio(aLista) }
@@ -504,7 +492,7 @@ While .T.
 
    Define MSDialog _oDlg Title _cTit From 000,000 To 420,800 Pixel
    
-	@ _nLinha, _nCol1 Button "Selecione o Diretorio:" Size 75,12 PIXEL OF _oDlg ACTION(cPath0:=cPath:=cGetFile("","SELECIONE O DIRETORIO",,,.F.,GETF_LOCALHARD + GETF_RETDIRECTORY) , AGLTLista("VARIOS")) when lMostra
+	@ _nLinha, _nCol1 Button "Selecione o Diretorio:" Size 75,12 PIXEL OF _oDlg ACTION(cPath0:=cPath:=tFileDialog("","SELECIONE O DIRETORIO",,,.T.,GETF_MULTISELECT) , AGLTLista("VARIOS")) when lMostra
 	@ _nLinha, _nCol2+20 MSGet _oTeor VAR cPath0  Picture "@!" Size 300,11 OF _oDlg Pixel WHEN .F.
 	_nLinha+=_nPula
 
