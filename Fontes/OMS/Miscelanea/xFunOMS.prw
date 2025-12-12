@@ -2709,11 +2709,17 @@ _cped1 := ZF8->ZF8_NUMPED
 _cfil2 := ZF9->ZF9_FILIAL
 _cped2 := ZF9->ZF9_PEDIDO
 
-_cEmail :=FWSFAllUsers({_cusrlo},{"USR_EMAIL"})[1][3]
+If !Empty(_cusrlo)
+    _cEmail :=FWSFAllUsers({_cusrlo},{"USR_EMAIL"})[1][3]
+EndIf
+
 If !Empty(_cEmail)
 	_cEmail += ','
 EndIf
-_cEmail += FWSFAllUsers({_cusrco},{"USR_EMAIL"})[1][3]
+
+If !Empty(_cusrco)
+    _cEmail += FWSFAllUsers({_cusrco},{"USR_EMAIL"})[1][3]
+EndIf
 
 If !lret
     If _nprogs == 1
