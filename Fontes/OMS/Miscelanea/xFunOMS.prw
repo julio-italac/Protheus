@@ -1,19 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  |14/09/2025| Chamado 51799. Implementada função para validar ambiente de teste totvs.framework.environment.Type.get()
-Lucas Borges  |18/09/2025| Chamado 50617. Migração dos parâmetros da ZP1 para SX6
-Lucas Borges  |02/10/2025| Chamado 51526. Modificada forma para recuperar a matrícula do usuário.
-========================================================================================================================================================================================================================================================================================
-Analista    - Programador   - Inicio   - Envio    - Chamado - Motivo da Alteração
-========================================================================================================================================================================================================================================================================================
-Antonio     - Igor Melgaço  - 11/09/25 - 14/09/25 - 51346   - Ajuste para replicar A1_COND e A1_GRPVEN entre clientes com mesma base de CNPJ.
-========================================================================================================================================================================================================================================================================================
-*/
- 
 #Include "TOTVS.ch"
 
 /*
@@ -2568,7 +2552,7 @@ Local _cusrco  	:= ""
 Local _nzf7		:= 0
 Local _nzf8		:= 0
 Local _nzf9		:= 0
-Local _cemail		:= ""
+Local _cEmail	:= ""
 Local _nprogs 	:= 0
 Local _aAreaSC5  	:= SC5->( FWGetArea() )
 Local _aAreaZF7  	:= ZF7->( FWGetArea() )
@@ -2725,54 +2709,43 @@ _cped1 := ZF8->ZF8_NUMPED
 _cfil2 := ZF9->ZF9_FILIAL
 _cped2 := ZF9->ZF9_PEDIDO
 
-//Puxa dados de usuários que receberão emails
-ZZL->( DBSetOrder(3) )
-
-If ZZL->( DBSeek( xFilial('ZZL') + _cusrlo ) )
-    _cEmail := AllTrim( ZZL->ZZL_EMAIL )
+_cEmail :=FWSFAllUsers({_cusrlo},{"USR_EMAIL"})[1][3]
+If !Empty(_cEmail)
+	_cEmail += ','
 EndIf
+_cEmail += FWSFAllUsers({_cusrco},{"USR_EMAIL"})[1][3]
 
-ZZL->( DBSetOrder(3) )
-
-If ZZL->( DBSeek( xFilial('ZZL') + _cusrco ) )
-    If !Empty(_cEmail)
-        _cEmail += ','
-    EndIf
-
-    _cEmail += AllTrim( ZZL->ZZL_EMAIL )
-
-    If !lret
-        If _nprogs == 1
-            _lresp := .F.
-            _lresp := U_ITMsg('O pedido selecionado está amarrado à uma programação de entrega da Logística ! '	+ Chr(13) + Chr(10)  + Chr(13) + Chr(10)  +;
-                'A programação será ajustada de acordo com esta exclusão e um email de alerta será enviado para ' + _cemail ,;
-                'Validação de programação de entrega',;
-                'Deseja continuar ajustando a programação?'+ Chr(13) + Chr(10) + Chr(13) + Chr(10) +;
-                '['+ _cfilial +'/'+ _ccodigo +']  - Pedido  ' + _cfil1 + '/' + _cped1 + '- Status: '+ U_ITRETBOX( _cstatus , 'ZF7_STATUS' ),3,2,2)
-            If _lresp
+If !lret
+    If _nprogs == 1
+        _lresp := .F.
+        _lresp := U_ITMsg('O pedido selecionado está amarrado à uma programação de entrega da Logística ! '	+ Chr(13) + Chr(10)  + Chr(13) + Chr(10)  +;
+            'A programação será ajustada de acordo com esta exclusão e um email de alerta será enviado para ' + _cemail ,;
+            'Validação de programação de entrega',;
+            'Deseja continuar ajustando a programação?'+ Chr(13) + Chr(10) + Chr(13) + Chr(10) +;
+            '['+ _cfilial +'/'+ _ccodigo +']  - Pedido  ' + _cfil1 + '/' + _cped1 + '- Status: '+ U_ITRETBOX( _cstatus , 'ZF7_STATUS' ),3,2,2)
+        If _lresp
+            lret := .T.
+            If u_remprog() //Remove programação e retorna true se bem sucedido
+                u_mailprog(_cemail, 1) //Envia email de remoção de pedido da programação para responsáveis
                 lret := .T.
-                If u_remprog() //Remove programação e retorna true se bem sucedido
-                    u_mailprog(_cemail, 1) //Envia email de remoção de pedido da programação para responsáveis
-                    lret := .T.
-                Else
-                    U_ITMsg('Não foi possível realizar ajustes na programação, exclusão não será realizada!',,,1)
-                EndIf
+            Else
+                U_ITMsg('Não foi possível realizar ajustes na programação, exclusão não será realizada!',,,1)
             EndIf
-        Else
-            _lresp := .F.
-            _lresp := U_ITMsg('O pedido selecionado está amarrado à programações de entrega e troca nota da Logística ! '	+ Chr(13) + Chr(10)  + Chr(13) + Chr(10)  +;
-                'As programações será ajustada de acordo com esta exclusão e um email de alerta será enviado para ' + _cemail ,;
-                'Validação de programação de entrega',;
-                'Deseja continuar ajustando as programações?'+ Chr(13) + Chr(10) + ;
-                '['+ _cfilial +'/'+ _ccodigo +']  - Pedido  ' + _cfil1 + '/' + _cped1 + '- Status: '+ U_ITRETBOX( _cstatus , 'ZF7_STATUS' ) + Chr(13) + Chr(10) +;
-                '['+ _cfilial2 +'/'+ _ccodigo2 +']  - Pedido  ' + _cfil2 + '/' + _cped2 + '- Status: '+ U_ITRETBOX( _cstatus2 , 'ZF7_STATUS' )  ,3,2,2)
-            If _lresp
-                If u_remprog() //Remove programação e retorna true se bem sucedido
-                    u_mailprog(_cemail, 2) //Envia email de remoção de pedido da programação para responsáveis
-                    lret := .T.
-                Else
-                    U_ITMsg( 'Não foi possível realizar ajustes nas programações, exclusão não será realizada!', 'Atenção!',,1)
-                EndIf
+        EndIf
+    Else
+        _lresp := .F.
+        _lresp := U_ITMsg('O pedido selecionado está amarrado à programações de entrega e troca nota da Logística ! '	+ Chr(13) + Chr(10)  + Chr(13) + Chr(10)  +;
+            'As programações será ajustada de acordo com esta exclusão e um email de alerta será enviado para ' + _cemail ,;
+            'Validação de programação de entrega',;
+            'Deseja continuar ajustando as programações?'+ Chr(13) + Chr(10) + ;
+            '['+ _cfilial +'/'+ _ccodigo +']  - Pedido  ' + _cfil1 + '/' + _cped1 + '- Status: '+ U_ITRETBOX( _cstatus , 'ZF7_STATUS' ) + Chr(13) + Chr(10) +;
+            '['+ _cfilial2 +'/'+ _ccodigo2 +']  - Pedido  ' + _cfil2 + '/' + _cped2 + '- Status: '+ U_ITRETBOX( _cstatus2 , 'ZF7_STATUS' )  ,3,2,2)
+        If _lresp
+            If u_remprog() //Remove programação e retorna true se bem sucedido
+                u_mailprog(_cemail, 2) //Envia email de remoção de pedido da programação para responsáveis
+                lret := .T.
+            Else
+                U_ITMsg( 'Não foi possível realizar ajustes nas programações, exclusão não será realizada!', 'Atenção!',,1)
             EndIf
         EndIf
     EndIf
