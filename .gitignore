@@ -1,0 +1,19 @@
+# =========================
+# VS CODE (NUNCA VERSIONAR)
+# =========================
+.vscode/
+*.code-workspace
+
+# =========================
+# ADVPL / PROTHEUS
+# =========================
+.vscode/.advpl/
+*.dbg
+*.tmp
+*.log
+
+# =========================
+# WINDOWS
+# =========================
+Thumbs.db
+Desktop.ini
