@@ -1,19 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  |13/10/2024| Chamado 48465. Retirada da função de conout
-Lucas Borges  |23/07/2025| Chamado 51340. Ajustar função para validação de ambiente de teste
-Lucas Borges  |14/09/2025| Chamado 51799. Implementada função para validar ambiente de teste totvs.framework.environment.Type.get()
-==============================================================================================================================================================================================
- Analista      - Programador   - Inicio   - Envio    - Chamado - Motivo da Alteração
-==============================================================================================================================================================================================
- Alex Wallauer - Alex Wallauer - 02/10/25 - 02/10/25 - 52351   - Correção de descrições de titulo do programa.
-==============================================================================================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 #Include "TBICONN.CH"
 #INCLUDE "RPTDEF.CH"
@@ -34,40 +18,42 @@ User Function REST013M()// PARA CHAMAR O RELATORIO MEMSAL U_REST013M () NO SCHED
 
 Return U_REST013(.T.,.T.)
 
-User Function REST013(_lLSchedule,_lLMensal)//PARA CHAMAR OS RELATORIOS SEMANAIS U_REST013 () NO _lSchedule
+User Function REST013(_lLSchedule As Logical,_lLMensal As Logical)//PARA CHAMAR OS RELATORIOS SEMANAIS U_REST013 () NO _lSchedule
 
-Local  _nI  := 0
-Local _cAlias:= GetNextAlias()
+Local  _nI  := 0 As Numeric
+Local _cAlias:= GetNextAlias() As Character
     	
-Private _lSchedule  := .T.
+Private _lSchedule  := .T. As Logical
+
 If ValType(_lLSchedule) = "L"
    _lSchedule:=_lLSchedule
 EndIf
 
-Private _lMensal   := .F.
+Private _lMensal   := .F. As Logical
+
 If ValType(_lLMensal) = "L"
    _lMensal:=_lLMensal
 EndIf
 
-Private _cAssunto   :=""
-Private _cDatas     :="Sem filtro de datas"
-Private _cCentro    :=""
-Private _cNomeFilial:=""
-Private _cPathSrv   :=__RelDir
-Private _cFileName  :=""//O nome é preenchido na funcao U_ROMS004(.T.) - Ex.: \SPOOL\REST013_20130214_165826.pdf
-Private _aDadosTotal:={}
-Private _aAnaliTotal:={}
-Private _aEmail_CC  :={}
-Private _aEmailCC   :={}
-Private _aEmailGG   :={}
-Private _cEmail     :=""
-Private _cEnvPara   :=""
-Private _cCentrosC  :=""//"0113001;0103001"//Testes 
-Private _cFilial    :=""//Filial Gerente
-Private _aResultado :={}
-Private _cTitJanela :=""
-Private _cFilsGerent:=""
-Private _cAmbiente  :=GETENVSERVER()
+Private _cAssunto   :="" As Character
+Private _cDatas     :="Sem filtro de datas" As Character
+Private _cCentro    :="" As Character
+Private _cNomeFilial:="" As Character
+Private _cPathSrv   :=__RelDir As Character
+Private _cFileName  :="" As Character//O nome é preenchido na funcao U_ROMS004(.T.) - Ex.: \SPOOL\REST013_20130214_165826.pdf
+Private _aDadosTotal:={} As Array
+Private _aAnaliTotal:={} As Array
+Private _aEmail_CC  :={} As Array
+Private _aEmailCC   :={} As Array
+Private _aEmailGG   :={} As Array
+Private _cEmail     :="" As Character
+Private _cEnvPara   :="" As Character
+Private _cCentrosC  :="" As Character//"0113001;0103001"//Testes 
+Private _cFilial    :="" As Character//Filial Gerente
+Private _aResultado :={} As Array
+Private _cTitJanela :="" As Character
+Private _cFilsGerent:="" As Character
+Private _cAmbiente  :=GETENVSERVER() As Character
 
 If _lSchedule .And. SELECT("SX3") = 0
    FWLogMsg("INFO"/*cSeverity*/, /*cTransactionId*/, "REST013"/*cGroup*/, FunName()/*cCategory*/, /*cStep*/, "REST01301"/*cMsgId*/, "REST01301 - Iniciando..."/*cMessage*/, /*nMensure*/, /*nElapseTime*/, /*aMessage*/)
@@ -83,12 +69,12 @@ Else
    _cTitulo:="Filtro dos dados de Centros de Custos"
         
 	_aParAux:={}
-   aAdd( _aParAux , { 1 , "Data"             , MV_PAR01, "@D"  , "" ,"", ".T." , 070 , .T. } )
-   aAdd( _aParAux , { 3 , "Tipo de Relatório", MV_PAR02,_aOpc  , 60 , '' , .T. } )
+   AAdd( _aParAux , { 1 , "Data"             , MV_PAR01, "@D"  , "" ,"", ".T." , 070 , .T. } )
+   AAdd( _aParAux , { 3 , "Tipo de Relatório", MV_PAR02,_aOpc  , 60 , '' , .T. } )
 
    _aParRet:={}
    For _nI := 1 To Len( _aParAux )
-       aAdd( _aParRet , _aParAux[_nI][03] )
+       AAdd( _aParRet , _aParAux[_nI][03] )
    Next 
 
    If !ParamBox( _aParAux , _cTitulo, _aParRet , {|| .T. } , , , , , , , .T. , .T. )
@@ -113,9 +99,9 @@ While (_cAlias)->(!Eof())
 	ZZL->(DBGoTo((_cAlias)->REG_ZZL))
    If !_lSchedule 
       _cFilial:=cFilAnt//Inicia com cFilAnt para não dar SKIP quando não entra em Nenhum If abaixo
-      If LEFT(AllTrim(ZZL->ZZL_CC),1) = "C" .And. !_lMensal //NO SEMANAL EU FILTRO SÓ OS COORDENADORES E PEGO TODOS OS GERENTES
+      If Left(AllTrim(ZZL->ZZL_CC),1) = "C" .And. !_lMensal //NO SEMANAL EU FILTRO SÓ OS COORDENADORES E PEGO TODOS OS GERENTES
          _cFilial:=SubStr(AllTrim(ZZL->ZZL_CC),3,2)//Filial do Coordenador
-      ElseIf LEFT(AllTrim(ZZL->ZZL_CC),1) = "G" .And. _lMensal//NO MENSAL EU FILTRO SÓ OS GERENTES E PEGO TODOS OS COORDENADORES
+      ElseIf Left(AllTrim(ZZL->ZZL_CC),1) = "G" .And. _lMensal//NO MENSAL EU FILTRO SÓ OS GERENTES E PEGO TODOS OS COORDENADORES
          _cFilial:=AllTrim(SubStr(AllTrim(ZZL->ZZL_CC),3))//Filial do Gerente
       EndIf
       If !cFilAnt $ _cFilial 
@@ -123,12 +109,12 @@ While (_cAlias)->(!Eof())
          Loop
       EndIf
    EndIf
-   If _lSchedule .Or. _lMensal .Or. LEFT(AllTrim(ZZL->ZZL_CC),1) <> "G" //Coodernadores 
-	   aAdd(_aEmail_CC,{AllTrim(ZZL->ZZL_EMAIL),AllTrim(ZZL->ZZL_CC),AllTrim(ZZL->ZZL_NOME),.T.} )
-      aAdd(_aEmailCC ,{.T.,AllTrim(ZZL->ZZL_NOME),AllTrim(ZZL->ZZL_CC),AllTrim(ZZL->ZZL_EMAIL)} )//LISTBOX
+   If _lSchedule .Or. _lMensal .Or. Left(AllTrim(ZZL->ZZL_CC),1) <> "G" //Coodernadores 
+	   AAdd(_aEmail_CC,{AllTrim(ZZL->ZZL_EMAIL),AllTrim(ZZL->ZZL_CC),AllTrim(ZZL->ZZL_NOME),.T.} )
+      AAdd(_aEmailCC ,{.T.,AllTrim(ZZL->ZZL_NOME),AllTrim(ZZL->ZZL_CC),AllTrim(ZZL->ZZL_EMAIL)} )//LISTBOX
    EndIf
-   If (!_lSchedule  .And. _lMensal .And. LEFT(AllTrim(ZZL->ZZL_CC),1) = "G") //GERENTES
-	   aAdd(_aEmailGG ,{.T.,AllTrim(ZZL->ZZL_NOME),AllTrim(ZZL->ZZL_CC),AllTrim(ZZL->ZZL_EMAIL)} )//LISTBOX
+   If (!_lSchedule  .And. _lMensal .And. Left(AllTrim(ZZL->ZZL_CC),1) = "G") //GERENTES
+	   AAdd(_aEmailGG ,{.T.,AllTrim(ZZL->ZZL_NOME),AllTrim(ZZL->ZZL_CC),AllTrim(ZZL->ZZL_EMAIL)} )//LISTBOX
    EndIf
 	(_cAlias)->(DBSkip())
 EndDo
@@ -162,7 +148,7 @@ If !_lSchedule
                   lMarcou:=.T.
                EndIf
             EndIf
-	   	Next
+	   	Next _nI
       EndIf
       If !lMarcou
          FWAlertInfo("Não tem "+If(_lMensal,"Gerente","Coordenador")+" marcado. Marque pelo menos um.","REST01302")
@@ -195,7 +181,7 @@ If _lMensal//***************************************  MEMSAL  ******************
 Else//***************************************  SEMANAL  ***************************************
    MV_PAR01:=(_dData-7)
    MV_PAR02:=(_dData-1)
-   If DAY(MV_PAR02) < 7 //Se antes do setimo dia do mes atual 
+   If Day(MV_PAR02) < 7 //Se antes do setimo dia do mes atual 
 
       MV_PAR02:=SToD(AllTrim(Str(YEAR( _dData ))) + StrZero(( MONTH(_dData) ),2)+"01")-1//DE MV_PAR01 ATE O ULTIMO DIA DO MES ANTERIOR
       If _lSchedule 
@@ -224,6 +210,7 @@ ElseIf !_lSchedule
 EndIf
 
 Return .T.
+
 /*
 ==============================================================================================================================================================
 Programa----------: REST013Datas()
@@ -234,27 +221,27 @@ Parametros--------: oProc
 Retorno-----------: Nenhum
 ==============================================================================================================================================================
 */
-Static Function REST013Datas(oProc)
+Static Function REST013Datas(oProc As Object) As Logical
 
-Local E
-Local lRet:=.T.
-Private lHtml := (GetRemoteType() == 5) //Valida se o ambiente é SmartClientHtml
+Local _nX      := 0 As Numeric
+Local lRet     :=.T. As Logical
+Private lHtml  := (GetRemoteType() == 5) As Logical//Valida se o ambiente é SmartClientHtml
 
 cMensagem:=""
 _aControle:={}//SÓ zerar aqui essa array
 
-For E := 1 TO Len(_aEmail_CC)//LER COORDENADORES
+For _nX := 1 To Len(_aEmail_CC)//LER COORDENADORES
 
-    If !_aEmail_CC[E,4] .Or. LEFT(_aEmail_CC[E,2],1) <> "C" //Coodernadores
+    If !_aEmail_CC[_nX,4] .Or. Left(_aEmail_CC[_nX,2],1) <> "C" //Coodernadores
        Loop
     EndIf
-    _cEmail    :=LOWER(_aEmail_CC[E,1])
-    _cCentrosC :=SubStr(_aEmail_CC[E,2],3)//Centros de Csuto
-    _cFilial   :=SubStr(_aEmail_CC[E,2],3,2)//Filial principal do Titulo
-    _cEnvPara  :=_aEmail_CC[E,3]
+    _cEmail    :=Lower(_aEmail_CC[_nX,1])
+    _cCentrosC :=SubStr(_aEmail_CC[_nX,2],3)//Centros de Csuto
+    _cFilial   :=SubStr(_aEmail_CC[_nX,2],3,2)//Filial principal do Titulo
+    _cEnvPara  :=_aEmail_CC[_nX,3]
     
     If ValType(oProc) = "O"
-       oProc:cCaption := _cTitJanela := ("REST11-Coord.: "+_cFilial+" / "+_aEmail_CC[E,3])
+       oProc:cCaption := _cTitJanela := ("REST11-Coord.: "+_cFilial+" / "+_aEmail_CC[_nX,3])
        ProcessMessages()
     EndIf
 
@@ -266,32 +253,32 @@ For E := 1 TO Len(_aEmail_CC)//LER COORDENADORES
     EndIf   
 
     If ValType(oProc) = "O"
-       oProc:cCaption := _cTitJanela := ("RCOM09-Coord.: "+_cFilial+" / "+_aEmail_CC[E,3])
+       oProc:cCaption := _cTitJanela := ("RCOM09-Coord.: "+_cFilial+" / "+_aEmail_CC[_nX,3])
        ProcessMessages()
     EndIf
-    _cEmail:=LOWER(_aEmail_CC[E,1])//Recarrega pq é alterado quando por tela
+    _cEmail:=LOWER(_aEmail_CC[_nX,1])//Recarrega pq é alterado quando por tela
 
     _aCabExcel:={}
     _aGerExcel:={}
     If REST013Rel("RCOM009").AND. !_lMensal//Enviar separado das informações acima os dados dos serviços contratados, filtrando o cfop 1933/2933 (referencia relatório RCOM009)
        lRet:=REST013Email( {|| REST013Rel("RCOM009") } )
-    EndIf   
+    EndIf
 
     If !lRet .And. !_lMensal
        Exit
     EndIf
-Next
+Next _nX
 
 lRet:=.F.
-For E := 1 TO Len(_aEmail_CC)//LER GERENTES
+For _nX := 1 TO Len(_aEmail_CC)//LER GERENTES
 
-    If !_aEmail_CC[E,4] .Or. LEFT(_aEmail_CC[E,2],1) <> "G" //Gerentes
+    If !_aEmail_CC[_nX,4] .Or. Left(_aEmail_CC[_nX,2],1) <> "G" //Gerentes
        Loop
     EndIf
     
-    _cEmail  :=LOWER(_aEmail_CC[E,1])
-    _cFilial :=AllTrim(SubStr(_aEmail_CC[E,2],3))//Filial do Titulo e do Gerente Pode ser varias
-    _cEnvPara:=_aEmail_CC[E,3]
+    _cEmail  :=Lower(_aEmail_CC[_nX,1])
+    _cFilial :=AllTrim(SubStr(_aEmail_CC[_nX,2],3))//Filial do Titulo e do Gerente Pode ser varias
+    _cEnvPara:=_aEmail_CC[_nX,3]
     
     If !_lSchedule .And. _lMensal .And. !cFilAnt $ _cFilial 
        Loop
@@ -311,10 +298,10 @@ For E := 1 TO Len(_aEmail_CC)//LER GERENTES
     If !lRet
        Exit
     EndIf
-Next    
+Next _nX
 
 If !_lSchedule .And. _lMensal .And. !lRet
-   aAdd(_aResultado,{cFilAnt,"MENSAL",TRANSF(0,"@E 999,999"),"Filial sem Gerente ou Coordenador no cadastrado usuarios.","","Periodo de "+DToC(MV_PAR01)+" ate "+DToC(MV_PAR02)})
+   AAdd(_aResultado,{cFilAnt,"MENSAL",TRANSF(0,"@E 999,999"),"Filial sem Gerente ou Coordenador no cadastrado usuarios.","","Periodo de "+DToC(MV_PAR01)+" ate "+DToC(MV_PAR02)})
 EndIf
 
 If _lSchedule 
@@ -333,9 +320,10 @@ Parametros--------: _nTipo: tipo do relatorio
 Retorno-----------: Nenhum
 ==============================================================================================================================================================
 */
-Static Function REST013Rel(cTipo)
+Static Function REST013Rel(cTipo As Character) As Logical
 
-Local T , C ,  _nni
+Local _nX := 0 As Numeric 
+
 Private _cAlias   := GetNextAlias()
 Private _cTipo    := cTipo
 Private _nPagAux  := 0 //Conta Pagina
@@ -345,11 +333,6 @@ Private aTit1Excel:= {"Nr.S.A."    ,"Produto"        ,"Descricao","Data"     ,"A
 Private aTit2     := {"Fornecedor" ,"     Quantidade","Documento","Dt. Dig." ," Valor Unitario"  ,"     Valor Total" ,"Descricao"       }//7 cols
 Private aTit2Excel:= {"Fornecedor" ,"     Quantidade","Documento","Dt. Dig." ," Valor Unitario"  ,"     Valor Total" ,"Descricao"       ,"Filial + CC","Descricao CC"}//9 cols
 Private aTit3     := {"Fil Cod. CC"  ,"Descricao CC"   ,"Custo Total"}//3 cols
-If !totvs.framework.environment.Type.get() == '1' .And. _lMensal //1-Produção, 2-Homologação,3-Desenvolvimento
-   aTit3Excel:= {"Filail","CC","Descricao CC"   ,"Custo Total","SELECT","Somou"}//6 cols
-Else
-   aTit3Excel:= {"Filail","CC","Descricao CC"   ,"Custo Total"}//4 cols
-EndIf
 Private _nTotal   := 0
 Private _nPosTotal:= 0//Posicao da coluna de total
 Private _nPosQbra := 0//Posicao da coluna de QUEBRA
@@ -359,62 +342,68 @@ Private _c7CCSintet:= ""
 Private _c6CCSintet:= ""
 Private _c5CCSintet:= ""
 
+If !totvs.framework.environment.Type.get() == '1' .And. _lMensal //1-Produção, 2-Homologação,3-Desenvolvimento
+   aTit3Excel:= {"Filail","CC","Descricao CC"   ,"Custo Total","SELECT","Somou"}//6 cols
+Else
+   aTit3Excel:= {"Filail","CC","Descricao CC"   ,"Custo Total"}//4 cols
+EndIf
+
 If _cTipo = "REST011"
    _aCabExcel:={}
-   For _nni := 1 to Len(aTit1Excel)
+   For _nX := 1 To Len(aTit1Excel)
     	// Alinhamento: 1-Left   ,2-Center,3-Right
     	// Formatação.: 1-General,2-Number,3-Monetário,4-DateTime
     	//            Titulo das Colunas ,Alinhamento ,Formatação, Totaliza?
-    	If _nni = 6
-      	aAdd(_aCabExcel,{aTit1Excel[_nni]  ,3           ,2         ,.F.})//Entregue
-    	ElseIf _nni = 7
-      	aAdd(_aCabExcel,{aTit1Excel[_nni]  ,3           ,3         ,.F.})//Custo Total
-    	ElseIf _nni = 4 
-      	aAdd(_aCabExcel,{aTit1Excel[_nni]  ,2           ,4         ,.F.})//DATA
+    	If _nX = 6
+      	AAdd(_aCabExcel,{aTit1Excel[_nX]  ,3           ,2         ,.F.})//Entregue
+    	ElseIf _nX = 7
+      	AAdd(_aCabExcel,{aTit1Excel[_nX]  ,3           ,3         ,.F.})//Custo Total
+    	ElseIf _nX = 4 
+      	AAdd(_aCabExcel,{aTit1Excel[_nX]  ,2           ,4         ,.F.})//DATA
       Else
-    	   aAdd(_aCabExcel,{aTit1Excel[_nni]  ,1           ,1         ,.F.})//CARACTER
+    	   AAdd(_aCabExcel,{aTit1Excel[_nX]  ,1           ,1         ,.F.})//CARACTER
     	EndIf
-   Next
+   Next _nX
 
    MV_PAR07:=""
    _aCC:=StrTokArr(_cCentrosC,";")
-   For C := 1 TO Len(_aCC)
-       If !Empty(_aCC[C])
-          If Len(_aCC[C]) > 7
-             MV_PAR07+=_aCC[C]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC
-          ElseIf Len(_aCC[C]) = 7
-             _c7CCSintet+=_aCC[C]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC - SINTETICO
-          ElseIf Len(_aCC[C]) = 6
-             _c6CCSintet+=_aCC[C]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC - SINTETICO
-          ElseIf Len(_aCC[C]) = 5
-             _c5CCSintet+=_aCC[C]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC - SINTETICO
+   For _nX := 1 TO Len(_aCC)
+       If !Empty(_aCC[_nX])
+          If Len(_aCC[_nX]) > 7
+             MV_PAR07+=_aCC[_nX]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC
+          ElseIf Len(_aCC[_nX]) = 7
+             _c7CCSintet+=_aCC[_nX]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC - SINTETICO
+          ElseIf Len(_aCC[_nX]) = 6
+             _c6CCSintet+=_aCC[_nX]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC - SINTETICO
+          ElseIf Len(_aCC[_nX]) = 5
+             _c5CCSintet+=_aCC[_nX]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC - SINTETICO
           EndIf   
        EndIf   
-   Next
+   Next _nX
 
    _cCentro   :=MV_PAR07+_c7CCSintet+_c6CCSintet+_c5CCSintet
-   _cCentro   :=LEFT(_cCentro,Len(_cCentro)-1)
-   _c5CCSintet:=LEFT(_c5CCSintet,Len(_c5CCSintet)-1)
-   _c6CCSintet:=LEFT(_c6CCSintet,Len(_c6CCSintet)-1)
-   _c7CCSintet:=LEFT(_c7CCSintet,Len(_c7CCSintet)-1)
-   MV_PAR07   :=LEFT(MV_PAR07,Len(MV_PAR07)-1)
+   _cCentro   :=Left(_cCentro,Len(_cCentro)-1)
+   _c5CCSintet:=Left(_c5CCSintet,Len(_c5CCSintet)-1)
+   _c6CCSintet:=Left(_c6CCSintet,Len(_c6CCSintet)-1)
+   _c7CCSintet:=Left(_c7CCSintet,Len(_c7CCSintet)-1)
+   MV_PAR07   :=Left(MV_PAR07,Len(MV_PAR07)-1)
 
 ElseIf _cTipo = "RCOM009"
    _aCabExcel:={}
-   For _nni := 1 to Len(aTit2Excel)
+   For _nX := 1 to Len(aTit2Excel)
     	// Alinhamento: 1-Left   ,2-Center,3-Right
     	// Formatação.: 1-General,2-Number,3-Monetário,4-DateTime
     	//            Titulo das Colunas ,Alinhamento ,Formatação, Totaliza?
-    	If _nni = 2
-      	aAdd(_aCabExcel,{aTit2Excel[_nni]  ,3           ,2         ,.F.})//Quantidade
-    	ElseIf _nni = 5 .And. _nni = 6
-      	aAdd(_aCabExcel,{aTit2Excel[_nni]  ,3           ,3         ,.F.})//Custo Total
-    	ElseIf _nni = 4 
-      	aAdd(_aCabExcel,{aTit2Excel[_nni]  ,2           ,4         ,.F.})//DATA
+    	If _nX = 2
+      	AAdd(_aCabExcel,{aTit2Excel[_nX]  ,3           ,2         ,.F.})//Quantidade
+    	ElseIf _nX = 5 .And. _nX = 6
+      	AAdd(_aCabExcel,{aTit2Excel[_nX]  ,3           ,3         ,.F.})//Custo Total
+    	ElseIf _nX = 4 
+      	AAdd(_aCabExcel,{aTit2Excel[_nX]  ,2           ,4         ,.F.})//DATA
       Else
-    	   aAdd(_aCabExcel,{aTit2Excel[_nni]  ,1           ,1         ,.F.})//CARACTER
+    	   AAdd(_aCabExcel,{aTit2Excel[_nX]  ,1           ,1         ,.F.})//CARACTER
     	EndIf
-   Next
+   Next _nX
 
    MV_PAR03:="1000"
    MV_PAR04:="1000"
@@ -423,57 +412,57 @@ ElseIf _cTipo = "RCOM009"
    MV_PAR17:="1933;2933"
    MV_PAR18:=""
    _aCC:=StrTokArr(_cCentrosC,";")
-   For C := 1 TO Len(_aCC)
-       If !Empty(_aCC[C])
-          If Len(_aCC[C]) > 7
-             MV_PAR18+=_aCC[C]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC
-          ElseIf Len(_aCC[C]) = 7
-             _c7CCSintet+=_aCC[C]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC - SINTETICO
-          ElseIf Len(_aCC[C]) = 6
-             _c6CCSintet+=_aCC[C]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC - SINTETICO
-          ElseIf Len(_aCC[C]) = 5
-             _c5CCSintet+=_aCC[C]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC - SINTETICO
-          EndIf   
-       EndIf   
-   Next
+   For _nX := 1 TO Len(_aCC)
+       If !Empty(_aCC[_nX])
+          If Len(_aCC[_nX]) > 7
+             MV_PAR18+=_aCC[_nX]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC
+          ElseIf Len(_aCC[_nX]) = 7
+             _c7CCSintet+=_aCC[_nX]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC - SINTETICO
+          ElseIf Len(_aCC[_nX]) = 6
+             _c6CCSintet+=_aCC[_nX]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC - SINTETICO
+          ElseIf Len(_aCC[_nX]) = 5
+             _c5CCSintet+=_aCC[_nX]+";"//LISTA DE FILIA+CC DO ZZL->ZZL_CC - SINTETICO
+          EndIf
+       EndIf
+   Next _nX
    _cCentro   :=MV_PAR18+_c7CCSintet+_c6CCSintet+_c5CCSintet
-   _cCentro   :=LEFT(_cCentro,Len(_cCentro)-1)
-   _c5CCSintet:=LEFT(_c5CCSintet,Len(_c5CCSintet)-1)
-   _c6CCSintet:=LEFT(_c6CCSintet,Len(_c6CCSintet)-1)
-   _c7CCSintet:=LEFT(_c7CCSintet,Len(_c7CCSintet)-1)
-   MV_PAR18   :=LEFT(MV_PAR18,Len(MV_PAR18)-1)
+   _cCentro   :=Left(_cCentro,Len(_cCentro)-1)
+   _c5CCSintet:=Left(_c5CCSintet,Len(_c5CCSintet)-1)
+   _c6CCSintet:=Left(_c6CCSintet,Len(_c6CCSintet)-1)
+   _c7CCSintet:=Left(_c7CCSintet,Len(_c7CCSintet)-1)
+   MV_PAR18   :=Left(MV_PAR18,Len(MV_PAR18)-1)
 
 ElseIf _cTipo = "TOTAL"
 
    _aCabExcel:={}
-   For _nni := 1 to Len(aTit3Excel)
+   For _nX := 1 to Len(aTit3Excel)
     	// Alinhamento: 1-Left   ,2-Center,3-Right
     	// Formatação.: 1-General,2-Number,3-Monetário,4-DateTime
     	//            Titulo das Colunas ,Alinhamento ,Formatação, Totaliza?
-    	If _nni = 4 .Or. _nni = 6
-      	aAdd(_aCabExcel,{aTit3Excel[_nni]  ,3           ,3         ,.F.})//MONETARIO
+    	If _nX = 4 .Or. _nX = 6
+      	AAdd(_aCabExcel,{aTit3Excel[_nX]  ,3           ,3         ,.F.})//MONETARIO
       Else
-    	   aAdd(_aCabExcel,{aTit3Excel[_nni]  ,1           ,1         ,.F.})//CARACTER
+    	   AAdd(_aCabExcel,{aTit3Excel[_nX]  ,1           ,1         ,.F.})//CARACTER
     	EndIf
-   Next
+   Next _nX
   aDados:={}
   _cCentro:=""
   _aGerExcel:={}
   _aDadosTotal:=aSort(_aDadosTotal,,,{|x,y| x[4] > y[4] })
-  For T := 1 TO Len(_aDadosTotal)
-      If LEFT(_aDadosTotal[T,1],2) $ _cFilial
-         aAdd(aDados    , {LEFT(_aDadosTotal[T,1],2)+" "+SubStr(_aDadosTotal[T,1],3),_aDadosTotal[T,2],_aDadosTotal[T,3]} )
-         aAdd(_aGerExcel, {LEFT(_aDadosTotal[T,1],2),SubStr(_aDadosTotal[T,1],3),_aDadosTotal[T,2],_aDadosTotal[T,4]} )
-         _cCentro+=_aDadosTotal[T,1]+";"//SubStr(_aDadosTotal[T,1],3)+" / "
-         _nTotal+=_aDadosTotal[T,4]
-      EndIf    
-  Next 
-  _cCentro  :=LEFT(_cCentro,Len(_cCentro)-1)
+  For _nX := 1 TO Len(_aDadosTotal)
+      If Left(_aDadosTotal[_nX,1],2) $ _cFilial
+         AAdd(aDados    , {Left(_aDadosTotal[_nX,1],2)+" "+SubStr(_aDadosTotal[_nX,1],3),_aDadosTotal[_nX,2],_aDadosTotal[_nX,3]} )
+         AAdd(_aGerExcel, {Left(_aDadosTotal[_nX,1],2),SubStr(_aDadosTotal[_nX,1],3),_aDadosTotal[_nX,2],_aDadosTotal[_nX,4]} )
+         _cCentro+=_aDadosTotal[_nX,1]+";"//SubStr(_aDadosTotal[T,1],3)+" / "
+         _nTotal+=_aDadosTotal[_nX,4]
+      EndIf
+  Next _nX
+  _cCentro  :=Left(_cCentro,Len(_cCentro)-1)
   _lRetrato :=.T.
   _nPosTotal:=3//Posicao da coluna de total
   nTotal    :=Len(aDados)
   cMensagem +=_cTipo+": "+AllTrim(Str(nTotal))+" Registros lidos - Email Para "+_cEmail+" - CC: "+_cCentro+CHR(13)+CHR(10)
-  aAdd(_aResultado,{_cFilial,"MENSAL",TRANSF(nTotal,"@E 999,999"),_cEmail,_cCentro,"Periodo de "+DToC(MV_PAR01)+" ate "+DToC(MV_PAR02)})
+  AAdd(_aResultado,{_cFilial,"MENSAL",TRANSF(nTotal,"@E 999,999"),_cEmail,_cCentro,"Periodo de "+DToC(MV_PAR01)+" ate "+DToC(MV_PAR02)})
   _cCentro  +=";CCQtde: "+AllTrim(Str(nTotal))
 
   If nTotal = 0
@@ -525,8 +514,8 @@ ElseIf Len(aDados) = 0//Preenche aDados acima quando no _cTipo = "TOTAL"
       Return .F.
    EndIf
 
-// aAdd(_aResultado,{_cFilial,"SEMANAL ["+_cTipo+"]",TRANSF(nTotal,"@E 999,999"),_cEmail,_cCentrosC,"Periodo de "+DToC(MV_PAR01)+" ate "+DToC(MV_PAR02)})
-   aAdd(_aResultado,{_cFilial,"SEMANAL ["+_cTipo+"]",       nTotal              ,_cEmail,_cCentrosC,"Periodo de "+DToC(MV_PAR01)+" ate "+DToC(MV_PAR02)})
+// AAdd(_aResultado,{_cFilial,"SEMANAL ["+_cTipo+"]",TRANSF(nTotal,"@E 999,999"),_cEmail,_cCentrosC,"Periodo de "+DToC(MV_PAR01)+" ate "+DToC(MV_PAR02)})
+   AAdd(_aResultado,{_cFilial,"SEMANAL ["+_cTipo+"]",       nTotal              ,_cEmail,_cCentrosC,"Periodo de "+DToC(MV_PAR01)+" ate "+DToC(MV_PAR02)})
    
    FWMsgRun( ,{|oProc|  REST013Ler(oProc) } , "Aguarde!" , "Acumulando Dados: "+_cTipo+TRANSF(nTotal,"@E 999,999")  )
 
@@ -546,7 +535,7 @@ If Len(aDados) > 0
        //FWMsPrinter(): New (< cFilePrintert >, [ nDevice], [ lAdjustToLegacy], [ cPathInServer], [ lDisabeSetup ], [ lTReport], [ @oPrintSetup], [ cPrinter], [ lServer], [ lPDFAsPNG], [ lRaw], [ lViewPDF], [ nQtdCopy] )
 	   _oPrint := FWMsPrinter():New(_cFileName, IMP_PDF   , .T.               , _cPathSrv       , .T.             ,            ,                ,)
 	   If Upper(_oPrint:cPathPDF) == "C:\" .Or. Empty(_oPrint:cPathPDF)
-          _oPrint:cPathPDF := _cPathSrv
+          _oPrint:cPathPDF := Lower(_cPathSrv)
 	   EndIf
     EndIf
 
@@ -569,17 +558,15 @@ If Len(aDados) > 0
 
 //**** Configuracoes para via WF de Carga **********************************************************************************
        _oPrint:SetViewPDF(.F.)
-       _oPrint:cPathPDF := _cPathSrv	// Caso seja utilizada impressão em IMP_PDF
+       _oPrint:cPathPDF := Lower(_cPathSrv)	// Caso seja utilizada impressão em IMP_PDF
 //**** Configuracoes para via WF  **********************************************************************************
-
-
 
 	   // Chama a impressão
        REST013CMP( @_oPrint ) 
 
        _oPrint:lViewPDF := .F.
        _oPrint:Preview()
-       SLEEP(2000)//dá um tempinho para criar o arquivo
+       Sleep(2000)//dá um tempinho para criar o arquivo
        FreeObj(_oPrint)
        _cFileName:=_cPathSrv+_cFileName      
        _adatfile := directory(_cFilename)
@@ -591,8 +578,6 @@ If Len(aDados) > 0
 	   EndIf
        
     Else
-
-
 	   // Chama a impressão
        LjMsgRun( "Criando Layout: "+_cTipo , _cTitJanela , {|| REST013CMP( @_oPrint ) } )
       _cPathSrv:=_oPrint:cPathPDF
@@ -609,17 +594,14 @@ If Len(aDados) > 0
 	   Else
 	      _ntamanho := 0
 	   EndIf
-
     EndIf
 
 ElseIf !_lMensal
-
     If !_lSchedule 
-       aAdd(_aResultado,{_cFilial,"SEMANAL ["+_cTipo+"]",TRANSF(0,"@E 999,999"),_cEmail,_cCentrosC,"Periodo de "+DToC(MV_PAR01)+" ate "+DToC(MV_PAR02)})
+       AAdd(_aResultado,{_cFilial,"SEMANAL ["+_cTipo+"]",TRANSF(0,"@E 999,999"),_cEmail,_cCentrosC,"Periodo de "+DToC(MV_PAR01)+" ate "+DToC(MV_PAR02)})
     EndIf
     
     Return .F.
-
 EndIf
 
 Return .T.
@@ -634,13 +616,15 @@ Parametros--------: Nenhum
 Retorno-----------: Nenhum
 ==============================================================================================================================================================
 */
-Static Function REST013Ler(oProc)
+Static Function REST013Ler(oProc As Object) As Logical
 
-Local _nConta:=0 , nTam:=82 , nTamB1 := 80
+Local _nConta  := 0 As Numeric 
+Local nTam     := 82 As Numeric
+Local nTamB1   := 80 As Numeric
+
 DBSelectArea(_cAlias)
 (_cAlias)->( DBGoTop() )
 While (_cAlias)->(!Eof())
-
    _nConta++
    If ValType(oProc) = "O"
        oProc:cCaption := ("Lendo: "+ StrZero(_nConta,6) + " de " + StrZero(nTotal,6))
@@ -648,36 +632,35 @@ While (_cAlias)->(!Eof())
    EndIf
    
    If _cTipo = "REST011"
-    
-      cObs1:=LEFT(   (_cAlias)->D3_I_OBS ,nTam)
+      cObs1:=Left(   (_cAlias)->D3_I_OBS ,nTam)
       cObs2:=SubStr( (_cAlias)->D3_I_OBS ,nTam+1,nTam )
       cObs3:=SubStr( (_cAlias)->D3_I_OBS ,nTam+nTam+1 )
 		
 		aItem:={}//{"Nr.S.A."   ,"Produto"        ,"Descricao","Data"     ,"AD"(Aplicao Direta)  ,"         Entregue","    Custo Total" ,"Usr SA","OBS"}
-   	aAdd(aItem,(_cAlias)->D3_NUMSA)                                            //01
-		aAdd(aItem,(_cAlias)->CP_PRODUTO)                                          //02
-		aAdd(aItem,LEFT((_cAlias)->CP_DESCRI,32))                                  //03
-		aAdd(aItem,DToC(SToD((_cAlias)->D3_EMISSAO)))                              //04
+   	AAdd(aItem,(_cAlias)->D3_NUMSA)                                            //01
+		AAdd(aItem,(_cAlias)->CP_PRODUTO)                                          //02
+		AAdd(aItem,Left((_cAlias)->CP_DESCRI,32))                                  //03
+		AAdd(aItem,DToC(SToD((_cAlias)->D3_EMISSAO)))                              //04
 		_nPosData:=Len(aItem)
-		aAdd(aItem,If((_cAlias)->D3_I_ORIGE="MATA103"," S"," N"))                  //05
-		aAdd(aItem,TRANSF((_cAlias)->D3_QUANT, _cPicTotal))                        //06
+		AAdd(aItem,If((_cAlias)->D3_I_ORIGE="MATA103"," S"," N"))                  //05
+		AAdd(aItem,TRANSF((_cAlias)->D3_QUANT, _cPicTotal))                        //06
 		_nPosQtde:=Len(aItem)
-		aAdd(aItem,TRANSF((_cAlias)->D3_CUSTO1,_cPicTotal))                        //07
+		AAdd(aItem,TRANSF((_cAlias)->D3_CUSTO1,_cPicTotal))                        //07
 		_nPosTotal:=Len(aItem)//Posicao da coluna de total    
-		aAdd(aItem,(_cAlias)->CP_SOLICIT)                                          //08
-		aAdd(aItem,cObs1)                                                          //09
+		AAdd(aItem,(_cAlias)->CP_SOLICIT)                                          //08
+		AAdd(aItem,cObs1)                                                          //09
       _nPosOBS:=Len(aItem)  //Posicao da coluna Descricao
-		aAdd(aItem,(_cAlias)->D3_FILIAL+(_cAlias)->D3_CC)                          //10
+		AAdd(aItem,(_cAlias)->D3_FILIAL+(_cAlias)->D3_CC)                          //10
 		_nPosQbra :=Len(aItem)//Posicao da Quebra DE FIL + CC
-		aAdd(aItem,Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D3_CC,"CTT_DESC01"))//11
-		aAdd(aItem,(_cAlias)->D3_CUSTO1)                                           //12
+		AAdd(aItem,Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D3_CC,"CTT_DESC01"))//11
+		AAdd(aItem,(_cAlias)->D3_CUSTO1)                                           //12
 
 		_nTotal+=(_cAlias)->D3_CUSTO1
 
-		aAdd(aDados,aItem)
+		AAdd(aDados,aItem)
       aItemE:=ACLONE(aItem)
-      ASIZE(aItemE,(_nPosQbra+1)) //POE PARA O Tamanho do Cabeçalho  do Excel
-		aAdd(_aGerExcel,aItemE)
+      ASize(aItemE,(_nPosQbra+1)) //POE PARA O Tamanho do Cabeçalho  do Excel
+		AAdd(_aGerExcel,aItemE)
       _aGerExcel[Len(_aGerExcel),_nPosData ]:=SToD((_cAlias)->D3_EMISSAO)
       _aGerExcel[Len(_aGerExcel),_nPosQtde ]:=(_cAlias)->D3_QUANT
       _aGerExcel[Len(_aGerExcel),_nPosTotal]:=(_cAlias)->D3_CUSTO1
@@ -686,42 +669,42 @@ While (_cAlias)->(!Eof())
     
 		If !Empty(cObs2)
 		   aItem:={}//{"Nr.S.A.","Produto Descricao","Data","AD","Entregue Bx","Custo Total","Usr SA","OBS"}
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-		   aAdd(aItem,cObs2)
-		   aAdd(aItem,(_cAlias)->D3_FILIAL+(_cAlias)->D3_CC)                          //10
-		   aAdd(aItem,Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D3_CC,"CTT_DESC01"))//11
-   		aAdd(aItem,0)
-		   aAdd(aDados,aItem)
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+		   AAdd(aItem,cObs2)
+		   AAdd(aItem,(_cAlias)->D3_FILIAL+(_cAlias)->D3_CC)                          //10
+		   AAdd(aItem,Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D3_CC,"CTT_DESC01"))//11
+   		AAdd(aItem,0)
+		   AAdd(aDados,aItem)
 		EndIf
 		If !Empty(cObs3)
 		   aItem:={}//{"Nr.S.A.","Produto Descricao","Data","AD","Entregue Bx","Custo Total","Usr SA","OBS"}
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-		   aAdd(aItem,cObs3)
-		   aAdd(aItem,(_cAlias)->D3_FILIAL+(_cAlias)->D3_CC)                          //10
-		   aAdd(aItem,Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D3_CC,"CTT_DESC01"))//11
-   		aAdd(aItem,0)
-		   aAdd(aDados,aItem)
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+   		AAdd(aItem,"")
+		   AAdd(aItem,cObs3)
+		   AAdd(aItem,(_cAlias)->D3_FILIAL+(_cAlias)->D3_CC)                          //10
+		   AAdd(aItem,Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D3_CC,"CTT_DESC01"))//11
+   		AAdd(aItem,0)
+		   AAdd(aDados,aItem)
 		EndIf
 		
-	   aAdd(_aAnaliTotal , { (_cAlias)->D3_FILIAL , (_cAlias)->D3_CC , _cEmail , (_cAlias)->D3_CUSTO1 , "REST011", 0 } )
+	   AAdd(_aAnaliTotal , { (_cAlias)->D3_FILIAL , (_cAlias)->D3_CC , _cEmail , (_cAlias)->D3_CUSTO1 , "REST011", 0 } )
 
 		If (nPos:=aScan(_aDadosTotal,{ |T| T[1] == (_cAlias)->D3_FILIAL+(_cAlias)->D3_CC } ) ) = 0 
-		   aAdd( _aDadosTotal , {(_cAlias)->D3_FILIAL+(_cAlias)->D3_CC , Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D3_CC,"CTT_DESC01") , TRANSF((_cAlias)->D3_CUSTO1,_cPicTotal) , (_cAlias)->D3_CUSTO1} )
-         aAdd(  _aControle  , (_cAlias)->D3_FILIAL+(_cAlias)->D3_CC+_cEmail )
+		   AAdd( _aDadosTotal , {(_cAlias)->D3_FILIAL+(_cAlias)->D3_CC , Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D3_CC,"CTT_DESC01") , TRANSF((_cAlias)->D3_CUSTO1,_cPicTotal) , (_cAlias)->D3_CUSTO1} )
+         AAdd(  _aControle  , (_cAlias)->D3_FILIAL+(_cAlias)->D3_CC+_cEmail )
          _aAnaliTotal[Len(_aAnaliTotal),6]:=(_cAlias)->D3_CUSTO1
 		ElseIf aScan(_aControle ,(_cAlias)->D3_FILIAL+(_cAlias)->D3_CC+_cEmail) <> 0
          _aDadosTotal[nPos,4]+=(_cAlias)->D3_CUSTO1
@@ -730,34 +713,33 @@ While (_cAlias)->(!Eof())
 		EndIf    
 		
 	ElseIf _cTipo = "RCOM009"
-		
-      cObs1:=LEFT(   (_cAlias)->B1_DESC ,nTamB1)
+      cObs1:=Left(   (_cAlias)->B1_DESC ,nTamB1)
       cObs2:=SubStr( (_cAlias)->B1_DESC ,nTamB1+1 )
 
 		aItem:={}//{"Fornecedor","Quantidade","Documento","Dt.Dig.","Vlr. Unit.","Valor","Descricao"}
-		aAdd(aItem,(_cAlias)->RAZAO)                                                 //01
-		aAdd(aItem,TRANSF((_cAlias)->D1_QUANT,_cPicTotal))                           //02
+		AAdd(aItem,(_cAlias)->RAZAO)                                                 //01
+		AAdd(aItem,TRANSF((_cAlias)->D1_QUANT,_cPicTotal))                           //02
 		_nPosQtde:=Len(aItem)
-		aAdd(aItem,(_cAlias)->D1_DOC)                                                //03
-		aAdd(aItem,DToC(SToD((_cAlias)->D1_DTDIGIT)))                                //04
+		AAdd(aItem,(_cAlias)->D1_DOC)                                                //03
+		AAdd(aItem,DToC(SToD((_cAlias)->D1_DTDIGIT)))                                //04
 		_nPosData:=Len(aItem)
-		aAdd(aItem,TRANSF((_cAlias)->D1_VUNIT,_cPicTotal))                           //05
+		AAdd(aItem,TRANSF((_cAlias)->D1_VUNIT,_cPicTotal))                           //05
 		_nPosUNIT:=Len(aItem)
-		aAdd(aItem,TRANSF((_cAlias)->D1_TOTAL,_cPicTotal))                           //06
+		AAdd(aItem,TRANSF((_cAlias)->D1_TOTAL,_cPicTotal))                           //06
 		_nPosTotal:=Len(aItem)//Posicao da coluna de total
-		aAdd(aItem,cObs1)                                                            //07
+		AAdd(aItem,cObs1)                                                            //07
       _nPosOBS:=Len(aItem)  //Posicao da coluna Descricao
-		aAdd(aItem,(_cAlias)->D1_FILIAL+(_cAlias)->D1_CC)                            //08
+		AAdd(aItem,(_cAlias)->D1_FILIAL+(_cAlias)->D1_CC)                            //08
 		_nPosQbra :=Len(aItem)//Posicao da Quebra DE FIL + CC
-		aAdd(aItem,Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D1_CC,"CTT_DESC01"))  //09
-		aAdd(aItem,(_cAlias)->D1_TOTAL)							                          //10
+		AAdd(aItem,Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D1_CC,"CTT_DESC01"))  //09
+		AAdd(aItem,(_cAlias)->D1_TOTAL)							                          //10
 
 		_nTotal+=(_cAlias)->D1_TOTAL
 		
-		aAdd(aDados,aItem)
+		AAdd(aDados,aItem)
       aItemE:=ACLONE(aItem)
-      ASIZE(aItemE,(_nPosQbra+1)) //POE PARA O Tamanho do Cabeçalho do Excel
-		aAdd(_aGerExcel,aItemE)
+      ASize(aItemE,(_nPosQbra+1)) //POE PARA O Tamanho do Cabeçalho do Excel
+		AAdd(_aGerExcel,aItemE)
       _aGerExcel[Len(_aGerExcel),_nPosQtde ]:=(_cAlias)->D1_QUANT
       _aGerExcel[Len(_aGerExcel),_nPosData ]:=SToD((_cAlias)->D1_DTDIGIT)
       _aGerExcel[Len(_aGerExcel),_nPosUNIT ]:=(_cAlias)->D1_VUNIT
@@ -766,25 +748,25 @@ While (_cAlias)->(!Eof())
       _aGerExcel[Len(_aGerExcel),_nPosQbra ]:=(_cAlias)->D1_FILIAL+" "+(_cAlias)->D1_CC
 
 		If !Empty(cObs2)
-		   aItem:={}//{"Fornecedor","Quantidade","Documento","Dt.Dig.","Vlr. Unit.","Valor","Descricao"}
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-   		aAdd(aItem,"")
-		   aAdd(aItem,cObs2)
-		   aAdd(aItem,(_cAlias)->D1_FILIAL+(_cAlias)->D1_CC)                            //08
-		   aAdd(aItem,Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D1_CC,"CTT_DESC01"))  //09
-		   aAdd(aItem,0) 							                                            //10
-		   aAdd(aDados,aItem)
+         aItem:={}//{"Fornecedor","Quantidade","Documento","Dt.Dig.","Vlr. Unit.","Valor","Descricao"}
+         AAdd(aItem,"")
+         AAdd(aItem,"")
+         AAdd(aItem,"")
+         AAdd(aItem,"")
+         AAdd(aItem,"")
+         AAdd(aItem,"")
+         AAdd(aItem,cObs2)
+         AAdd(aItem,(_cAlias)->D1_FILIAL+(_cAlias)->D1_CC)                            //08
+         AAdd(aItem,Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D1_CC,"CTT_DESC01"))  //09
+         AAdd(aItem,0) 							                                            //10
+         AAdd(aDados,aItem)
 		EndIf
 
-	   aAdd(_aAnaliTotal , { (_cAlias)->D1_FILIAL , (_cAlias)->D1_CC, _cEmail  , (_cAlias)->D1_TOTAL , "RCOM009" , 0} )
+	   AAdd(_aAnaliTotal , { (_cAlias)->D1_FILIAL , (_cAlias)->D1_CC, _cEmail  , (_cAlias)->D1_TOTAL , "RCOM009" , 0} )
 
 		If (nPos:=aScan(_aDadosTotal,{ |T| T[1] == (_cAlias)->D1_FILIAL+(_cAlias)->D1_CC } ) ) = 0 
-		   aAdd( _aDadosTotal , {(_cAlias)->D1_FILIAL+(_cAlias)->D1_CC , Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D1_CC,"CTT_DESC01") , TRANSF((_cAlias)->D1_TOTAL,_cPicTotal) , (_cAlias)->D1_TOTAL} )
-         aAdd(  _aControle , (_cAlias)->D1_FILIAL+(_cAlias)->D1_CC+_cEmail )
+		   AAdd( _aDadosTotal , {(_cAlias)->D1_FILIAL+(_cAlias)->D1_CC , Posicione("CTT",1,xFilial("CTT")+(_cAlias)->D1_CC,"CTT_DESC01") , TRANSF((_cAlias)->D1_TOTAL,_cPicTotal) , (_cAlias)->D1_TOTAL} )
+         AAdd(  _aControle , (_cAlias)->D1_FILIAL+(_cAlias)->D1_CC+_cEmail )
          _aAnaliTotal[Len(_aAnaliTotal),6]:=(_cAlias)->D1_TOTAL
 		ElseIf aScan(_aControle , (_cAlias)->D1_FILIAL+(_cAlias)->D1_CC+_cEmail) <> 0
          _aDadosTotal[nPos,4]+=(_cAlias)->D1_TOTAL
@@ -793,7 +775,7 @@ While (_cAlias)->(!Eof())
 		EndIf    
 		
 	EndIf
-	
+
 	(_cAlias)->( DBSkip() )
 EndDo
 		
@@ -810,23 +792,26 @@ Descrição---------: Função para imprimir os dados
 Parametros--------: _oPrint := Objeto de impressão do relatório
 ------------------: _nLinha := Controle de posicionamento de linhas
 Retorno-----------: Nenhum
-===============================================================================================================================*/
-Static Function REST013CMP( _oPrint )
+===============================================================================================================================
+*/
+Static Function REST013CMP(_oPrint As Object)
 
-Local _aResumo	:= {}
-Local L , C
-Local _nColIni	:= 0100
-Local _nLinha   := 0
-Local _nTotFOR  := 0
+Local _aResumo	:= {} As Array
+Local _nI      := 0 As Numeric
+Local _nX      := 0 As Numeric
+Local _nColIni	:= 0100 As Numeric
+Local _nLinha   := 0 As Numeric
+Local _nTotFOR  := 0 As Numeric
 //Configuracoes para "Exporta para PDF" / Envio via e-mail
-Local _oFont14 	 := TFont():New( "Arial"	 ,, 14,,.T.)
-Local _oFontCour := TFont():New('Courier new',, 12,,.F.)
-Local _oFont1Cour:= TFont():New('Courier new',, 12,,.T.)
-Private _nColMax	:= 3280 //ULTIMA COLUNA
-Private _nColFimPDH := _nColMax-940//Pagina,Data e hora
+Local _oFont14 	 := TFont():New( "Arial"	 ,, 14,,.T.) As Object
+Local _oFontCour := TFont():New('Courier new',, 12,,.F.) As Object
+Local _oFont1Cour:= TFont():New('Courier new',, 12,,.T.) As Object
+
+Private _nColMax	:= 3280 As Numeric//ULTIMA COLUNA
+Private _nColFimPDH := _nColMax-940 As Numeric//Pagina,Data e hora
 //Configuracoes para "Exporta para PDF" / Envio via e-mail
-Private _nLinMax	:= 2180 //LINHA MAXIMA PARA QUEBRA
-Private _aPosicao:= {}//Preenchida na REST013Sub()
+Private _nLinMax	:= 2180 As Numeric //LINHA MAXIMA PARA QUEBRA
+Private _aPosicao:= {} As Array//Preenchida na REST013Sub()
 
 If !_lSchedule .And. !(_oPrint:CPRINTER == "PDF")// _oPrint:CPRINTER == "PDF" quer dizer Exporta PDF via seleção na Tela
    //**** Configuracoes para "Envia para Spool de impressao **********************************************************************************
@@ -855,44 +840,37 @@ Else
    _nTotFOR:=Len(_aResumo[1])
 EndIf   
 
-For L := 1 to Len(_aResumo)
-		
+For _nX := 1 To Len(_aResumo)
 	If _nLinha >= _nLinMax
-		
 		_oPrint:Line( _nLinha , _nColIni , _nLinha , _nColMax )
-		
 		_oPrint:EndPage()
 		_oPrint:StartPage()
 		
 		REST013CAB( @_oPrint , @_nLinha  , _nColIni)
     	REST013Sub(_nColIni,_oPrint,@_nLinha,_oFont14)
-		
 	EndIf
 
 	If _cTipo <> "TOTAL"
-		If _cSalvaCC <> _aResumo[L,_nPosQbra]//QUEBRA DE TOTOAL POR CC
+		If _cSalvaCC <> _aResumo[_nX,_nPosQbra]//QUEBRA DE TOTOAL POR CC
 	        _nLinha -= 025
 			_oPrint:Line( _nLinha , _nColIni , _nLinha , _nColMax )
 			_nLinha += 040
-			_oPrint:Say( _nLinha,_aPosicao[1],"TOTAL "+SubStr(_aResumo[L-1,_nPosQbra],1,2)+"-"+SubStr(_aResumo[L-1,_nPosQbra],3)+"-"+_aResumo[L-1,_nPosQbra+1],_oFont1Cour )
+			_oPrint:Say( _nLinha,_aPosicao[1],"TOTAL "+SubStr(_aResumo[_nX-1,_nPosQbra],1,2)+"-"+SubStr(_aResumo[_nX-1,_nPosQbra],3)+"-"+_aResumo[_nX-1,_nPosQbra+1],_oFont1Cour)
 			_oPrint:Say( _nLinha,_aPosicao[_nPosTotal],TRANSF(_nTotalQBG,_cPicTotal),_oFont1Cour )
 			_nTotalQBG:=0
-			_cSalvaCC :=_aResumo[L,_nPosQbra]
-			_nTotalQBG+=_aResumo[L,_nPosQbra+2]
+			_cSalvaCC :=_aResumo[_nX,_nPosQbra]
+			_nTotalQBG+=_aResumo[_nX,_nPosQbra+2]
 	        _nLinha += 080
 		Else
-			_nTotalQBG+=_aResumo[L,_nPosQbra+2]
+			_nTotalQBG+=_aResumo[_nX,_nPosQbra+2]
 		EndIf
 	EndIf
 
-    For C := 1 TO _nTotFOR
-
-        _oPrint:Say( _nLinha,_aPosicao[C],_aResumo[L,C],_oFontCour )
-	         
-    Next C
+    For _nI := 1 To _nTotFOR
+        _oPrint:Say( _nLinha,_aPosicao[_nI],_aResumo[_nX,_nI],_oFontCour )
+    Next _nI
 	_nLinha += 050
-
-Next L
+Next _nX
 
 If _cTipo <> "TOTAL"
 	_oPrint:Line( _nLinha , _nColIni , _nLinha , _nColMax )
@@ -920,9 +898,10 @@ Parametros--------: _oPrint := Objeto de impressão do relatório
 Retorno-----------: Nenhum
 ===============================================================================================================================
 */
-Static Function REST013CAB( _oPrint , _nLinha , _nColIni )
-Local _oFont10	:= TFont():New( "Arial" ,, 14 ,,.T. )
-Local _oFont18	:= TFont():New( "Arial" ,, 28 ,,.T. )
+Static Function REST013CAB(_oPrint As Object, _nLinha As Numeric, _nColIni As Numeric)
+
+Local _oFont10	:= TFont():New( "Arial" ,, 14 ,,.T. ) As Object
+Local _oFont18	:= TFont():New( "Arial" ,, 28 ,,.T. ) As Object
 
 _nLinha := 50
 _nPagAux++
@@ -975,6 +954,7 @@ _oPrint:Line( _nLinha , _nColIni , _nLinha, _nColMax )
 _nLinha += 040
 
 Return
+
 /*
 ===============================================================================================================================
 Programa----------: REST013Sub()
@@ -985,13 +965,13 @@ Parametros--------:
 Retorno-----------: Nenhum
 ===============================================================================================================================
 */
-Static Function REST013Sub(_nColIni,_oPrint,_nLinha,_oFont14)
+Static Function REST013Sub(_nColIni As Numeric,_oPrint As Object,_nLinha As Numeric,_oFont14 As Object) As Logical
 
-Local aTitulo:={aTit1,aTit2,aTit3} , R 
-Local nTipo:=1
+Local aTitulo:={aTit1,aTit2,aTit3} As Array
+Local _nX := 0 As Numeric 
+Local nTipo:=1 As Numeric
+
 _aPosicao:={}
-
-//If  _lSchedule .Or. _oPrint:CPRINTER == "PDF"//_oPrint:CPRINTER == "PDF" quer dizer Exporta PDF via tela
 
 If _cTipo = "REST011"
 //aTit1:={"Nr.S.A.","Produto","Descricao","Data","Entregue","Custo Total","Usr SA","OBS"}
@@ -1004,15 +984,15 @@ If _cTipo = "REST011"
 	_nCol007:= _nCol006 + 0250 //Usr SA
 	_nCol008:= _nCol007 + 0190 //OBS
 	
-	aAdd(_aPosicao,_nColIni)//Nr.S.A.
-	aAdd(_aPosicao,_nCol002)
-	aAdd(_aPosicao,_nCol003)
-	aAdd(_aPosicao,_nCol004)
-	aAdd(_aPosicao,_nCol00A)
-	aAdd(_aPosicao,_nCol005)
-	aAdd(_aPosicao,_nCol006)
-	aAdd(_aPosicao,_nCol007)
-	aAdd(_aPosicao,_nCol008)
+	AAdd(_aPosicao,_nColIni)//Nr.S.A.
+	AAdd(_aPosicao,_nCol002)
+	AAdd(_aPosicao,_nCol003)
+	AAdd(_aPosicao,_nCol004)
+	AAdd(_aPosicao,_nCol00A)
+	AAdd(_aPosicao,_nCol005)
+	AAdd(_aPosicao,_nCol006)
+	AAdd(_aPosicao,_nCol007)
+	AAdd(_aPosicao,_nCol008)
 	
 ElseIf _cTipo = "RCOM009"
 //aTit2:={"Fornec","Rz.Social","Qtd.","Documento","Dt.Dig.","Vlr. Unit.","Valor","Descricao"}
@@ -1024,35 +1004,33 @@ ElseIf _cTipo = "RCOM009"
 	_nCol006:= _nCol005 + 0250
 	_nCol007:= _nCol006 + 0250
 	
-	aAdd(_aPosicao,_nColIni)
-	aAdd(_aPosicao,_nCol002)
-	aAdd(_aPosicao,_nCol003)
-	aAdd(_aPosicao,_nCol004)
-	aAdd(_aPosicao,_nCol005)
-	aAdd(_aPosicao,_nCol006)
-	aAdd(_aPosicao,_nCol007)
+	AAdd(_aPosicao,_nColIni)
+	AAdd(_aPosicao,_nCol002)
+	AAdd(_aPosicao,_nCol003)
+	AAdd(_aPosicao,_nCol004)
+	AAdd(_aPosicao,_nCol005)
+	AAdd(_aPosicao,_nCol006)
+	AAdd(_aPosicao,_nCol007)
 	
 ElseIf _cTipo = "TOTAL"
 //aTit3:={"Fil Cod. CC","Centro de Custo","Custo Total"}	
 	nTipo:=3
 	_nCol002:= _nColIni + 0300
 	_nCol003:= _nCol002 + 0800
-	aAdd(_aPosicao,_nColIni)
-	aAdd(_aPosicao,_nCol002)
-	aAdd(_aPosicao,_nCol003)
+	AAdd(_aPosicao,_nColIni)
+	AAdd(_aPosicao,_nCol002)
+	AAdd(_aPosicao,_nCol003)
 	
 EndIf
-//EndIf
 
-For R := 1 TO Len(aTitulo[nTipo]) //Os titulos que determinam quantas colunas serão impressao
-
-    _oPrint:Say( _nLinha,_aPosicao[R],aTitulo[nTipo,R],_oFont14 )
-
+For _nX := 1 To Len(aTitulo[nTipo]) //Os titulos que determinam quantas colunas serão impressao
+    _oPrint:Say( _nLinha,_aPosicao[_nX],aTitulo[nTipo,_nX],_oFont14 )
 Next
 
 _nLinha += 050
 		
 Return .T.
+
 /*
 ===============================================================================================================================
 Programa----------: REST013NameFile()
@@ -1063,16 +1041,15 @@ Parametros--------: Ccarga - numero da carga que será usado como parte do nome d
 Retorno-----------: Nenhum
 ===============================================================================================================================
 */
-Static Function REST013NameFile()
-Local	cFileName	:=	Nil
-Local	cAux		:=	Nil
+Static Function REST013NameFile() As Character
+
+Local	cFileName	:=	'' As Character
+Local	cAux		   :=	'' As Character
 
 cFileName:="REST013_"
 cFileName+=DToS( Date() ) + "_"
-
 cAux:=Time()
 cAux:=StrTran( cAux , ":" , "" )
-
 cFileName:=cFileName+cAux+".pdf"
 
 Return cFileName
@@ -1087,11 +1064,12 @@ Parametros--------: Nenhum
 Retorno-----------: Nenhum
 ==============================================================================================================================================================
 */
-Static Function REST013Select()
-Local _cFiltro := "" 
+Static Function REST013Select() As Logical
+
+Local _cFiltro := "" As Character 
+Local _cQuery  := "" As Character
 
 If _cTipo = "REST011"
-	
 	If !Empty(DToS(MV_PAR02))
 	   _cFiltro += " D3_EMISSAO >= '" + DToS(MV_PAR01) + "' AND "
 	   _cFiltro += " D3_EMISSAO <= '" + DToS(MV_PAR02) + "' AND "
@@ -1110,27 +1088,21 @@ If _cTipo = "REST011"
 	   If !Empty(MV_PAR07) 
          _cFiltro += " OR "
       EndIf   
-
 		_cFiltro += " SubStr(D3_FILIAL||D3_CC,1,7) IN "+FormatIn(_c7CCSintet,";")
-	   
 	EndIf
 
    If !Empty(_c6CCSintet)
 	   If !Empty(MV_PAR07) .Or. !Empty(_c7CCSintet)
          _cFiltro += " OR "
-      EndIf   
-
+      EndIf
 		_cFiltro += " SubStr(D3_FILIAL||D3_CC,1,6) IN "+FormatIn(_c6CCSintet,";")
-	   
 	EndIf
 
    If !Empty(_c5CCSintet)
 	   If !Empty(MV_PAR07) .Or. !Empty(_c7CCSintet) .Or. !Empty(_c6CCSintet)
          _cFiltro += " OR "
-      EndIf   
-
+      EndIf
 		_cFiltro += " SubStr(D3_FILIAL||D3_CC,1,5) IN "+FormatIn(_c5CCSintet,";")
-	   
 	EndIf
 
 	If !Empty(MV_PAR07) .Or. !Empty(_c7CCSintet) .Or. !Empty(_c6CCSintet) .Or. !Empty(_c5CCSintet)
@@ -1148,9 +1120,7 @@ If _cTipo = "REST011"
 	_cQuery+="    SD3.D3_ESTORNO <> 'S' AND "
 	_cQuery+="    SCP.D_E_L_E_T_ = ' '  AND "
 	_cQuery+="    SD3.D_E_L_E_T_ = ' '  "
-//	_cQuery+="   ORDER BY D3_CC, D3_EMISSAO"
 	_cQuery+=" UNION ALL "
-
 	_cQuery+=" SELECT  D3_FILIAL,D3_NUMSA,D3_COD,    B1_DESC,  D3_USUARIO,D3_QUANT,D3_CUSTO1,D3_EMISSAO,D3_I_OBS,D3_CC,D3_I_ORIGE "
 	_cQuery+="  FROM "+RetSQLName('SD3')+" SD3 "
 	_cQuery+="  JOIN "+RetSQLName('SB1')+" SB1 ON D3_COD = B1_COD "
@@ -1160,11 +1130,9 @@ If _cTipo = "REST011"
 	_cQuery+="    SB1.D_E_L_E_T_  = ' ' AND "
 	_cQuery+="    SD3.D_E_L_E_T_  = ' '     "
 	_cQuery+="   ORDER BY D3_CC, D3_EMISSAO"
-
-    DBUseArea( .T. , "TOPCONN" , TcGenQry(,, _cQuery ) , _cAlias , .T. , .F. )
-	
+   MPSysOpenQuery(ChangeQuery(_cQuery),_cAlias)
+   
 ElseIf _cTipo = "RCOM009"
-	
 	If !Empty(MV_PAR04)
 	   _cFiltro  += " SD1.D1_GRUPO >= '" + MV_PAR03 + "' AND "
 	   _cFiltro  += " SD1.D1_GRUPO <= '" + MV_PAR04 + "' AND "
@@ -1187,39 +1155,28 @@ ElseIf _cTipo = "RCOM009"
    EndIf
 
 	If !Empty(MV_PAR18) 
-
 		_cFiltro += " D1_FILIAL||D1_CC  IN "+FormatIn(MV_PAR18,";")
-   
    EndIf
 
    If !Empty(_c7CCSintet)
-
 	   If !Empty(MV_PAR18) 
          _cFiltro += " OR "
-      EndIf   
-
+      EndIf
 		_cFiltro += " SubStr(D1_FILIAL||D1_CC,1,7) IN "+FormatIn(_c7CCSintet,";")
-	   
 	EndIf
 
    If !Empty(_c6CCSintet)
-
 	   If !Empty(MV_PAR18) .Or. !Empty(_c7CCSintet)
          _cFiltro += " OR "
-      EndIf   
-
+      EndIf
 		_cFiltro += " SubStr(D1_FILIAL||D1_CC,1,6) IN "+FormatIn(_c6CCSintet,";")
-	   
 	EndIf
 
    If !Empty(_c5CCSintet)
-
 	   If !Empty(MV_PAR18) .Or. !Empty(_c7CCSintet) .Or. !Empty(_c6CCSintet)
          _cFiltro += " OR "
-      EndIf   
-
+      EndIf
 		_cFiltro += " SubStr(D1_FILIAL||D1_CC,1,5) IN "+FormatIn(_c5CCSintet,";")
-	   
 	EndIf
 
    If !Empty(MV_PAR18) .Or. !Empty(_c7CCSintet) .Or. !Empty(_c6CCSintet).OR. !Empty(_c5CCSintet)
@@ -1243,8 +1200,7 @@ ElseIf _cTipo = "RCOM009"
 	_cQuery+="      SD1.D_E_L_E_T_ = ' ' AND "
 	_cQuery+="      SB1.D_E_L_E_T_ = ' ' "
 	_cQuery+="   ORDER BY D1_CC, D1_DTDIGIT, D1_DOC "
-		
-    DBUseArea( .T. , "TOPCONN" , TcGenQry(,, _cQuery ) , _cAlias , .T. , .F. )	
+   MPSysOpenQuery(ChangeQuery(_cQuery),_cAlias)	
 EndIf
 
 Return .T.
@@ -1259,30 +1215,31 @@ Parametros--------: bExecuta
 Retorno-----------: Nenhum
 ==============================================================================================================================================================
 */
-Static Function REST013Email(bExecuta)
+Static Function REST013Email(bExecuta As CodeBlock) As Logical
 
-Local _cEmlLog := "" , C
-Local _aConfig := U_ITCFGEML('')
-Local _cMsgEml := ""
-Local _cEnvPor := ""  
-Local _ntamanho:= _nI:=0
-Local _lAutSalv:= _lSchedule
-Local cEmailCo := ""
+Local _cEmlLog := "" As Character
+Local _aConfig := U_ITCFGEML('') As Array
+Local _cMsgEml := "" As Character
+Local _cEnvPor := "" As Character
+Local _ntamanho:= 0 As Numeric
+Local _nI      := 0 As Numeric
+Local _lAutSalv:= _lSchedule As Logical
+Local cEmailCo := "" As Character
 
-Private _cArqExcel:=StrTran(Upper(_cFileName),".PDF",".XLSX")
-Private _cArqAnali:=StrTran(Upper(_cFileName),".PDF","")+"Ana.XLSX"
+Private _cArqExcel:=StrTran(Upper(_cFileName),".PDF",".XLSX") As Character
+Private _cArqAnali:=StrTran(Upper(_cFileName),".PDF","")+"Ana.XLSX" As Character
 
 While _nI <= 5 .And. _ntamanho == 0//Verifica se gerou pdf com tamanho maior que zero, em caso de erro repete o relatório até 5 vezes
 	_ntamanho := 0
 	_adatfile := {}
-	If FILE(_cFileName)
+	If File(_cFileName)
 		_adatfile := directory(_cFileName)
 		_ntamanho := _adatfile[1][2]
 	EndIf
     FWLogMsg("INFO"/*cSeverity*/, /*cTransactionId*/, "REST013"/*cGroup*/, FunName()/*cCategory*/, /*cStep*/, "REST01303"/*cMsgId*/, "REST01303 - Envio de E-mail do Arquivo: "+If(FILE(_cFileName),"","NAO")+ " achou " + _cFilename + " com tamanho  " + TRANSF(_ntamanho,"@E 999,999")/*cMessage*/, /*nMensure*/, /*nElapseTime*/, /*aMessage*/)
 	If _ntamanho = 0
       FWLogMsg("INFO"/*cSeverity*/, /*cTransactionId*/, "REST013"/*cGroup*/, FunName()/*cCategory*/, /*cStep*/, "REST01304"/*cMsgId*/, "REST01304 - Tentativa "+Str(_nI+1,1)+" de Gerar "+_cAssunto/*cMessage*/, /*nMensure*/, /*nElapseTime*/, /*aMessage*/)
-		ferase(_cFileName)
+		FErase(_cFileName)
  	   _lSchedule:=.T.
       _aGerExcel:={}//ZERA PARA NÃO DUPLICAR CADA VEZ QUE PASSAR
 		EVAL(bExecuta)
@@ -1306,9 +1263,9 @@ _cMsgEml += '<body>'
 _cMsgEml += '<style Type="text/css"><!--'
 _cMsgEml += 'table.bordasimples { border-collapse: collapse; }'
 _cMsgEml += 'table.bordasimples tr td { border:1px solid #777777; }'
-_cMsgEml += 'td.titulos	{ font-family:VERDANA; font-size:12px; V-align:middle; margin-right: 15px; margin-left: 15px; background-color: #C6E2FF; }'
-_cMsgEml += 'td.grupos	{ font-family:VERDANA; font-size:12px; V-align:middle; margin-right: 15px; margin-left: 15px; background-color: #E5E5E5; }'
-_cMsgEml += 'td.itens	{ font-family:VERDANA; font-size:12px; V-align:middle; margin-right: 15px; margin-left: 15px; background-color: #FFFFFF; }'
+_cMsgEml += 'td.titulos	{ font-family:VERDANA; font-size:12px; V-align:middle; margin-right: 15px; margin-Left: 15px; background-color: #C6E2FF; }'
+_cMsgEml += 'td.grupos	{ font-family:VERDANA; font-size:12px; V-align:middle; margin-right: 15px; margin-Left: 15px; background-color: #E5E5E5; }'
+_cMsgEml += 'td.itens	{ font-family:VERDANA; font-size:12px; V-align:middle; margin-right: 15px; margin-Left: 15px; background-color: #FFFFFF; }'
 _cMsgEml += '--></style>'
 _cMsgEml += '<center>'
 _cMsgEml += '<img src="http://www.italac.com.br/wf/italac-wf.jpg" width="600" height="50"><br>'
@@ -1343,14 +1300,14 @@ _cMsgEml += '      <td class="grupos" align="center" ><b>Descrição</b></td>'
 _cMsgEml += '    </tr>'
 
 _aCC:=StrTokArr(_cCentro,";")
-For C := 1 TO Len(_aCC)
-	If !Empty(_aCC[C])
+For _nI := 1 To Len(_aCC)
+	If !Empty(_aCC[_nI])
 		_cMsgEml += '    <tr>'
-		_cMsgEml += '      <td class="itens" align="center" width="30%">'+ SubStr(_aCC[C],1,2)+" / "+SubStr(_aCC[C],3) +'</td>'
-		_cMsgEml += '      <td class="itens" >'+ Posicione("CTT",1,xFilial("CTT")+SubStr(_aCC[C],3),"CTT_DESC01") +'</td>'
+		_cMsgEml += '      <td class="itens" align="center" width="30%">'+ SubStr(_aCC[_nI],1,2)+" / "+SubStr(_aCC[_nI],3) +'</td>'
+		_cMsgEml += '      <td class="itens" >'+ Posicione("CTT",1,xFilial("CTT")+SubStr(_aCC[_nI],3),"CTT_DESC01") +'</td>'
 		_cMsgEml += '    </tr>'
 	EndIf
-Next
+Next _nI
 
 _cMsgEml += '	<tr>'
 _cMsgEml += '		<td class="grupos" align="center" colspan="2"><b>Para maiores informações acesse o arquivo anexo.</b></td>'
@@ -1374,7 +1331,7 @@ If _lMensal
    _aGerExcel:=aSort(_aGerExcel,,,{|x,y| x[4] > y[4] })
 Else
    _cAssunto+= " - SEMANAL"
-EndIf   
+EndIf
 
 //TESTA DENTRO DA FUNÇÃO REST13GEREXCEL() SE A ARRAY _aGerExcel ESTA ZERADA
 _cEmailAux:=_cEmail
@@ -1391,12 +1348,12 @@ Else
    EndIf
 EndIf   
 If _lMensal
-   If FILE(_cArqAnali)
+   If File(_cArqAnali)
       _cFileName:=_cFileName+";"+_cArqAnali
    EndIf
 EndIf
 //SE DENTRO DA FUNÇÃO REST13GEREXCEL() A ARRAY _aGerExcel CHEGAR ZERADA DEVOLVE A VARIAVEL _cArqExcel = ""
-If FILE(_cArqExcel)
+If File(_cArqExcel)
    _cFileName:=_cFileName+";"+_cArqExcel
 EndIf
 
@@ -1408,16 +1365,14 @@ Else
 EndIf
 
 If !Empty( _cEmlLog )
-
    cMensagem+=_cAssunto+" - "+_cEmlLog+ " - E-mail para: " + _cEmail+" - "+cEmailCo+" - Com anexo " + AllTrim(_cfileName) + " - PDF com tamanho de " + TRANSF(_ntamanho,"@E 9,999,999")+CHR(13)+CHR(10)
-   aAdd(_aResultado,{_cFilial,"E-MAIL",TRANSF(Len(_aGerExcel),"@E 999,999"),_cEmail,_cCentro,_cAssunto+": "+_cEmlLog+ " Com anexo " + AllTrim(_cfileName) + ", PDF com tamanho de "+AllTrim(TRANSF(_ntamanho,"@E 9,999,999"))})
-   
+   AAdd(_aResultado,{_cFilial,"E-MAIL",TRANSF(Len(_aGerExcel),"@E 999,999"),_cEmail,_cCentro,_cAssunto+": "+_cEmlLog+ " Com anexo " + AllTrim(_cfileName) + ", PDF com tamanho de "+AllTrim(TRANSF(_ntamanho,"@E 9,999,999"))})
 EndIf
 
-If _cFileName # nil .And. FILE(_cFileName)
+If _cFileName # Nil .And. File(_cFileName)
    FErase(_cFileName)
 EndIf
-If _cArqExcel # nil .And. FILE(_cArqExcel)
+If _cArqExcel # Nil .And. File(_cArqExcel)
    FErase(_cArqExcel)
 EndIf
 
@@ -1433,9 +1388,9 @@ Parametros--------: _cPathSrv,_cArquivo,_aCabExcel,_aGerExcel
 Retorno-----------: _cPathSrv+_cArquivo+".xlsx"
 ===============================================================================================================================
 */
-Static Function REST13GerExcel(_cPathSrv,_cArquivo,_aCabExcel,_aGerExcel)
+Static Function REST13GerExcel(_cPathSrv As Character,_cArquivo As Character,_aCabExcel As Array,_aGerExcel As Array) As Character
 
-Local _cNomePlan:="SEMANAL"
+Local _cNomePlan := "SEMANAL" As Character
 
 If Len(_aCabExcel) = 0 .Or. Len(_aGerExcel) = 0//TESTA AQUI SE TÁ ZERADO 
    Return ""
@@ -1453,7 +1408,7 @@ U_ITGEREXCEL(_cArquivo,_cPathSrv  ,_cAssunto,_cNomePlan,_aCabExcel ,_aGerExcel, 
 If Empty(_cPathSrv)
    _cPathSrv:="/"//COLOCA A BARRA DE VOLTA PQ TIROU ANTES 
 EndIf
-If FILE(_cPathSrv+_cArquivo) 
+If File(_cPathSrv+_cArquivo)
    Return (_cPathSrv+_cArquivo)
 EndIf
 
