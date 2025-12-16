@@ -647,7 +647,7 @@ DEFINE MSDIALOG oDlg TITLE "Geração de Arquivo" FROM 0,0 To 060,552 OF oDlg PIXE
 
 @005,005 Say "Diretório de Destino:"	SIZE 065,010 PIXEL OF oDlg
 @014,005 MSGET cDir PICTURE "@!"		SIZE 195,010 PIXEL OF oDlg
-@014,200 BUTTON "..."					SIZE 013,012 PIXEL OF oDlg ACTION cDir := cGetFile( "\" , "Selecione o Diretorio de Destino:" ,,,, GETF_RETDIRECTORY+GETF_LOCALHARD+GETF_NETWORKDRIVE )
+@014,200 BUTTON "..."					SIZE 013,012 PIXEL OF oDlg ACTION cDir := tFileDialog( "\", "Selecione o Diretorio de Destino:" ,,, .T., GETF_RETDIRECTORY+GETF_LOCALHARD) 
 
 @004,245 BUTTON "&Ok"					SIZE 030,011 PIXEL OF oDlg ACTION ( IIf( Empty(cDir) , U_ITMsg("É obrigatório informar um diretório!","Atenção!",,1) , ( nOpc := 1 , oDlg:End() ) ) )
 @016,245 BUTTON "&Cancelar"				SIZE 030,011 PIXEL OF oDlg ACTION ( nOpc := 0 , oDlg:End() )
@@ -7480,7 +7480,7 @@ Retorno-----------: Nenhum
 */
 User Function SAVCAN( _cFilial, _cNota )
 
-Local _cDir := cGetFile( "\" , "Selecione o Diretorio de Destino:" ,,,, GETF_RETDIRECTORY+GETF_LOCALHARD+GETF_NETWORKDRIVE)
+Local _cDir := tFileDialog( "\", "Selecione o Diretorio de Destino:" ,,, .T., GETF_RETDIRECTORY+GETF_LOCALHARD)
 
 If Empty(_cDir)
 	U_ITMsg("Operação cancelada!","Atenção",,1)
@@ -8372,7 +8372,7 @@ Local lOk      := .T.
 Local cTexto   := ""
 	
 //Pegando o caminho do arquivo
-_cDir := cGetFile( "\" , "Selecione o Diretorio de Destino:" ,,,, GETF_RETDIRECTORY+GETF_LOCALHARD+GETF_NETWORKDRIVE)
+_cDir := tFileDialog( "\", "Selecione o Diretorio de Destino:" ,,, .T., GETF_RETDIRECTORY+GETF_LOCALHARD) 
 
 //Se o nome não estiver em branco    
 If !Empty(_cDir)
