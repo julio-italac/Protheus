@@ -1203,7 +1203,7 @@ Local _nI	:= 0
 
 Aviso( "Salvar Log em TXT" , "Este programa ira gerar um arquivo texto com o Log do processamento executado" , {"Ok"} , 1 , "Geração de Arquivo Texto" )
 
-_cArq := tFileDialog( "Documento Texto |*.TXT", OemToAnsi("Salvar Arquivo Como...") ,, "C:\", .T., GETF_MULTISELECT)
+_cArq := tFileDialog( "Documento Texto |*.TXT","Salvar Arquivo Como...",, "C:\", .T., GETF_LOCALHARD + GETF_RETDIRECTORY)
 
 If !Empty(_cArq)
 
