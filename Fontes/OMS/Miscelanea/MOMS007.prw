@@ -1,19 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
- Autor        |    Data    |                              Motivo                      										 
--------------------------------------------------------------------------------------------------------------------------------
-Jerry         | 04/12/2017 | Chamado 22757. Ajustes no Layout DO Relatório Recebimento Pedidos de Vendas via EDI
-Lucas Borges  | 11/10/2019 | Chamado 28346. Removidos os Warning na compilação da release 12.1.25
-Lucas Borges  | 22/04/2025 | Chamado 50505. Alterada a picture do CNPJ para contemplar campo alfanumérico
-====================================================================================================================================================================================================================
-Analista - Programador   - Inicio   - Envio    - Chamado - Motivo da Alteração
-====================================================================================================================================================================================================================
-Jerry    - Alex Wallauer - 19/05/25 - 19/05/225-  50743  - Correção de error.log: InterFunctionCall: cannot find function CLOSE in AppMap on IMPORTAPED(MOMS007.PRW) 23/04/2025 11:35:13 Line : 76
-====================================================================================================================================================================================================================
-*/
-
 #Include "TopConn.ch"
 #Include "TOTVS.ch"
 
@@ -48,7 +32,7 @@ DEFINE MSDIALOG oDlg TITLE "IMPORTAÇÃO DE ARQUIVOS DE PEDIDO DE COMPRA" FROM C(3
 
 	// Cria Componentes Padroes do Sistema
 	@ C(014),C(017) Say "Esta rotina ira efetuar a importação dos arquivos de pedidos de compra fornecidos pelos clientes para o sistema MICROSIGA gerando um relatório para inserção do pedido de venda para cada arquivo de pedido de compra do cliente, qualquer problema que ocorra nesta importação favor contactar o departamento de informática da ITALAC. É necessário que o usuário infomre o diretório onde os arquivos foram armazenados." Size C(233),C(038) COLOR CLR_BLACK PIXEL OF oDlg
-	@ C(078),C(110) Button "Localização Arquivos" Size C(052),C(012) PIXEL OF oDlg ACTION(cPath:=cGetFile("","SELECIONE O DIRETORIO ONDE SE ECONTRA OS PEDIDOS DO CLIENTE",,,.F.,GETF_LOCALHARD + GETF_RETDIRECTORY))
+	@ C(078),C(110) Button "Localização Arquivos" Size C(052),C(012) PIXEL OF oDlg ACTION(cPath:=tFileDialog("","SELECIONE O DIRETORIO ONDE SE ECONTRA OS PEDIDOS DO CLIENTE",,,.T.,GETF_LOCALHARD + GETF_RETDIRECTORY))
 	@ C(078),C(173) Button "Cancelar" Size C(045),C(012) PIXEL OF oDlg ACTION( oDlg:End() )
 	@ C(078),C(051) Button "Importar Pedidos" Size C(047),C(012) PIXEL OF oDlg ACTION(ImportaPed())
 

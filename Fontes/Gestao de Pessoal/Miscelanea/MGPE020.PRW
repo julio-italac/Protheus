@@ -70,13 +70,13 @@ Retorno-----------: cDir - Caminho do diretório selecionado
 User Function MGPE20DIR()
 
 While .T.
-   cDir := tFileDialog( "Documento Texto |*.TXT","Selecione o Diretorio de Destino:" ,, MV_PAR01, .T., GETF_MULTISELECT)
+   cDir := tFileDialog( "Documento Texto |*.TXT","Selecione o Diretorio de Destino:" ,, MV_PAR01, .T., GETF_LOCALHARD + GETF_RETDIRECTORY)
    cDir := AllTrim(cDir)
    If !Empty(cDir) .And. !ExistDir(cDir) //Verifica a existência do diretório e tenta criar caso não exista   
 		nCriaDir := MakeDir( cDir )
 		If nCriaDir <> 0
 			U_ITMsg("Não foi possível criar ou utilizar o diretório:"+ CRLF + CRLF + cDir,;
-					            "Alerta", " Verificar permissões para Gravação na Pasta de destino.",1)
+					"Alerta", " Verificar permissões para Gravação na Pasta de destino.",1)
 			Loop
 		EndIf
 	EndIf

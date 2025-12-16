@@ -1,5 +1,5 @@
-#Include "TOTVS.ch"
-#Include 'TOTVS.CH' 
+#Include 'TOTVS.CH'
+
 /*  
 ===============================================================================================================================
 Programa----------: MOMS053
@@ -39,7 +39,7 @@ User Function MOMS053()
        
     _bOK := {|aParam| MOMS053OK(aParam) }
 
-    cFile := tFileDialog( "*.csv|*.csv", "Selecao de Arquivo" ,, "C:\", .T., GETF_MULTISELECT)                     
+    cFile := tFileDialog( "*.csv|*.csv", "Selecao de Arquivo" ,, "C:\", .T., GETF_LOCALHARD + GETF_RETDIRECTORY)                     
     
     If cFile == ""
         U_ITMsg("Processo cancelado. Local do arquivo não informado.", "Falha!")
