@@ -1,24 +1,5 @@
-/*  
-===============================================================================================================================
-                          ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-       Autor      |    Data    |                                             Motivo                                          
--------------------------------------------------------------------------------------------------------------------------------
- Julio Paz        | 07/04/2021 | Alterar rotina de importação tabela de preço para não excluir dados existentes. Chamado 35936
--------------------------------------------------------------------------------------------------------------------------------
- Igor Fricks      | 13/08/2021 | Retirar validação da Filial, tratar novos campos DA0, DA1 e Layout . Chamado 37416
-==============================================================================================================================================================================================
-Analista       - Programador   - Inicio   - Envio    - Chamado - Motivo da Alteração
-==============================================================================================================================================================================================
-Jerry Santiago - Julio Paz     - 11/08/24 - 15/09/25 - 50058   - Refazer Toda a Rotina de Gravação de Log de Alteração da Tabela de Preço. 
-==============================================================================================================================================================================================
-*/
+#Include 'TOTVS.CH'
 
-//====================================================================================================
-// Definicoes de Includes da Rotina.
-//====================================================================================================
-#Include "TOTVS.ch"
-#Include 'TOTVS.CH' 
 /*  
 ===============================================================================================================================
 Programa----------: MOMS053
@@ -43,6 +24,7 @@ User Function MOMS053()
     Local nArq := 0
     Local aButtons := {}
     Local _bOK
+    Local lRet := .T.
     
     Private oBj   := Nil
     Private lHtml := (GetRemoteType() == 5) //Valida se o ambiente é SmartClientHtml
@@ -54,64 +36,58 @@ User Function MOMS053()
     Private cItem := ""
     Private cTabAnt := ""
     Private cFilPos := ""
-
-    //aAdd( aButtons , { "" , {|| IIf( U_ITMsg("Confirma a importação dos dados?",'Atenção!',,2,2,2) , (oBj:Activate(),.F. ) , .F. ) }	, "" , "Importar Dados"		  } ) 
        
     _bOK := {|aParam| MOMS053OK(aParam) }
 
-    cFile := cGetFile( '*.csv|*.csv',;                            //[ cMascara], 
-                         'Selecao de Arquivo',;                   //[ cTitulo], 
-                         0,;                                      //[ nMascpadrao], 
-                         'C:\',;                                  //[ cDirinicial], 
-                         .F.,;                                    //[ lSalvar], 
-                         GETF_LOCALHARD  + GETF_NETWORKDRIVE,;    //[ nOpcoes], 
-                         .T.)                                     //[ lArvore] 
+    cFile := tFileDialog( "*.csv|*.csv", "Selecao de Arquivo" ,, "C:\", .T., GETF_LOCALHARD + GETF_RETDIRECTORY)                     
     
     If cFile == ""
         U_ITMsg("Processo cancelado. Local do arquivo não informado.", "Falha!")
-        Return
+        lRet := .F.
     EndIf
     
     If !(".csv" $ cFile)
         U_ITMsg("O arquivo deve estar no formato *.csv", "Falha!")
-        Return
+        lRet := .F.
     EndIf
 
-    aPose := StrTokArr(cFile, "\")
-    nArq := Len(aPose)
-    
-    //Realizo a transferencia do arquivo para a pasta \temp\ para conseguir fazer a leitur
-    If lHtml
-        If CpyT2S(cFile,cPathSrv)
-            cFile := cPathSrv + aPose[nArq]
-            MsgRun( "Enviando arquivo para o servidor..." ,"Aguarde.", {|| Sleep(2000) } ) //Sleep para concluir a movimentação do arquivo.
+    If lRet
+        aPose := StrTokArr(cFile, "\")
+        nArq := Len(aPose)
+        
+        //Realizo a transferencia do arquivo para a pasta \temp\ para conseguir fazer a leitur
+        If lHtml
+            If CpyT2S(cFile,cPathSrv)
+                cFile := cPathSrv + aPose[nArq]
+                MsgRun( "Enviando arquivo para o servidor..." ,"Aguarde.", {|| Sleep(2000) } ) //Sleep para concluir a movimentação do arquivo.
+            EndIf
         EndIf
+
+        Processa({||aDados := MOMS053R(cFile), "Lendo arquivo de dados..." })
+        aAdd(aCampos, aDados[1][1])
+        aAdd(aCampos, aDados[1][2])
+        aAdd(aCampos, aDados[1][3])
+        aAdd(aCampos, aDados[1][4]) 
+        aAdd(aCampos, aDados[1][5])
+        aAdd(aCampos, aDados[1][6])
+        aAdd(aCampos, aDados[1][7])
+        aAdd(aCampos, aDados[1][8])
+        aAdd(aCampos, aDados[1][9])
+        aAdd(aCampos, aDados[1][10])
+        aAdd(aCampos, aDados[1][11])
+
+        aAdd(aCampos, aDados[1][12])
+        aAdd(aCampos, aDados[1][13])
+        aAdd(aCampos, aDados[1][14])
+        aAdd(aCampos, aDados[1][15])
+
+        For nX := 2 TO Len(aDados)
+            aAdd(aCols, aDados[nX])
+        Next
+        oBj := MsNewProcess():New({||U_MOMS053G(aCols,oBj)},"Processando importação...","Aguarde...", .F.)
+
+        U_ITListBox( "Importação Tabela de Preço" , aCampos , aCols , .T. , 1 , /*_cMsgTop*/ , /*_lSelUnc*/ , /*_aSizes*/ , /*_nCampo*/ , _bOk /*bOk*/ , /*bCancel*/, aButtons , /*aCampos*/ , /*bDblClk*/ , aCols , /*bCondMarca*/)
     EndIf
-
-    Processa({||aDados := MOMS053R(cFile), "Lendo arquivo de dados..." })
-    aAdd(aCampos, aDados[1][1])
-    aAdd(aCampos, aDados[1][2])
-    aAdd(aCampos, aDados[1][3])
-    aAdd(aCampos, aDados[1][4]) 
-    aAdd(aCampos, aDados[1][5])
-    aAdd(aCampos, aDados[1][6])
-    aAdd(aCampos, aDados[1][7])
-    aAdd(aCampos, aDados[1][8])
-    aAdd(aCampos, aDados[1][9])
-    aAdd(aCampos, aDados[1][10])
-    aAdd(aCampos, aDados[1][11])
-
-      aAdd(aCampos, aDados[1][12])
-    aAdd(aCampos, aDados[1][13])
-    aAdd(aCampos, aDados[1][14])
-    aAdd(aCampos, aDados[1][15])
-
-    For nX := 2 TO Len(aDados)
-        aAdd(aCols, aDados[nX])
-    Next
-    oBj := MsNewProcess():New({||U_MOMS053G(aCols,oBj)},"Processando importação...","Aguarde...", .F.)
-
-    U_ITListBox( "Importação Tabela de Preço" , aCampos , aCols , .T. , 1 , /*_cMsgTop*/ , /*_lSelUnc*/ , /*_aSizes*/ , /*_nCampo*/ , _bOk /*bOk*/ , /*bCancel*/, aButtons , /*aCampos*/ , /*bDblClk*/ , aCols , /*bCondMarca*/)
 
 Return
 
