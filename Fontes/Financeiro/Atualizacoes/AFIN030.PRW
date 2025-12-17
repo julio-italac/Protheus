@@ -1,15 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Igor Melgaço  |21/10/2022| Chamado 41379. Ajuste para envio de e-mail para vendedor e cliente.
-Igor Melgaço  |26/10/2022| Chamado 41379. Ajuste para validação do e-mail do cliente.
-Alex Wallauer |19/04/2024| Chamado 47009. Antonio. Correcao dos parametros de login e senha do e-mail.
-===============================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 #Include 'FINA811.CH'
 #Include 'AP5MAIL.CH'
@@ -19,13 +7,11 @@ Static __cMvJurTp	:= NIL
 Static __lMulLoj	:= NIL
 Static __cRe770F3	:= ''
 Static __cArqTrab	:= ''
-Static __oFIN8111
-Static __oFIN8112
-Static __oFIN8113
-Static __oFIN8114
-Static __oFIN8115
-//Static __lFIN811R	:= .F.
-
+Static __oFIN8111	:= NIL
+Static __oFIN8112	:= NIL
+Static __oFIN8113	:= NIL
+Static __oFIN8114	:= NIL
+Static __oFIN8115	:= NIL
 
 /*
 ===============================================================================================================================
@@ -53,7 +39,7 @@ User Function AFIN030( )//nOpcAuto As Numeric , a811Param As Array )
 	aArea		:= FWGetArea()
 	
 	If !TableInDic("FWP") .Or. !TableInDic("FWQ") .Or. !TableInDic("FWS") .Or. !TableInDic("FWT") 
-        MsgNextRel() //-- Ã‰ necessÃ¡rio a atualizaÃ§Ã£o do sistema para a expediÃ§Ã£o mais recente
+        MsgNextRel()
         Return	
 	EndIf	
 
@@ -61,7 +47,7 @@ User Function AFIN030( )//nOpcAuto As Numeric , a811Param As Array )
 		Return .F.
 	EndIf
 	
-	//Encapsulamento da funÃ§Ã£o que cria o wizard
+	//Encapsulamento da funções que cria o wizard
 	U_AF030WIZ(a811Param)
 
 	FWRestArea(aArea)
@@ -69,7 +55,7 @@ Return
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} FA811WIZ
-Rotina para construÃ§Ã£o do wizard de cartas de cobranÃ§a
+Rotina para contrução do wizard de cartas de cobrança
 
 @author Pedro Lima
 @since  29/07/2015
@@ -93,7 +79,7 @@ User Function AF030WIZ( a811Param as Array )
 	Private nEnvProc	As Numeric
 	Private l811Auto	As Logical 
 
-	// Bloco de variÃ¡veis utilizado na pÃ¡gina 2 / step 2
+	// Bloco de variáveis utilizado na página 2 / step 2
 	Private cCliDe		As Character
 	Private cLojaDe		As Character
 	Private cCliAte		As Character
@@ -115,19 +101,19 @@ User Function AF030WIZ( a811Param as Array )
     Private cExRedes    As Character
 	Private cCliBroq    As Character	
 
-	// Bloco de variÃ¡veis utilizado na pÃ¡gina 3 / step 3
+	// Bloco de variáveis utilizado na página 3 / step 3
 	Private oMrkLayout	As Object
 	Private cTrabFWP	As Character
 
-	// Bloco de variÃ¡veis utilizado na pÃ¡gina 4 / step 4
+	// Bloco de variáveis utilizado na página 4 / step 4
 	Private oMrkClient	As Object
 	Private cTrabSA1	As Character
 
-	// Bloco de variÃ¡veis utilizado na pÃ¡gina 5 / step 5
+	// Bloco de variáveis utilizado na página 5 / step 5
 	Private oMrkTitle
 	Private cTrabSE1
 
-	//InicializaÃ§Ã£o das variÃ¡veis
+	//Inicialização das variáveis
 	l811Auto	:= !Empty(a811Param)
 	aProcesso	:= {}
 	aReport		:= {}
@@ -190,10 +176,10 @@ User Function AF030WIZ( a811Param as Array )
 		// Pagina 1
 		//----------------------
 		o1stPage := oStepWiz:AddStep("1STSTEP",{|Panel| cria_pn1(Panel)}) // Adiciona um Step
-		o1stPage:SetStepDescription(STR0001) // Define o tÃ­tulo do "step"
-		o1stPage:SetNextTitle(STR0002) // Define o tÃ­tulo do botÃ£o de avanÃ§o
-		o1stPage:SetNextAction({|| Valid_PG1() }) // Define o bloco ao clicar no botÃ£o PrÃ³ximo
-		o1stPage:SetCancelAction({|| .T.}) // Define o bloco ao clicar no botÃ£o Cancelar
+		o1stPage:SetStepDescription(STR0001) // Define o título do "step"
+		o1stPage:SetNextTitle(STR0002) // Define o título do botão de avançar
+		o1stPage:SetNextAction({|| Valid_PG1() }) // Define o bloco ao clicar no botão próximo
+		o1stPage:SetCancelAction({|| .T.}) // Define o bloco ao clicar no botão Cancelar
 
 		//----------------------
 		// Pagina 2
@@ -201,10 +187,10 @@ User Function AF030WIZ( a811Param as Array )
 		o2ndPage := oStepWiz:AddStep("2NDSTEP", {|Panel| cria_pn2(Panel)})
 		o2ndPage:SetStepDescription(STR0003)
 		o2ndPage:SetNextTitle(STR0002)
-		o2ndPage:SetPrevTitle(STR0004) // Define o tÃ­tulo do botÃ£o para retorno
-		o2ndPage:SetNextAction({|| Valid_PG2()})// Define o bloco ao clicar no botÃ£o PrÃ³ximo
+		o2ndPage:SetPrevTitle(STR0004) // Define o título do botão para retorno
+		o2ndPage:SetNextAction({|| Valid_PG2()})// Define o bloco ao clicar no botão próximo
 		o2ndPage:SetCancelAction({|| .T.})
-		o2ndPage:SetPrevAction({|| .T.}) //Define o bloco ao clicar no botÃ£o Voltar
+		o2ndPage:SetPrevAction({|| .T.}) //Define o bloco ao clicar no botão Voltar
 
 		//----------------------
 		// Pagina 3
@@ -275,13 +261,9 @@ User Function AF030WIZ( a811Param as Array )
 
 Return
 
-//--------------------------------------------------------------------
-// InÃ­cio dos blocos de construÃ§Ã£os das pÃ¡ginas de cada step
-//--------------------------------------------------------------------
-
 //-------------------------------------------------------------------
 /*/{Protheus.doc} cria_pn1
-FunÃ§Ã£o para construÃ§Ã£o da primeira pÃ¡gina do wizard
+funções para contrução da primeira página do wizard
 
 @param oPanel 
 
@@ -295,12 +277,12 @@ Static Function cria_pn1( oPanel As Object )
 
 	oFont := TFont():New(,,-25,.T.,.T.,,,,,)
 
-	TSay():New(10,15,{|| STR0011},oPanel,,oFont,,,,.T.,CLR_BLUE,)// 'Envio de Cartas de CobranÃ§a'
-	TSay():New(35,10,{|| STR0012},oPanel,,,,,,.T.,CLR_BLUE,) 	// 'Clique em "PrÃ³ximo" para:'
-	TSay():New(45,15,{|| STR0013},oPanel,,,,,,.T.,CLR_BLUE,) 	// '- Definir os parÃ¢metros da rotina;'
-	TSay():New(55,15,{|| STR0014},oPanel,,,,,,.T.,CLR_BLUE,) 	// '- Selecionar layouts de Cartas de CobranÃ§a;'
+	TSay():New(10,15,{|| STR0011},oPanel,,oFont,,,,.T.,CLR_BLUE,)// 'Envio de Cartas de cobrança'
+	TSay():New(35,10,{|| STR0012},oPanel,,,,,,.T.,CLR_BLUE,) 	// 'Clique em "próximo" para:'
+	TSay():New(45,15,{|| STR0013},oPanel,,,,,,.T.,CLR_BLUE,) 	// '- Definir os parâmetros da rotina;'
+	TSay():New(55,15,{|| STR0014},oPanel,,,,,,.T.,CLR_BLUE,) 	// '- Selecionar layouts de Cartas de cobrança;'
 	TSay():New(65,15,{|| STR0015},oPanel,,,,,,.T.,CLR_BLUE,) 	// '- Selecionar clientes para evnio;'
-	TSay():New(75,15,{|| STR0016},oPanel,,,,,,.T.,CLR_BLUE,) 	// '- Selecionar tÃ­tulos para envio;'
+	TSay():New(75,15,{|| STR0016},oPanel,,,,,,.T.,CLR_BLUE,) 	// '- Selecionar títulos para envio;'
 	TSay():New(85,15,{|| STR0022},oPanel,,,,,,.T.,CLR_BLUE,) 	// '- Efetivar o envio das cartas conforme os dados selecionados.'
 	TSay():New(95,10,{|| STR0017},oPanel,,,,,,.T.,CLR_BLUE,) 	// 'Ao final do processo, as cartas serÃ£o enviadas conforme os dados selecionados.'
 
@@ -308,7 +290,7 @@ Return
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} cria_pn2
-FunÃ§Ã£o para construÃ§Ã£o da segunda pÃ¡gina do wizard
+funções para contrução da segunda página do wizard
 
 @param oPanel 
 
@@ -365,13 +347,8 @@ Static Function cria_pn2( oPanel As Object )
 	TSay():New(50,200,{|| STR0035},oPanel,,,,,,.T.,CLR_BLACK,) //
 	TComboBox():New(50,280,{|u| If( PCount() > 0, cComboVenc := u, cComboVenc ) },aOptions,60,12,oPanel,,,,,,.T.   ,         ,        ,,_lWhen,,,,,'cComboVenc')
 
-//aAdd( _aParAux , { 2 ,"Considera cliente broqueado", cCliBroq   ,aOpBloqu,                            060 ,".T.",.F. } )//17 
-
 	TSay():New(70,200,{|| "Considera cliente broqueado?" },oPanel,,,,,,.T.,CLR_BLACK,) //
 	TComboBox():New(70,280,{|u| If( PCount() > 0, cCliBroq := u, cCliBroq ) },aOpBloqu,60,12,oPanel,,,,,,.T.   ,         ,        ,,_lWhen,,,,,'cCliBroq')
-
-//	TSay():New(70,200,{|| STR0037},oPanel,,,,,,.T.,CLR_BLACK,) //
-//  TGet():New(70,280,{|u| If( PCount() > 0, dDtRef := u, dDtRef ) } ,oPanel,60,12,,,,,,,,.T.   ,         ,        ,_lWhen,,,,,,,'dDtRef',,,,)
 
 	TSay():New(90,200,{|| STR0061},oPanel,,,,,,.T.,CLR_BLACK,) //
 	TComboBox():New(90,280,{|u| If( PCount() > 0, cComboConVl := u, cComboConVl ) },aOpConVl,60,12,oPanel,,,,,,.T.   ,         ,        ,,_lWhen,,,,,'cComboConVl')
@@ -389,7 +366,7 @@ Return
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} cria_pn3
-FunÃ§Ã£o para construÃ§Ã£o da terceira pÃ¡gina do wizard
+funções para contrução da terceira página do wizard
 
 @param oPanel 
 
@@ -409,7 +386,7 @@ Static Function cria_pn3( oPanel As Object )
 	Local cArqInd		As Character
 	Local cChave		As Character
 
-	aStruct		:= FWP->(DbStruct()) // Carrego a estrutura da tabela de carta de cobranÃ§a
+	aStruct		:= FWP->(DbStruct()) // Carrego a estrutura da tabela de carta de cobrança
 	cQuery		:= ''
 	cIndex		:= ''
 	aColumns	:= {}
@@ -422,13 +399,6 @@ Static Function cria_pn3( oPanel As Object )
 	cIndex := FWP->(IndexKey())
 
 	cQuery += "SELECT * FROM " + RetSqlName('FWP') + " FWP  "
-	
-	//If cComboFil == "1"
-	//	cQuery += 'WHERE FWP.FWP_FILIAL ' + GetRngFil( aFilial, "FWP", .T., @cTmpFWPFil )
-	//Else
-	///	cQuery += "WHERE FWP.FWP_FILIAL = '" + xFilial('FWP') + "' "
-	///EndIf
-
 	cQuery += "WHERE FWP.FWP_STATUS = '1' "
 	If l811Auto
 		cQuery += "AND FWP.FWP_CODCRT = '" + cCodFWP + "' "
@@ -448,9 +418,7 @@ Static Function cria_pn3( oPanel As Object )
 	__oFIN8111:SetFields(aStruct)
 	__oFIN8111:AddIndex("1", {"FWP_DESCRI"})
 
-	//------------------
-	//CriaÃ§Ã£o da tabela temporaria
-	//------------------
+	//Criação da tabela temporaria
 	__oFIN8111:Create()
 
 	If !l811Auto
@@ -495,7 +463,7 @@ Return
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} cria_pn4
-FunÃ§Ã£o para construÃ§Ã£o da quarta pÃ¡gina do wizard
+funções para contrução da quarta página do wizard
 
 @param oPanel 
 
@@ -550,13 +518,6 @@ Static Function cria_pn4( oPanel As Object )
 	FWRestArea(aAreaFWP)
 
 	cQuery += 'SELECT SA1.A1_FILIAL, SA1.A1_COD, SA1.A1_LOJA, SA1.A1_NOME, SA1.A1_END, SA1.A1_EMAIL, SA1.A1_VEND, SA1.A1_I_VEND2, SA1.A1_I_VEND3, SA1.A1_I_VEND4 FROM ' + RetSqlName('SA1') + ' SA1 '
-	/* O SA1 É COMPARTILAHDO NA ITALAC
-	If cComboFil == "1"
-		cQuery += 'WHERE SA1.A1_FILIAL ' + GetRngFil( aFilial, "SA1", .T., @cTmpSA1Fil )
-	Else
-		cQuery += "WHERE SA1.A1_FILIAL = '" + xFilial('SA1') + "' "
-	EndIf */
-	
     cQuery += "WHERE SA1.D_E_L_E_T_ = ' ' "
 	If !Empty(cCliAte)
 	   cQuery += " AND SA1.A1_COD BETWEEN '" + cCliDe + "' AND '" + cCliAte + "' "
@@ -564,9 +525,7 @@ Static Function cria_pn4( oPanel As Object )
 	   cQuery += " AND SA1.A1_COD >= '" + cCliDe + "' "
 	EndIf
 	
-	If cCliBroq = "1"
-	   //cQuery += "WHERE SA1.A1_MSBLQL = '1' "
-	ElseIf cCliBroq = "2"
+	If cCliBroq = "2"
 	   cQuery += " AND SA1.A1_MSBLQL <> '1' "
     EndIf
 
@@ -591,14 +550,6 @@ Static Function cria_pn4( oPanel As Object )
 		EndIf
 	EndIf
 
-
-	//If lF811QRY
-	//	cQryAux := ExecBlock('F811QRY',.F.,.F.)
-	//	If !Empty(cQryAux)
-	//		cQuery += " AND " + cQryAux
-	//	EndIf
-	//EndIf
-
 	cQuery += "ORDER BY " + SqlOrder(cIndex)
 
 	aAdd(aStruct, {'A1_OK','C',1,0}) // Adiciono o campo de marca
@@ -614,9 +565,8 @@ Static Function cria_pn4( oPanel As Object )
 	__oFIN8112:SetFields(aStruct)
 	__oFIN8112:AddIndex("1",{"A1_COD"})
 	__oFIN8112:AddIndex("2",{"A1_NOME"})
-	//------------------
-	//CriaÃ§Ã£o da tabela temporaria
-	//------------------
+
+	//Criação da tabela temporaria
 	__oFIN8112:Create()
 
 	If !l811Auto
@@ -657,7 +607,7 @@ Return
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} cria_pn5
-FunÃ§Ã£o para construÃ§Ã£o da quinta pÃ¡gina do wizard
+funções para contrução da quinta página do wizard
 
 @param oPanel 
 
@@ -685,8 +635,8 @@ Static Function cria_pn5( oPanel As Object )
 	Local lMaxLn		As Logical
 	Private dBaixa		As Date
 
-	//InicializaÃ§Ã£o das variÃ¡veis
-	aStruct		:= SE1->(DbStruct()) // Carrego a estrutura da tabela de tÃ­tulos a receber
+	//Inicialização das variáveis
+	aStruct		:= SE1->(DbStruct()) // Carrego a estrutura da tabela de títulos a receber
 	cQuery		:= ''
 	cIndex		:= ''
 	aColumns	:= {}
@@ -738,12 +688,6 @@ Static Function cria_pn5( oPanel As Object )
     ElseIf !Empty(AllTrim(cCart)) .And. AllTrim(cCart) <> "*"
         cQuery += " AND E1_I_CART IN " + FormatIn(AllTrim(cCart),";")
     EndIf
-/*  If !Empty(AllTrim(cRedes))
-        cQuery += " AND E1_I_GPRVE IN " + FormatIn(AllTrim(cRedes),";")
-    EndIf
-    If !Empty(AllTrim(cExRedes))
-        cQuery += " AND E1_I_GPRVE NOT IN " + FormatIn(AllTrim(cExRedes),";")
-    EndIf*/
 
 	If cComboVenc == "2"
 
@@ -751,9 +695,9 @@ Static Function cria_pn5( oPanel As Object )
 			Case dDtRef == dDataAte .And. dDataAte > dDataDe
 				dDtFim := dDataAte - 1 	//Se a data de referencia For igual a data ate - retroagir 1 dia
 			Case dDtRef < dDataAte
-				dDtFim := dDtRef		//Data de referencia menor que a data ate - assume a data atÃ©
+				dDtFim := dDtRef		//Data de referencia menor que a data ate - assume a data até
 			Case dDtRef > dDataAte
-				dDtFim := dDataAte		//Data de referencia maior que a data ate - assume a data de referÃªncia
+				dDtFim := dDataAte		//Data de referencia maior que a data ate - assume a data de referência
 		EndCase
 
 		cQuery += " AND SE1.E1_VENCREA BETWEEN '" + DToS(dDataDe) + "' AND '" + DToS(dDtFim) + "' "
@@ -806,7 +750,6 @@ Static Function cria_pn5( oPanel As Object )
 	__oFIN8113:AddIndex("1", {"E1_FILIAL","E1_CLIENTE","E1_LOJA","E1_PREFIXO","E1_NUM","E1_PARCELA","E1_TIPO"})
 	__oFIN8113:AddIndex("2", {"E1_CLIENTE","E1_LOJA"})
 
-	
 	//Criando a Tabela Temporaria
 	__oFIN8113:Create()
 
@@ -825,7 +768,7 @@ Static Function cria_pn5( oPanel As Object )
 		lMaxLn := .T.
 	EndIf
 
-	//Reprocesso a tabela, atualizando o saldo de cada tÃ­tulo, considerando abatimentos
+	//Reprocesso a tabela, atualizando o saldo de cada título, considerando abatimentos
 	If !lMaxLn
 		If !l811Auto
 			MsgRun(STR0069,STR0065,{|| U_AF030AtuTrb()})
@@ -908,7 +851,7 @@ Static Function cria_pn5( oPanel As Object )
 		oMrkTitle:SetDescription('')
 		oMrkTitle:Activate()
 
-		If (cTrabSE1)->(Eof()) //Caso nÃ£o hajam tÃ­tulos para o(s) cliente(s) selecionado(s)
+		If (cTrabSE1)->(Eof()) //Caso não hajam títulos para o(s) cliente(s) selecionado(s)
 			Help(,,"F811NOCLI",,STR0064,1,0)
 			oStepWiz:PreviousPage()
 		ElseIf lMaxLn
@@ -922,7 +865,7 @@ Return
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} cria_pn6
-FunÃ§Ã£o para construÃ§Ã£o da sexta pÃ¡gina do wizard
+funções para contrução da sexta página do wizard
 
 @param oPanel 
 
@@ -936,14 +879,14 @@ Static Function cria_pn6( oPanel As Object )
 
 	oFont := TFont():New(,,-25,.T.,.T.,,,,,)
 
-	TSay():New(10,15,{|| STR0011},oPanel,,oFont,,,,.T.,CLR_BLUE,) // 'Envio de Cartas de CobranÃ§a'
-	TSay():New(35,10,{|| STR0049},oPanel,,,,,,.T.,CLR_BLUE,) // 'Clique em "PrÃ³ximo" para efetivar o envio das cartas de cobranÃ§a conforme os parÃ¢metros selecionados anteriormente.'
+	TSay():New(10,15,{|| STR0011},oPanel,,oFont,,,,.T.,CLR_BLUE,) // 'Envio de Cartas de cobrança'
+	TSay():New(35,10,{|| STR0049},oPanel,,,,,,.T.,CLR_BLUE,) // 'Clique em "próximo" para efetivar o envio das cartas de cobrança conforme os parâmetros selecionados anteriormente.'
 
 Return
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} cria_pn7
-FunÃ§Ã£o para construÃ§Ã£o da sÃ©tima pÃ¡gina do wizard
+funções para contrução da sétima página do wizard
 
 @param oPanel 
 
@@ -966,13 +909,9 @@ Static Function cria_pn7( oPanel As Object )
 
 Return
 
-//---------------------------------------------------------------------------------
-// InÃ­cio dos blocos de AÃ§Ã£o das pÃ¡ginas de cada step para o botÃ£o "PrÃ³ximo"
-//---------------------------------------------------------------------------------
-
 //-------------------------------------------------------------------
 /*/{Protheus.doc} Valid_PG2
-FunÃ§Ã£o para aÃ§Ã£o da segunda pÃ¡gina do wizard
+funções para seção da segunda página do wizard
 
 @author Pedro Lima
 @since  29/07/2015
@@ -990,7 +929,7 @@ Static Function Valid_PG2() As Logical
 	Local cChave		As Character
 	Local lCont			As Logical
 
-	aStruct		:= FWP->(DbStruct()) // Carrego a estrutura da tabela de carta de cobranÃ§a
+	aStruct		:= FWP->(DbStruct()) // Carrego a estrutura da tabela de carta de cobrança
 	cQuery		:= ''
 	cIndex		:= ''
 	cTmpFWPFil	:= ''
@@ -1016,13 +955,6 @@ Static Function Valid_PG2() As Logical
 		cIndex := FWP->(IndexKey())
 	
 		cQuery += "SELECT * FROM " + RetSqlName('FWP') + " FWP "
-
-		//If cComboFil == "1"
-		//	cQuery += 'WHERE FWP.FWP_FILIAL ' + GetRngFil( aFilial, "FWP", .T., @cTmpFWPFil )
-		//Else
-		//	cQuery += "WHERE FWP.FWP_FILIAL = '" + xFilial('FWP') + "' "
-		//EndIf
-
 		cQuery += "WHERE FWP.FWP_STATUS = '1' "
 
 		If l811Auto
@@ -1045,9 +977,7 @@ Static Function Valid_PG2() As Logical
 		__oFIN8111:SetFields(aStruct)
 		__oFIN8111:AddIndex("1", {"FWP_DESCRI"})
 
-		//------------------
-		//CriaÃ§Ã£o da tabela temporaria
-		//------------------
+		//Criação da tabela temporaria
 		__oFIN8111:Create()
 
 		If !l811Auto // se a rotina foi chamada pelo menu
@@ -1067,7 +997,7 @@ Static Function Valid_PG2() As Logical
 			oMrkLayout:Refresh()
 			oMrkLayout:oBrowse:SetFocus()
 
-		Else	// se a rotina foi chamada pela automaÃ§Ã£o de testes
+		Else	// se a rotina foi chamada pela automação de testes
 
 			SqlToTrb(cQuery, aStruct, cTrabFWP)
 			DBSetOrder(0) // Fica na ordem da query
@@ -1081,7 +1011,7 @@ Return .T.
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} Valid_PG3
-FunÃ§Ã£o para aÃ§Ã£o da terceira pÃ¡gina do wizard
+funções para seção da terceira página do wizard
 
 @author Pedro Lima
 @since  29/07/2015
@@ -1102,7 +1032,7 @@ Static Function Valid_PG3() As Logical
 	Local aSeek			As Array
 	Local lCont			As Logical
 
-	aStruct		:= SA1->(DbStruct()) // Carrego a estrutura da tabela de carta de cobranÃ§a
+	aStruct		:= SA1->(DbStruct()) // Carrego a estrutura da tabela de carta de cobrança
 	cQuery		:= ''
 	cIndex		:= ''
 	cTmpSA1Fil	:= ''
@@ -1159,11 +1089,6 @@ Static Function Valid_PG3() As Logical
 		FWRestArea(aAreaFWP)
 
 		cQuery += 'SELECT SA1.A1_FILIAL, SA1.A1_COD, SA1.A1_LOJA, SA1.A1_NOME, SA1.A1_END, SA1.A1_EMAIL FROM ' + RetSqlName('SA1') + ' SA1 '
-		//If cComboFil == "1"
-		//	cQuery += 'WHERE SA1.A1_FILIAL ' + GetRngFil( aFilial, "SA1", .T., @cTmpSA1Fil )
-		//Else
-		//	cQuery += "WHERE SA1.A1_FILIAL = '" + xFilial('SA1') + "' "
-		//EndIf
 		cQuery += "	WHERE SA1.D_E_L_E_T_ = ' ' "
 
 	    If !Empty(cCliAte)
@@ -1177,9 +1102,7 @@ Static Function Valid_PG3() As Logical
 	       cQuery += "AND SA1.A1_LOJA >= '" + cLojaDe + "' "
 	    EndIf
 
-	    If cCliBroq = "1"
-	       //cQuery += "AND SA1.A1_MSBLQL = '1' "
-	    ElseIf cCliBroq = "2"
+	    If cCliBroq = "2"
 	       cQuery += "AND SA1.A1_MSBLQL <> '1' "
         EndIf
 
@@ -1191,7 +1114,6 @@ Static Function Valid_PG3() As Logical
 			EndIf
 		EndIf
 
-	
 		If lF811QRY
 			cQryAux := ExecBlock('F811QRY',.F.,.F.)
 			If !Empty(cQryAux)
@@ -1214,9 +1136,8 @@ Static Function Valid_PG3() As Logical
 		__oFIN8112:SetFields(aStruct)
 		__oFIN8112:AddIndex("1",{"A1_COD"})
 		__oFIN8112:AddIndex("2",{"A1_NOME"})
-		//------------------
-		//CriaÃ§Ã£o da tabela temporaria
-		//------------------
+
+		//Criação da tabela temporaria-
 		__oFIN8112:Create()
 
 		If !l811Auto
@@ -1249,7 +1170,7 @@ Return .T.
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} Valid_PG4
-FunÃ§Ã£o para aÃ§Ã£o da quarta pÃ¡gina do wizard
+funções para seção da quarta página do wizard
 
 @author Pedro Lima
 @since  29/07/2015
@@ -1273,7 +1194,7 @@ Static Function Valid_PG4() As Logical
 	Local dDtFim		As Date
 	Local nTotSE1		As Numeric
 
-	aStruct		:= SE1->(DbStruct()) // Carrego a estrutura da tabela de carta de cobranÃ§a
+	aStruct		:= SE1->(DbStruct()) // Carrego a estrutura da tabela de carta de cobrança
 	cQuery		:= ''
 	cIndex		:= ''
 	nX			:= 0
@@ -1347,9 +1268,9 @@ Static Function Valid_PG4() As Logical
 			Case dDtRef == dDataAte .And. dDataAte > dDataDe
 				dDtFim := dDataAte - 1 	//Se a data de referencia For igual a data ate - retroagir 1 dia
 			Case dDtRef < dDataAte
-				dDtFim := dDtRef		//Data de referencia menor que a data ate - assume a data atÃ©
+				dDtFim := dDtRef		//Data de referencia menor que a data ate - assume a data até
 			Case dDtRef > dDataAte
-				dDtFim := dDataAte		//Data de referencia maior que a data ate - assume a data de referÃªncia
+				dDtFim := dDataAte		//Data de referencia maior que a data ate - assume a data de referência
 			EndCase
 
 			cQuery += " AND SE1.E1_VENCREA BETWEEN '" + DToS(dDataDe) + "' AND '" + DToS(dDtFim) + "' "
@@ -1394,7 +1315,6 @@ Static Function Valid_PG4() As Logical
 		__oFIN8113:AddIndex("1", {"E1_FILIAL","E1_CLIENTE","E1_LOJA","E1_PREFIXO","E1_NUM","E1_PARCELA","E1_TIPO"})
 		__oFIN8113:AddIndex("2", {"E1_CLIENTE","E1_LOJA"})
 
-		
 		//Criando a Tabela Temporaria
 		__oFIN8113:Create()
 
@@ -1416,7 +1336,7 @@ Static Function Valid_PG4() As Logical
 			Return 
 		EndIf
 
-		//Reprocesso a tabela, atualizando o saldo de cada tÃ­tulo, considerando abatimentos
+		//Reprocesso a tabela, atualizando o saldo de cada título, considerando abatimentos
 		If !l811Auto
 			MsgRun(STR0069,STR0065,{|| U_AF030AtuTrb()})
 		Else
@@ -1446,7 +1366,7 @@ Static Function Valid_PG4() As Logical
 			oMrkTitle:oBrowse:Refresh()
 			oMrkTitle:oBrowse:SetFocus()
 
-			If (cTrabSE1)->(Eof()) //Caso nÃ£o hajam tÃ­tulos para o(s) cliente(s) selecionado(s)
+			If (cTrabSE1)->(Eof()) //Caso não hajam títulos para o(s) cliente(s) selecionado(s)
 				Help(,,"F811NOCLI",,STR0064,1,0)
 				oStepWiz:PreviousPage()
 			EndIf
@@ -1459,7 +1379,7 @@ Return .T.
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} Valid_PG5
-FunÃ§Ã£o para aÃ§Ã£o da quinta pÃ¡gina do wizard
+funções para seção da quinta página do wizard
 
 @author Pedro Lima
 @since  29/07/2015
@@ -1504,7 +1424,7 @@ Return lRet
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} Valid_PG6
-FunÃ§Ã£o para aÃ§Ã£o da sexta pÃ¡gina do wizard
+funções para seção da sexta página do wizard
 
 @author Pedro Lima
 @since  29/07/2015
@@ -1519,7 +1439,7 @@ Return .T.
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} Valid_PG7
-FunÃ§Ã£o para aÃ§Ã£o da sÃ©tima pÃ¡gina do wizard
+funções para seção da sétima página do wizard
 
 @author Pedro Lima
 @since  29/07/2015
@@ -1530,13 +1450,9 @@ Static Function Valid_PG7() As Logical
 
 Return .T.
 
-//---------------------------------------------------------------------------------
-// InÃ­cio dos blocos de aÃ§Ã£o das pÃ¡ginas de cada step para o botÃ£o "Voltar"
-//---------------------------------------------------------------------------------
-
 //-------------------------------------------------------------------
 /*/{Protheus.doc} BackToPg2
-FunÃ§Ã£o para aÃ§Ã£o do retorno da pÃ¡gina 3 para pÃ¡gina 2
+funções para seção do retorno da página 3 para página 2
 
 @author Pedro Lima
 @since  29/07/2015
@@ -1549,7 +1465,7 @@ Return .T.
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} BackToPg3
-FunÃ§Ã£o para aÃ§Ã£o do retorno da pÃ¡gina 4 para pÃ¡gina 3
+funções para seção do retorno da página 4 para página 3
 
 @author Pedro Lima
 @since  29/07/2015
@@ -1562,7 +1478,7 @@ Return .T.
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} BackToPg4
-FunÃ§Ã£o para aÃ§Ã£o do retorno da pÃ¡gina 5 para pÃ¡gina 4
+funções para seção do retorno da página 5 para página 4
 
 @author Pedro Lima
 @since  29/07/2015
@@ -1577,7 +1493,7 @@ Return .T.
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} BtnCancel
-FunÃ§Ã£o para aÃ§Ã£o do botÃ£o cancelar
+funções para seção do botão cancelar
 
 @author Pedro Lima
 @since  29/07/2015
@@ -1593,7 +1509,7 @@ Return lRet
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} MrkValid
-FunÃ§Ã£o para execuÃ§Ã£o do valid da MarkBrowse
+funções para execução do valid da MarkBrowse
 
 @author Pedro Lima
 @since  29/07/2015
@@ -1640,7 +1556,7 @@ Static Function ModelDef() As Object
 
 	oMaster:AddTable('FWP',,'MASTER')
 
-	// Crio o campo virtual para armazenar o cÃ³digo da carta e posteriormente gravar na tabela FWP
+	// Crio o campo virtual para armazenar o código da carta e posteriormente gravar na tabela FWP
 	oMaster:AddField('CODCARTA','','CODCARTA','C',TamSX3('FWP_CODCRT')[1],0,/*bValid*/,/*When*/,/*aValues*/,.F.,{||""},/*Key*/,.F.,.T.,)
 
 	// Cria os modelos relacionados
@@ -1664,7 +1580,7 @@ Return oModel
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} F811GrvFWT()
-Faz a gravaÃ§Ã£o da tabela FWT com base nos registros selecionados
+Faz a gravseção da tabela FWT com base nos registros selecionados
 nas Markbrowses
 
 @author Pedro Pereira Lima
@@ -1689,7 +1605,7 @@ Static Function F811GrvFWT() As Logical
 	Local lTitOk		As Logical
 	Local lEmitSA1		As Logical
 
-	oModelFWT	:= FwLoadModel('FINA811') // Model de gravaÃ§Ã£o da FWT
+	oModelFWT	:= FwLoadModel('FINA811') // Model de gravseção da FWT
 	oSubFWT		:= Nil
 	cCodCarta	:= ''
 	cChaveFK7	:= ''
@@ -1703,7 +1619,7 @@ Static Function F811GrvFWT() As Logical
 	nOrder		:= 0
 	lEmitSA1	:= .T.
 
-	//Carrego model de gravaÃ§Ã£o da FWT
+	//Carrego model de gravseção da FWT
 	oModelFWT:SetOperation(MODEL_OPERATION_INSERT) //Inclusao
 	oModelFWT:Activate()
 
@@ -1725,7 +1641,7 @@ Static Function F811GrvFWT() As Logical
 
 	oModelFWT:SetValue('MASTER','CODCARTA',cCodCarta)
 
-	// GravaÃ§Ã£o do 'SubModel'
+	// Gravseção do 'SubModel'
 	oSubFWT	:= oModelFWT:GetModel('FWTDETAIL')
 
 	//Verifica a ordem de busca na SE1 pelo compartilhamento
@@ -1806,7 +1722,7 @@ Static Function F811GrvFWT() As Logical
 							oSubFWT:SetValue('FWT_FILLYT',cFilLayout)
 							aAdd(aProcesso[nProcesso][2],{cProcess,cChaveFK7,(cTrabSE1)->E1_FILORIG})
 							If l811Auto
-								aAdd(aRetorno,{cProcess,cChaveFK7}) // variÃ¡vel aRetorno declarada no fonte FINA811TESTCASE
+								aAdd(aRetorno,{cProcess,cChaveFK7}) // variável aRetorno declarada no fonte FINA811TESTCASE
 							EndIf 
 							nEnvProc++
 						EndIf
@@ -1834,8 +1750,8 @@ Static Function F811GrvFWT() As Logical
 		EndIf
 	EndIf
 
-	//Processa o envio de e-mails e/ou a exibiÃ§Ã£o do relatÃ³rio
-	//conforme a configuraÃ§Ã£o do layout da carta selecionado
+	//Processa o envio de e-mails e/ou a exibição do relatório
+	//conforme a configurseção do layout da carta selecionado
 	F811SendMail()
 
 	FWRestArea(aAreaTRBSE1)
@@ -1846,7 +1762,7 @@ Return .T.
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} F811SendMail()
-Envia os e-mails de cobranÃ§a
+Envia os e-mails de cobrança
 
 @author Pedro Pereira Lima
 @since 04/09/2015
@@ -1964,7 +1880,7 @@ Static Function F811SendMail() As Logical
 
 	cFilFWS := xFilial('FWS',cFilFWP)
 
-	//Query para seleÃ§Ã£o dos campos que compÃµem o layout da carta de cobranÃ§a
+	//Query para seleção dos campos que compõem o layout da carta de cobrança
 	BeginSql Alias cAliasFWS
 
 		SELECT FWS.FWS_CAMPO,FWS.FWS_DESCRI
@@ -1978,7 +1894,7 @@ Static Function F811SendMail() As Logical
 
 	//Montagem do array contendo
 	// - Nome do campo no SX3
-	// - DescriÃ§Ã£o do campo
+	// - Descrição do campo
 	// - Tipo do campo (SX3)
 	// - Picture do campo (SX3)
 	While !(cAliasFWS)->(Eof())
@@ -2000,7 +1916,7 @@ Static Function F811SendMail() As Logical
 	If cTpEnvio $ '1|3' // Tipo de envio: E-mail ou Ambos
 		For nX := 1 To Len(aProcesso)
 
-			// Caso nÃ£o haja nenhum tÃ­tulo selecionado para o cliente
+			// Caso não haja nenhum título selecionado para o cliente
 			If Empty(aProcesso[nX][2])
 				Loop
 			EndIf
@@ -2010,21 +1926,6 @@ Static Function F811SendMail() As Logical
 			SA1->(DBSetOrder(1))
 			SA1->(DBSeek(aProcesso[nX][1]))
 			cTo := AllTrim(SA1->A1_EMAIL)
-			
-			/*
-			If lF811MAILTO
-				cMailTo := ExecBlock('F811MAILTO',.F.,.F.)
-				If !Empty(cMailTo)
-					cTo := cMailTo
-				EndIf
-			EndIf
-
-			If Empty(cTo)
-				ProcLogAtu( 'ERRO' , STR0054, SA1->A1_COD + " - " + SA1->A1_LOJA + " | " + SA1->A1_NOME , , .T. )
-				aAdd(aStatus,{aProcesso[nX][02][01][01],"2",cCodCarta})
-				Loop
-			EndIf
-			*/
 
 			cLogMsg := ''
 
@@ -2048,7 +1949,7 @@ Static Function F811SendMail() As Logical
 			cHtml += '</head>'
 			cHtml += '<body>'
 
-			//SaudaÃ§Ã£o
+			//Saudseção
 			cHtml += '<table style="width:80%">'
 			cHtml += '<tr>'
 			cHtml += '<td id="bloco">'
@@ -2071,7 +1972,6 @@ Static Function F811SendMail() As Logical
 				cEndere2 := Capital(AllTrim(SA1->A1_BAIRRO)) + " - " + Capital(AllTrim(SA1->A1_MUN)) + " - " + SA1->A1_EST + " - " + Transform(SA1->A1_CEP,"@R 99999-999")
 			EndIf
 
-           // MsgAlert("cEndere1: "+cEndere1+"   cEndere2: "+cEndere2, If !Empty(SA1->A1_ENDCOB) .And. !Empty(SA1->A1_MUNC) .And. !Empty(SA1->A1_CEPC) .And. !Empty(SA1->A1_ESTC) .And. !Empty(SA1->A1_BAIRROC),"RRANCO","" )
 			cHtml += '<tr>'
 			cHtml += '<td id="bloco">'
 			cHtml += cEndere1
@@ -2104,7 +2004,7 @@ Static Function F811SendMail() As Logical
 				FK7->(DBSetOrder(1))
 				FK7->(DBSeek(xFilial('FK7',aProcesso[nX][2][nY][3]) + aProcesso[nX][2][nY][2]))
 				SE1->(DBSetOrder(1))
-				SE1->(DBSeek(RTrim(FinFK7Key(FK7->FK7_CHAVE,''))))
+				SE1->(DBSeek(FK7->FK7_FILTIT+FK7->FK7_PREFIX+FK7->FK7_NUM+FK7->FK7_PARCEL+FK7->FK7_TIPO+FK7->FK7_CLIFOR+FK7->FK7_LOJA))
 
 				If !Empty(SE1->E1_VEND1) .And. !_lVendDif
 				   If !Empty(_cVendedor) .And. SE1->E1_VEND1 <> _cVendedor
@@ -2129,15 +2029,15 @@ Static Function F811SendMail() As Logical
 				If cComboVenc == "1" .And. SE1->E1_VENCREA >= dDtRef
 					aAdd(aAux,SE1->(Recno()))
 				Else
-					If lCabecVenc //Gero o cabeÃ§alho HTML apenas uma vez caso existam tÃ­tulos vencidos
-						//TÃ­tulos em atraso
+					If lCabecVenc //Gero o cabeçalho HTML apenas uma vez caso existam títulos vencidos
+						//títulos em atraso
 						cHtml += '<table style="width:80%">'
 						cHtml += '<caption>'
 						cHtml += '<b>' + STR0047 + '</b>'
 						cHtml += '</caption>'
 						cHtml += '<tr>'
 						cLogMsg += STR0047 + CRLF + CRLF
-						//CabeÃ§alho
+						//cabeçalho
 						For nZ := 1 To Len(aMailFld)
 							cHtml += '<th>'
 							cHtml += aMailFld[nZ][2]
@@ -2165,24 +2065,24 @@ Static Function F811SendMail() As Logical
 							cLogMsg += PadL(AllTrim(Transform(SE1->E1_SALDO - nValAbat,AllTrim(aMailFld[nZ][4]))),nLenTitle) + ' | '
 						ElseIf AllTrim(aMailFld[nZ][1]) == 'E1_MULTA'
 							//--------------------------------------------------------------------------------------
-							//ParÃ¢metros LojxRMul
+							//parâmetros LojxRMul
 							//lRegrafin			- Realiza cÃ¡lculo de juros pela regra do SIGAFIN (.T.)
 							//lAcresVlTit		- Adiciona Acrescimo no Total?            
 	                        //nPerMulta			- Percentual de Multa                     
-	                        //nSaldo			- Saldo do  tÃ­tulo                        
+	                        //nSaldo			- Saldo do  título                        
 							//nAcrescimo		- Valor de Acrescimo                      
 							//dDtVencRea		- Data de Vencimento Real                 
 							//dDtPag			- Data de Pagamento                       
 							//lBxparcial		- Baixa Parcial?                          
 							//nE1_Multa			- Valor da Multa E1_MULTA                 
 							//lAbat				- Abate valor?                            
-							//cPrefixo			- Prefixo do tÃ­tulo                       
-							//cNumero			- Numero do tÃ­tulo                        
-							//cParcela			- Parcela do tÃ­tulo                       
-							//cTipo				- Tipo do tÃ­tulo 
-							//cCliente			- Cliente do tÃ­tulo                       
-							//cLoja				- Loja do Cliente do tÃ­tulo               
-							//cAliasSE1			- Alias da WorkArea do TÃ­tulo (posicionada)
+							//cPrefixo			- Prefixo do título                       
+							//cNumero			- Numero do título                        
+							//cParcela			- Parcela do título                       
+							//cTipo				- Tipo do título 
+							//cCliente			- Cliente do título                       
+							//cLoja				- Loja do Cliente do título               
+							//cAliasSE1			- Alias da WorkArea do título (posicionada)
 							//lLoja				- Chamado pelo Loja? 						
 							//--------------------------------------------------------------------------------------
 							nMulta := LojxRMul(,.F.,,SE1->E1_SALDO - nValAbat,,SE1->E1_VENCREA,dDtRef,,)
@@ -2219,7 +2119,6 @@ Static Function F811SendMail() As Logical
 				IncProc()
 			Next nY
 
-            //cMailTo := F811MAILTO(_cVendedor,_cMensagem)
 			aEmails := F811MAILTO(_cVendedor,_cMensagem)
 			cTo := aEmails[1]
 			cCC := aEmails[2]
@@ -2235,7 +2134,7 @@ Static Function F811SendMail() As Logical
 			EndIf
 
 			If cComboVenc == "1" .And. Len(aAux) > 0
-				//Caso nÃ£o haja nenhum tÃ­tulo vencido, nÃ£o mostro a mensagem de relaÃ§Ã£o de tÃ­tulos a vencer
+				//Caso não haja nenhum título vencido, não mostro a mensagem de relação de títulos a vencer
 				If !lCabecVenc
 					cHtml += '<table style="width:80%">'
 					cHtml += '<tr>'
@@ -2245,7 +2144,7 @@ Static Function F811SendMail() As Logical
 					cHtml += '</tr>'
 					cHtml += '</table><br>'
 				EndIf
-				//TÃ­tulos a vencer
+				//títulos a vencer
 				cHtml += '<table style="width:80%">'
 				cHtml += '<caption>'
 				cHtml += '<b>' + STR0048 + '</b>'
@@ -2283,24 +2182,24 @@ Static Function F811SendMail() As Logical
 							cLogMsg += PadL(AllTrim(Transform(SE1->E1_SALDO - nValAbat,AllTrim(aMailFld[nZ][4]))),nLenTitle) + ' | '
 						ElseIf AllTrim(aMailFld[nZ][1]) == 'E1_MULTA'
 							//--------------------------------------------------------------------------------------
-							//ParÃ¢metros LojxRMul
+							//parâmetros LojxRMul
 							//lRegrafin			- Realiza cÃ¡lculo de juros pela regra do SIGAFIN (.T.)
 							//lAcresVlTit		- Adiciona Acrescimo no Total?            
 	                        //nPerMulta			- Percentual de Multa                     
-	                        //nSaldo			- Saldo do  tÃ­tulo                        
+	                        //nSaldo			- Saldo do  título                        
 							//nAcrescimo		- Valor de Acrescimo                      
 							//dDtVencRea		- Data de Vencimento Real                 
 							//dDtPag			- Data de Pagamento                       
 							//lBxparcial		- Baixa Parcial?                          
 							//nE1_Multa			- Valor da Multa E1_MULTA                 
 							//lAbat				- Abate valor?                            
-							//cPrefixo			- Prefixo do tÃ­tulo                       
-							//cNumero			- Numero do tÃ­tulo                        
-							//cParcela			- Parcela do tÃ­tulo                       
-							//cTipo				- Tipo do tÃ­tulo 
-							//cCliente			- Cliente do tÃ­tulo                       
-							//cLoja				- Loja do Cliente do tÃ­tulo               
-							//cAliasSE1			- Alias da WorkArea do TÃ­tulo (posicionada)
+							//cPrefixo			- Prefixo do título                       
+							//cNumero			- Numero do título                        
+							//cParcela			- Parcela do título                       
+							//cTipo				- Tipo do título 
+							//cCliente			- Cliente do título                       
+							//cLoja				- Loja do Cliente do título               
+							//cAliasSE1			- Alias da WorkArea do título (posicionada)
 							//lLoja				- Chamado pelo Loja? 						
 							//--------------------------------------------------------------------------------------
 							nMulta := LojxRMul(,.F.,,SE1->E1_SALDO - nValAbat,,SE1->E1_VENCREA,dDtRef,,)
@@ -2341,7 +2240,7 @@ Static Function F811SendMail() As Logical
 				cHtml += '</table><br><br>'
 			EndIf
 
-			//ConclusÃ£o
+			//conclusão
 			If !Empty(cConcluCrt)
 				cHtml += '<table style="width:80%">'
 				cHtml += '<tr>'
@@ -2355,15 +2254,15 @@ Static Function F811SendMail() As Logical
 			cHtml += '</body>'
 			cHtml += '</html>'
 
-			//Efetua a conexÃ£o com o servidor de saÃ­da (SMTP)
+			//Efetua a conexão com o servidor de saída (SMTP)
 			Connect Smtp Server cServer ACCOUNT cUser PASSWORD cPass RESULT lConexao
 
-			//Efetua autenticaÃ§Ã£o do servidor de e-mail
+			//Efetua autenticação do servidor de e-mail
 			If lAutentica
 				lAuth := MailAuth(cUsrAut,cPswAut)
 			EndIf
 
-			//Processa o envio do e-mail conforme parÃ¢metros definidos
+			//Processa o envio do e-mail conforme parâmetros definidos
 			Send Mail From cFrom to cTo CC cCC SubJect cSubject BODY cHtml RESULT lEnvio
 
 			If lAuth
@@ -2407,7 +2306,7 @@ Static Function F811SendMail() As Logical
 		Next nX
 	EndIf
 
-	If !l811Auto .And. cTpEnvio $ "2|3" // Tipo de Envio: Carta FÃ­sica ou Ambos
+	If !l811Auto .And. cTpEnvio $ "2|3" // Tipo de Envio: Carta física ou Ambos
 		FINR811A(.T.,cComboVenc) //// Titulos a Vencer?  1-Sim , 2-Nao
 		ProcLogAtu( 'MENSAGEM' , STR0053 , , , .T.)
 	EndIf
@@ -2419,9 +2318,9 @@ Return .T.
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} SetMrkAll
-Marca/Desmarca todos os registro da MarkBrowse que estÃ¡ ativa
+Marca/Desmarca todos os registro da MarkBrowse que está ativa
 
-@param nTrab - Corresponde Ã  MarkBrowse ativa no momento
+@param nTrab - Corresponde á MarkBrowse ativa no momento
 
 @author Pedro Pereira Lima
 @since 04/09/2015
@@ -2481,7 +2380,7 @@ Return
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} F811AbatRec
-Retorna o valor de abatimento (caso haja) do tÃ­tulo   
+Retorna o valor de abatimento (caso haja) do título   
 
 @author Pedro Lima
 @since 16/12/2015	
@@ -2546,7 +2445,7 @@ Return nValAbat
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} F811RMul
-Retorna o valor de multa (caso haja) do tÃ­tulo   
+Retorna o valor de multa (caso haja) do título   
 
 @author Mauricio Pequim Jr
 @since 16/12/2015	
@@ -2569,12 +2468,10 @@ User Function AF030RMul( nValor As Numeric, nSaldo As Numeric, dDtVencRea As Dat
 	EndIf
 
 	If __lMulLoj == NIL
-		__lMulLoj := SuperGetMv("MV_LJINTFS", ,.F.) //Calcula multa conforme regra do loja, se integraÃ§Ã£o com financial estiver habilitada
+		__lMulLoj := SuperGetMv("MV_LJINTFS", ,.F.) //Calcula multa conforme regra do loja, se integrseção com financial estiver habilitada
 	EndIf
 
-	//----------------------------------------------------------------------------------------------------------------------
-	// Verifica se o tipo de calculo de juros Ã© igual (L)loja ou Indicacao do calculo de Multa do Loja, calcula a multa 
-	//----------------------------------------------------------------------------------------------------------------------
+	// Verifica se o tipo de calculo de juros é igual (L)loja ou Indicacao do calculo de Multa do Loja, calcula a multa 
 	If (__cMvJurTp == "L" .Or. __lMulLoj) .And. nSaldo + U_AF030AbatRec() > 0
 
 		nMulta := 	LojxRMul(,.F.,,nSaldo,,dDtVencRea,dDtRef)
@@ -2585,7 +2482,7 @@ Return nMulta
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} F811AtuTrb
-Ajusta o valor do saldo do tÃ­tulo, considerando seus abatimentos   
+Ajusta o valor do saldo do título, considerando seus abatimentos   
 
 @author Pedro Lima
 @since 07/01/2016	
@@ -2607,9 +2504,9 @@ Return
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} F811TmpCli
-Monta uma tabela temporÃ¡ria com a relaÃ§Ã£o de clientes selecionados
-permitindo que o filtro de tÃ­tulos seja feito levando em consideraÃ§Ã£o
-a relaÃ§Ã£o dos clientes selecionados   
+Monta uma tabela temporária com a relação de clientes selecionados
+permitindo que o filtro de títulos seja feito levando em considerseção
+a relação dos clientes selecionados   
 
 @author Pedro Lima
 @since 28/07/2016	
@@ -2636,7 +2533,6 @@ User Function AF030TmpCli( cTrabSA1 As Character ) As Character
 
 	__oFIN8115:SetFields(aStruTMP)
 
-
 	//Criando a Tabela Temporaria
 	__oFIN8115:Create()
 	Sleep(1000)
@@ -2655,7 +2551,7 @@ Return cTmpSA1
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} F811TitJur
-Retorna o valor de juros dos tÃ­tulos   
+Retorna o valor de juros dos títulos   
 
 @author Pedro Lima
 @since 28/07/2016	
@@ -2675,11 +2571,11 @@ User Function AF030TitJur( cTrabSE1 As Character ) As Numeric
 Return nValJur
 
 
-// FunÃ§oes da situaÃ§Ã£o de cobranÃ§a dque devem ser alteradas quando o SERASA 
-// descer para o padrÃ£o
+// Funções da situações de cobrança dque devem ser alteradas quando o SERASA 
+// descer para o padrão
 //-------------------------------------------------------------------
 /*/{Protheus.doc} FGetSitCob
-Retorna as situaÃ§Ãµes de cobranÃ§as selecionadas.
+Retorna as situações de cobranças selecionadas.
 @author william.gundim
 @since  14/01/2016
 @version P12
@@ -2695,7 +2591,7 @@ Static Function F811GetSit( cCampo As Character, cFiltro As Character, lFilFW2 A
 	cRet	:= ''
 	nX		:= 0
 
-	//Markbrowse com as situaÃ§Ãµes de cobranÃ§as.
+	//Markbrowse com as situações de cobranças.
 	F811FltSC(cFiltro,lFilFW2)
 
 	If !Empty(__cRe770F3)
@@ -2706,10 +2602,10 @@ Return cRet
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} F811FltSC
-ConstruÃ§Ã£o de Browse de Consulta PadrÃ£o do tipo EspecifÃ­ca 
-SituaÃ§Ã£o CobranÃ§a SeleÃ§Ã£o
+contrução de Browse de Consulta padrão do tipo específica 
+situações cobrança seleção
 NOME ORIGINAL DA FUNCAO F770FltSC
-@Return cRet â€“ RelaÃ§Ã£o das situaÃ§Ãµes de cobranÃ§a selecionadas pelo usuÃ¡rio
+@Return cRet é relação das situações de cobrança selecionadas pelo usuário
 @author lucas.oliveira
 @since  16/05/2015
 @version 12.1.6
@@ -2731,7 +2627,7 @@ Static Function F811FltSC( cFiltro As Character, lFilFW2 As Logical ) As Logical
 	Default lFilFW2	:= .T.
 
 	lRet		:= .F.
-	aStru		:= FRV->(DBSTRUCT()) //Estrutura da tabela de SituaÃ§Ãµes de cobranÃ§a.
+	aStru		:= FRV->(DBSTRUCT()) //Estrutura da tabela de situações de cobrança.
 	cQuery		:= ''
 	aColumns	:= {}
 	cChave		:= ''
@@ -2741,13 +2637,13 @@ Static Function F811FltSC( cFiltro As Character, lFilFW2 As Logical ) As Logical
 	bCancel		:= {|| oMrkBrowse:Deactivate(),oDlg:End()}
 	aPesq		:= {}
 
-	//Criar uma FWMarkBrowse() baseado na tabela FRV, apresentando todas as situaÃ§Ãµes de cobranÃ§a e sua descriÃ§Ã£o para seleÃ§Ã£o do usuÃ¡rio.
-	//Caso o usuÃ¡rio confirme, retornar string com o cÃ³digo das situaÃ§Ãµes selecionadas, alimentando a variÃStatictatic __cRe770F3
+	//Criar uma FWMarkBrowse() baseado na tabela FRV, apresentando todas as situações de cobrança e sua Descrição para seleção do usuário.
+	//Caso o usuário confirme, retornar string com o código das situações selecionadas, alimentando a variáveis static __cRe770F3
 
 	__cRe770F3 := ''
 
 	If Empty(__cArqTrab)
-		//Seleciona as SituaÃ§Ãµes de CobranÃ§a, exceÃ§Ã£o aquelas que impedem interaÃ§Ã£o com a Serasa 
+		//Seleciona as situações de cobrança, exceto aquelas que impedem interseção com a Serasa 
 		cQuery += "SELECT * FROM "+ RetSqlName("FRV") +" FRV "
 		cQuery += "WHERE FRV.FRV_FILIAL = '" + xFilial("FRV") + "' "
 		cQuery += "AND FRV.D_E_L_E_T_ = ' ' "
@@ -2805,7 +2701,7 @@ Static Function F811FltSC( cFiltro As Character, lFilFW2 As Logical ) As Logical
 
 	If !(__cArqTrab)->(Eof())
 		aSize := MsAdvSize(,.F.,400)
-		DEFINE MSDIALOG oDlg TITLE STR0017 From 300,0 to 800,800 OF oMainWnd PIXEL //SituaÃ§Ãµes de CobranÃ§a
+		DEFINE MSDIALOG oDlg TITLE STR0017 From 300,0 to 800,800 OF oMainWnd PIXEL //situações de cobrança
 		oMrkBrowse:= FWMarkBrowse():New()
 		oMrkBrowse:oBrowse:SetEditCell(.T.)
 		oMrkBrowse:oBrowse:SetMainProc("FINA811")
@@ -2832,7 +2728,7 @@ Return lRet
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc}F811SCMark
-Marca ou desmarca todas as situaÃ§Ãµes de cobranÃ§a.
+Marca ou desmarca todas as situações de cobrança.
 NOME ORIGINAL DA FUNCAO F770SCMark
 @author lucas.oliveira
 @since  06/10/2015
@@ -2868,7 +2764,7 @@ Return .T.
 //-------------------------------------------------------------------
 /*/{Protheus.doc}F811GrvSC
 NOME ORIGINAL DA FUNCAO F770GrvSC
-Grava em uma string todas as SituaÃ§Ãµes de CobranÃ§a selecionadas.
+Grava em uma string todas as situações de cobrança selecionadas.
 @author lucas.oliveira
 @since  16/05/2015
 @version 12.1.6
@@ -2901,7 +2797,7 @@ Return lRet
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} FIN811AUTO
-FunÃ§Ã£o para automaÃ§Ã£o de teste do envio da carta de cobranÃ§a
+funções para automação de teste do envio da carta de cobrança
 
 @param
 @author rogerio.melonio	
@@ -2914,35 +2810,26 @@ Static Function FIN811AUTO() As Logical
 
 	lRet := .T.
 
-	//----------------------
 	// Pagina 2 
-	// seleÃ§Ã£o da carta de cobranÃ§a ativa passado pela automaÃ§Ã£o de testes
-	//----------------------
+	// seleção da carta de cobrança ativa passado pela automação de testes
 	Valid_PG2() 
 
-	//----------------------
 	// Pagina 3
-	// ValidaÃ§Ã£o da carta e seleÃ§Ã£o dos clientes 
-	//----------------------
+	// Validseção da carta e seleção dos clientes 
 	lRet := Valid_PG3() 
 
 	If lRet
-		//----------------------
 		// Pagina 4
-		// ValidaÃ§Ã£o dos clientes, seleÃ§Ã£o e validaÃ§Ã£o dos tÃ­tulos
-		//----------------------
+		// Validseção dos clientes, seleção e validseção dos títulos
 		Valid_PG4() 
 		(cTrabSE1)->(DBGoTop())
 		lRet := !(cTrabSE1)->(Eof())
 	EndIf
 
 	If lRet
-		//----------------------
 		// Pagina 6
-		// Processa o envio atravÃ©s de chamada da funÃ§Ã£o F811GrvFWT()
-		//----------------------
+		// Processa o envio através de chamada da funções F811GrvFWT()
 		F811GrvFWT()
-		
 	EndIf 
 
 Return lRet
@@ -2959,6 +2846,7 @@ Retorno-----------: Nenhum
 ===============================================================================================================================
 */
 Static Function F811MAILTO(_cVendedor,_cMensagem)
+
 Local cGetPara:= AllTrim(SA1->A1_EMAIL)
 Local cGetCc  := AllTrim(UsrRetMail(__cUserId))
 Local cGetNovo:= Space(1000)
@@ -2978,9 +2866,7 @@ If !Empty(_cMensagem)
    cGetVend:=_cMensagem
 EndIf
 
-
 cGetNovo := Space(1000)
-
 
 DEFINE MSDIALOG oDlgMail TITLE "Configuracao do E-Mail" FROM 000, 000  TO 300, 650   PIXEL
 
@@ -3012,7 +2898,6 @@ DEFINE MSDIALOG oDlgMail TITLE "Configuracao do E-Mail" FROM 000, 000  TO 300, 6
     nlin+=17
 
 	@ nlin, nCol    BUTTON oButEnv PROMPT "&OK"		SIZE 037, 012 OF oDlgMail ACTION ( nOpcA := 1 , IIf(!Empty(AllTrim(cGetPara+cGetNovo)),oDlgMail:End(),U_ITMsg("Preencha o campo E-mail Novo pois no cadastro desse cliente o campo e-mail não está preenchido!","Atenção",,3)) ) PIXEL
-	//@ 055, nCol+45 BUTTON oButCan PROMPT "&Manter"  	SIZE 037, 012 OF oDlgMail ACTION ( nOpcA := 0 , oDlgMail:End() ) PIXEL
 
 ACTIVATE MSDIALOG oDlgMail CENTERED
 
@@ -3044,6 +2929,7 @@ Retorno-----------: Nenhum
 ===============================================================================================================================
 */
 Static Function Valid_PG1()
+
 Local nI
 Local aOptions := {"1 - Sim","2 - Nao"}
 Local aOpConVl := {"1 - Valor Total","2 - Saldo      "}
@@ -3051,6 +2937,7 @@ Local aOpBloqu := {"1 - Sim  ","2 - Nao  "}
 Local _aParAux := {} 
 Local _aParRet := {} 
 Local _bOK     := {|| .T. }
+
 cComboFil  :=aOptions[1]
 cSitCob    :=aOptions[2]
 cComboVenc :=aOptions[2]

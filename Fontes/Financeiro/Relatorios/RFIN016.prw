@@ -1,15 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Julio Paz     |14/05/2021| Chamado 36494. Inclusão do novo evento R-2055
-Julio Paz     |03/09/2021| Chamado 37676. Inclusão nova coluna.Não exibir dados quando Valor INSS/Valor Senar/Valor Funrural=0
-Lucas Borges  |22/04/2025| Chamado 50505. Alterada a picture do CNPJ para contemplar campo alfanumérico
-===============================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 #Include 'TOPCONN.CH'
 
@@ -51,14 +39,10 @@ Private _oSect1_I := Nil
 
 Begin Sequence	
 	
-	//====================================================================================================
     // Gera a pergunta de modo oculto, ficando disponível no botão ações relacionadas
-    //====================================================================================================
     Pergunte("RFIN016",.F.)	          
 
-	//====================================================================================================
     // Chama a montagem do relatório.
-    //====================================================================================================	
 	_oReport := RFIN016D("RFIN016")
 	_oReport:PrintDialog()
 	
@@ -82,16 +66,12 @@ Begin Sequence
    _oReport := TReport():New(_cNome,"Relatório Previsão Reinf",_cNome,{|_oReport| RFIN016P(_oReport)},"Emissão do Relatorio Previsão Reinf")
    _oReport:SetLandscape()    
    _oReport:SetTotalInLine(.F.)
-
-   //====================================================================================================
+   
    // Define as totalizações e quebra por seção.
-   //====================================================================================================	
    //TRFunction():New(oSection2:Cell("B1_COD"),NIL,"COUNT",,,,,.F.,.T.)
    _oReport:SetTotalInLine(.F.)
    
-   //===========================================================================================================
    // Relatório A - R-2010 - Retenção Contribuição Previdenciária - Serviços Tomados - Documentos Fiscais (T013)
-   //===========================================================================================================	
    _oSect0_A := TRSection():New(_oReport, "R-2010 - Retenção Contribuição Previdenciária - Serviços Tomados - Documentos Fiscais (T013)" , {"TRB_A"},_aOrder , .F., .T.)
    TRCell():New(_oSect0_A,"EVENTO"	,"TRB_A","Evento","@!",25) // R-2010-Documentos Fiscais (T013)
    
@@ -122,9 +102,7 @@ Begin Sequence
    
    _oSect0_A:Disable() 
 
-   //====================================================================================================
    // Relatório B - R-2010 - Retenção Contribuição Previdenciária - Serviços Tomados - Faturas (T154) 
-   //====================================================================================================	
    _oSect0_B := TRSection():New(_oReport, "R-2010 - Retenção Contribuição Previdenciária - Serviços Tomados - Faturas (T154)", {"TRB_B"},_aOrder , .F., .T.)
    TRCell():New(_oSect0_B,"EVENTO"	,"TRB_B","Evento","@!",25) // R-2010-Documentos Fiscais (T013)
    
@@ -145,9 +123,7 @@ Begin Sequence
    
    _oSect0_B:Disable()
    
-   //=============================================================================================================
    // Relatório C - R-2020 - Retenção Contribuição Previdenciária - Serviços Prestados - Documentos Fiscais (T013)
-   //=============================================================================================================	
    _oSect0_C := TRSection():New(_oReport, "R-2020 - Retenção Contribuição Previdenciária - Serviços Prestados - Documentos Fiscais (T013)", {"TRB_C"},_aOrder , .F., .T.)
    TRCell():New(_oSect0_C,"EVENTO"	,"TRB_C","Evento","@!",25) // R-2010-Documentos Fiscais (T013)
    
@@ -155,18 +131,18 @@ Begin Sequence
    TRCell():New(_oSect1_C,"D2_FILIAL"	, "TRB_C"  ,"FILIAL"       ,"@!",07)	
    TRCell():New(_oSect1_C,"D2_EMISSAO"	, "TRB_C"  ,"DATA EMISSAO" ,"@!",14)	
    TRCell():New(_oSect1_C,"F2_ESPECIE"	, "TRB_C"  ,"ESPECIE"      ,"@!",14)	
-//-------------------------------------------------------------------------------------//
+
    TRCell():New(_oSect1_C,"A1_COD"	    , "TRB_C"  ,"CLIENTE"      ,"@!",09)    // Codigo do cliente
    TRCell():New(_oSect1_C,"A1_LOJA"	    , "TRB_C"  ,"LOJA"         ,"@!",08)    // Loja do cliente
    TRCell():New(_oSect1_C,"A1_NOME"	    , "TRB_C"  ,"NOME CLIENTE" ,"@!",40)    // Nome do cliente
    TRCell():New(_oSect1_C,"A1_CGC"      , "TRB_C"  ,"CNPJ"         ,"@R! NN.NNN.NNN/NNNN-99",17)   // CNPJ do fornecedor
-//-------------------------------------------------------------------------------------//
+
    TRCell():New(_oSect1_C,"D2_DOC"	    , "TRB_C"  ,"NOTA FISCAL"  ,"@!",8)	
    TRCell():New(_oSect1_C,"D2_SERIE"    , "TRB_C"  ,"SERIE"        ,"@!",12)	
    TRCell():New(_oSect1_C,"D2_COD"	    , "TRB_C"  ,"PRODUTO"      ,"@!",5)	
-//-------------------------------------------------------------------------------------//   
+ 
    TRCell():New(_oSect1_C,"B1_DESC"     , "TRB_C"  ,"DESC.PRODUTO" ,"@!",30)	
-//-------------------------------------------------------------------------------------//   
+
    TRCell():New(_oSect1_C,"D2_BASEINS"	, "TRB_C"  ,"BASE INSS"    ,"@E 999,999,999,999.99",15)	
    TRCell():New(_oSect1_C,"D2_ALIQINS"	, "TRB_C"  ,"ALIQUOTA"     ,"@E 999,999.9999",20)	
    TRCell():New(_oSect1_C,"D2_VALINS"	, "TRB_C"  ,"VALOR INSS"   ,"@E 999,999,999,999.99",10)	
@@ -175,9 +151,8 @@ Begin Sequence
    _oSect1_C:Disable()
    
    _oSect0_C:Disable()
-   //====================================================================================================
+   
    // Relatório D - R-2020 - Retenção Contribuição Previdenciária - Serviços Prestados - Faturas (T154) 
-   //====================================================================================================	
    _oSect0_D := TRSection():New(_oReport, "R-2020 - Retenção Contribuição Previdenciária - Serviços Prestados - Faturas (T154)", {"TRB_D"},_aOrder , .F., .T.)
    TRCell():New(_oSect0_D,"EVENTO"	,"TRB_D","Evento","@!",25) // R-2020-Faturas (T154)
    
@@ -195,9 +170,7 @@ Begin Sequence
     
    _oSect0_D:Disable() 
 
-   //====================================================================================================
    // Relatório G - R-2040 - Retenção Contribuição Previdenciária - Serviços Tomados - Documentos Fiscais (T013)
-   //====================================================================================================	
    _oSect0_G := TRSection():New(_oReport, "R-2040 - Recursos Repassados para Associação Desportiva - Documentos Fiscais (T013)" , {"TRB_G"},_aOrder , .F., .T.)
    TRCell():New(_oSect0_G,"EVENTO"	,"TRB_G","Evento","@!",25) 
    
@@ -206,18 +179,18 @@ Begin Sequence
    TRCell():New(_oSect1_G,"D1_DTDIGIT"	, "TRB_G"  ,"DATA DIGITAÇÃO","@!",14)	
    TRCell():New(_oSect1_G,"D1_EMISSAO"	, "TRB_G"  ,"DATA EMISSAO"  ,"@!",14)	
    TRCell():New(_oSect1_G,"F1_ESPECIE"	, "TRB_G"  ,"ESPECIE"       ,"@!",8)	
-//------------------------------------------------------------------------------------------------------//
+
    TRCell():New(_oSect1_G,"A2_COD"	    , "TRB_G"  ,"FORNECEDOR"     ,"@!",12)	      // Codigo do fornecedor
    TRCell():New(_oSect1_G,"A2_LOJA"	    , "TRB_G"  ,"LOJA"           ,"@!",08)	     // Loja do fornecedor
    TRCell():New(_oSect1_G,"A2_NOME"	    , "TRB_G"  ,"NOME FORNECEDOR","@!",40)	     // Nome do fornecedor
    TRCell():New(_oSect1_G,"A2_CGC"      , "TRB_G"  ,"CNPJ"  ,"@R! NN.NNN.NNN/NNNN-99",17)   // CNPJ do fornecedor
-//------------------------------------------------------------------------------------------------------//
+
    TRCell():New(_oSect1_G,"D1_DOC"	    , "TRB_G"  ,"NOTA FISCAL"   ,"@!",12)	
    TRCell():New(_oSect1_G,"D1_SERIE"	, "TRB_G"  ,"SERIE"         ,"@!",5)	
    TRCell():New(_oSect1_G,"D1_COD"	    , "TRB_G"  ,"PRODUTO"       ,"@!",15)
-//------------------------------------------------------------------------------------------------------//
+
    TRCell():New(_oSect1_G,"B1_DESC"	    , "TRB_G"  ,"DESC.PRODUTO"  ,"@!",30)
-//------------------------------------------------------------------------------------------------------//   	
+  	
    TRCell():New(_oSect1_G,"D1_BASEINS"	, "TRB_G"  ,"BASE INSS"     ,"@E 999,999,999,999.99",18)	
    TRCell():New(_oSect1_G,"D1_ALIQINS"	, "TRB_G"  ,"ALIQUOTA"      ,"@E 999,999.9999",12)	
    TRCell():New(_oSect1_G,"D1_VALINS"	, "TRB_G"  ,"VALOR INSS"    ,"@E 999,999,999,999.99",18)	
@@ -227,9 +200,7 @@ Begin Sequence
    
    _oSect0_G:Disable()
    
-   //====================================================================================================
    // Relatório H - R-2040 - Retenção Contribuição Previdenciária - Serviços Tomados - Documentos Fiscais (T013)
-   //====================================================================================================	
    _oSect0_H := TRSection():New(_oReport, "R-2040 - Recursos Repassados para Associação Desportiva - Faturas (T154)" , {"TRB_H"},_aOrder , .F., .T.)
    TRCell():New(_oSect0_H,"EVENTO"	,"TRB_H","Evento","@!",25) 
    
@@ -249,9 +220,7 @@ Begin Sequence
    
    _oSect0_H:Disable()
 
-   //===========================================================================================================
    // Relatório I - R-2055 - Aquisição Produtor Rural - Documentos Fiscais (T013)
-   //===========================================================================================================	
    _oSect0_I := TRSection():New(_oReport, "R-2055 - Aquisição Produtor Rural - Documentos Fiscais (T013)" , {"TRB_I"},_aOrder , .F., .T.)
    TRCell():New(_oSect0_I,"EVENTO"	,"TRB_I","Evento","@!",25) // R-2055 - Documentos Fiscais (T013)
    
@@ -266,9 +235,8 @@ Begin Sequence
    TRCell():New(_oSect1_I,"A2_LOJA"	    , "TRB_I"  ,"LOJA FORN."     ,"@!",12)             // Loja do fornecedor
    TRCell():New(_oSect1_I,"A2_NOME"	    , "TRB_I"  ,"NOME FORNECEDOR","@!",40)             // Nome do fornecedor
    TRCell():New(_oSect1_I,"A2_CGC"      , "TRB_I"  ,"CNPJ"  ,"@R! NN.NNN.NNN/NNNN-99",17)   // CNPJ do fornecedor
-   //------------------------------------------------------------------------------------------------------------
+   
    TRCell():New(_oSect1_I,"A2_INDCP"    , "TRB_I"  ,"Indicativo Rural"  ,"@!",16)          // Indicativo Rural // JPP TESTE
-   //------------------------------------------------------------------------------------------------------------
 
    TRCell():New(_oSect1_I,"D1_DOC"	    , "TRB_I"  ,"NOTA FISCAL"   ,"@!",12)	 
    TRCell():New(_oSect1_I,"D1_SERIE"	, "TRB_I"  ,"SERIE"         ,"@!",5)	 
@@ -309,80 +277,57 @@ Static Function RFIN016P(_oReport)
 Local _lTodos := .F.
 
 Begin Sequence     
-   //====================================================================================================
-   // Ativa a seção do relatório conforme seleção do relatório a ser emitido.
-   //====================================================================================================	
    
+   // Ativa a seção do relatório conforme seleção do relatório a ser emitido.
    If Empty(MV_PAR05)
       _lTodos := .T.
    EndIf
    
-   //====================================================================================================
    // R-2010 - Retenção Contribuição Previdenciária - Serviços Tomados
-   //====================================================================================================	
    If _lTodos .Or. "R-2010" $ MV_PAR05
-      //====================================================================================================
+      
       // R-2010 - Documentos Fiscais (T013)
-      //====================================================================================================	
       _oSect0_A:Enable() 
       _oSect1_A:Enable() 
       RFIN016A()
       
-      //====================================================================================================
       // R-2010 - Faturas (T154)
-      //====================================================================================================
       _oSect0_B:Enable()	
       _oSect1_B:Enable() 
       RFIN016C()
       
    EndIf
    
-   //====================================================================================================
    // R-2020 - Retenção Contribuição Previdenciária - Serviços Prestados
-   //====================================================================================================	
    If _lTodos .Or. "R-2020" $ MV_PAR05
-      //====================================================================================================
-      // R-2020 - Documentos Fiscais (T013)
-      //====================================================================================================	
+      
+      // R-2020 - Documentos Fiscais (T013)	
       _oSect0_C:Enable() 
       _oSect1_C:Enable()
       RFIN016E()
       
-      //====================================================================================================
       // R-2020 - Faturas (T154)
-      //====================================================================================================	
       _oSect0_D:Enable()
       _oSect1_D:Enable()
       RFIN016F()
    EndIf
   
-   //====================================================================================================
    // R-2040 - Retenção Contribuição Previdenciária - Serviços Tomados 
-   //====================================================================================================	
    If _lTodos .Or. "R-2040" $ MV_PAR05
-      //====================================================================================================
       // R-2040 - Documentos Fiscais (T013)
-      //====================================================================================================	
       _oSect0_G:Enable()
       _oSect1_G:Enable() 
       RFIN016I()
       
-      //====================================================================================================
       // R-2040 - Faturas (T154)
-      //====================================================================================================	
       _oSect0_H:Enable() 
       _oSect1_H:Enable() 
       RFIN016J()
       
    EndIf
 
-   //====================================================================================================
-   // R-2055 - Aquisição Produtor Rural - Documentos Fiscais (T013)
-   //====================================================================================================	
    If _lTodos .Or. "R-2055" $ MV_PAR05
-      //====================================================================================================
-      // R-2055 - Aquisição Produtor Rural - Documentos Fiscais (T013) 
-      //====================================================================================================	
+      // R-2055 - Aquisição Produtor Rural - Documentos Fiscais (T013) 	
       _oSect0_I:Enable()
       _oSect1_I:Enable() 
       RFIN016K()
@@ -430,32 +375,24 @@ Begin Sequence
    
    TRB_A->(DBGoTop())
    
-   //====================================================================================================
-   // Inicializando a seção _oSect0_A
-   //====================================================================================================		 
+   // Inicializando a seção _oSect0_A	 
    _oSect0_A:Init()
    _oSect0_A:Cell("EVENTO"):SetValue("R-2010-Documentos Fiscais(T013)")
    _oSect0_A:PrintLine()
    
-   //====================================================================================================
-   // Inicializando a seção _oSect1_A
-   //====================================================================================================		 
+   // Inicializando a seção _oSect1_A 
    _oSect1_A:Init()
 
    _oReport:IncMeter()
    
-   //====================================================================================================
    // Inicia processo de impressão.
-   //====================================================================================================		
    While !TRB_A->(Eof())
 		
       If _oReport:Cancel()
 		 Exit
       EndIf
           
-      //====================================================================================================
-      // Imprimindo a seção _oSect1_A
-      //====================================================================================================		 
+      // Imprimindo a seção _oSect1_A 
       _oSect1_A:Cell("D1_FILIAL"):SetValue(TRB_A->D1_FILIAL)
       _oSect1_A:Cell("D1_DTDIGIT"):SetValue(TRB_A->D1_DTDIGIT)	
       _oSect1_A:Cell("D1_EMISSAO"):SetValue(TRB_A->D1_EMISSAO)
@@ -520,19 +457,14 @@ Begin Sequence
  
      TRB_A->(DBSkip())
    EndDo   
-   //====================================================================================================
+   
    // Imprime linha separadora.
-   //====================================================================================================	
    _oReport:ThinLine()
  	
-   //====================================================================================================
-   // Finaliza primeira seção.
-   //====================================================================================================	 	  
+   // Finaliza primeira seção.  
    _oSect1_A:Finish()
    
-   //====================================================================================================
-   // Finaliza seção Zero.
-   //====================================================================================================	 	  
+   // Finaliza seção Zero.	  
    _oSect0_A:Finish()
 
 End Sequence
@@ -581,21 +513,15 @@ Begin Sequence
    
    TRB_B->(DBGoTop())
    
-   //====================================================================================================
-   // Inicializando a seção _oSect0_B
-   //====================================================================================================		 
+   // Inicializando a seção _oSect0_B 
    _oSect0_B:Init()
    _oSect0_B:Cell("EVENTO"):SetValue("R-2010-Faturas(T154)")
    _oSect0_B:PrintLine()
    
-   //====================================================================================================
-   // Inicializando a primeira seção
-   //====================================================================================================		 
+   // Inicializando a primeira seção 
    _oSect1_B:Init()
         
-   //====================================================================================================
    // Inicia processo de impressão.
-   //====================================================================================================		
    While !TRB_B->(Eof())
 		
       If _oReport:Cancel()
@@ -604,9 +530,7 @@ Begin Sequence
       
 	  _oReport:IncMeter()
 	          
-      //====================================================================================================
-      // Imprimindo a seção _oSect1_B
-      //====================================================================================================		 
+      // Imprimindo a seção _oSect1_B	 
       _oSect1_B:Cell("E2_FILIAL"):SetValue(TRB_B->E2_FILIAL)
       _oSect1_B:Cell("E2_EMISSAO"):SetValue(TRB_B->E2_EMISSAO)
       _oSect1_B:Cell("E2_NUM"):SetValue(TRB_B->E2_NUM)
@@ -616,13 +540,12 @@ Begin Sequence
       _oSect1_B:Cell("A2_CGC"):SetValue(TRB_B->A2_CGC)  
       _oSect1_B:Cell("E2_BASEINS"):SetValue(TRB_B->E2_BASEINS)  
       _oSect1_B:Cell("E2_INSS"):SetValue(TRB_B->E2_INSS)  
-
       
       _cOcorrencia := ""
        
       If Empty(TRB_B->FKF_TPSERV)
          _cOcorrencia += " OT51 - Titulo sem complemento de Imposto. "  //   Sistema procura a chave do titulo posicionado na tabela FK7->FK7_CHAVE e localizando procura o conteudo do campo FK7->FK7_IDDOC
-	  EndIf											                    //   no campo FKF_FKFIDDOC e verifica se o campo FKF->FKF_TPSERV = " "
+	   EndIf											                    //   no campo FKF_FKFIDDOC e verifica se o campo FKF->FKF_TPSERV = " "
       
       _cRetorno := ""
       
@@ -640,21 +563,15 @@ Begin Sequence
  
       TRB_B->(DBSkip())
    EndDo   
-   //====================================================================================================
+   
    // Imprime linha separadora.
-   //====================================================================================================	
    _oReport:ThinLine()
  	
-   //====================================================================================================
-   // Finaliza primeira seção.
-   //====================================================================================================	 	  
+   // Finaliza primeira seção.  
    _oSect1_B:Finish()
    
-   //====================================================================================================
-   // Finaliza seção Zero.
-   //====================================================================================================	 	  
+   // Finaliza seção Zero.  
    _oSect0_B:Finish()
-   
 
 End Sequence
 
@@ -700,21 +617,15 @@ Begin Sequence
    
    TRB_C->(DBGoTop())
    
-   //====================================================================================================
-   // Inicializando a seção _oSect0_C
-   //====================================================================================================		 
+   // Inicializando a seção _oSect0_C 
    _oSect0_C:Init()
    _oSect0_C:Cell("EVENTO"):SetValue("R-2020-Documentos Fiscais(T013)")
    _oSect0_C:PrintLine()
    
-   //====================================================================================================
-   // Inicializando a primeira seção
-   //====================================================================================================		 
+   // Inicializando a primeira seção 
     _oSect1_C:Init()
     
-   //====================================================================================================
    // Inicia processo de impressão.
-   //====================================================================================================		
    While !TRB_C->(Eof())
 		
       If _oReport:Cancel()
@@ -722,10 +633,8 @@ Begin Sequence
       EndIf
       
 	  _oReport:IncMeter()
-	          
-      //====================================================================================================
-      // Imprimindo a seção _oSect1_C
-      //====================================================================================================		 
+	         
+      // Imprimindo a seção _oSect1_C	 
       _oSect1_C:Cell("D2_FILIAL"):SetValue(TRB_C->D2_FILIAL)	
       _oSect1_C:Cell("D2_EMISSAO"):SetValue(TRB_C->D2_EMISSAO)	
       _oSect1_C:Cell("F2_ESPECIE"):SetValue(TRB_C->F2_ESPECIE)	
@@ -784,19 +693,14 @@ Begin Sequence
  
       TRB_C->(DBSkip())
    EndDo   
-   //====================================================================================================
+   
    // Imprime linha separadora.
-   //====================================================================================================	
    _oReport:ThinLine()
  	
-   //====================================================================================================
-   // Finaliza primeira seção.
-   //====================================================================================================	 	  
+   // Finaliza primeira seção.	  
    _oSect1_C:Finish()
    
-   //====================================================================================================
-   // Finaliza seção Zero.
-   //====================================================================================================	 	  
+   // Finaliza seção Zero. 	  
    _oSect0_C:Finish()
    
 End Sequence
@@ -843,21 +747,15 @@ Begin Sequence
    
    TRB_D->(DBGoTop())
 
-   //====================================================================================================
-   // Inicializando a seção _oSect0_D
-   //====================================================================================================		 
+   // Inicializando a seção _oSect0_D	 
    _oSect0_D:Init()
    _oSect0_D:Cell("EVENTO"):SetValue("R-2020-Faturas(T154)")
    _oSect0_D:PrintLine()
    
-   //====================================================================================================
-   // Inicializando a primeira seção
-   //====================================================================================================		 
+   // Inicializando a primeira seção 
    _oSect1_D:Init()
    
-   //====================================================================================================
-   // Inicia processo de impressão.
-   //====================================================================================================		
+   // Inicia processo de impressão.	
    While !TRB_D->(Eof())
 		
       If _oReport:Cancel()
@@ -866,9 +764,7 @@ Begin Sequence
 
 	  _oReport:IncMeter()
 	          
-      //====================================================================================================
-      // Imprimindo a seção _oSect1_D
-      //====================================================================================================		 
+      // Imprimindo a seção _oSect1_D	 
       _oSect1_D:Cell("E1_FILIAL"):SetValue(TRB_D->E1_FILIAL)
       _oSect1_D:Cell("E1_EMISSAO"):SetValue(TRB_D->E1_EMISSAO )
       _oSect1_D:Cell("E1_NUM"):SetValue(TRB_D->E1_NUM )
@@ -897,19 +793,14 @@ Begin Sequence
 
       TRB_D->(DBSkip())
    EndDo   
-   //====================================================================================================
+   
    // Imprime linha separadora.
-   //====================================================================================================	
    _oReport:ThinLine()
  	
-   //====================================================================================================
-   // Finaliza primeira seção.
-   //====================================================================================================	 	  
+   // Finaliza primeira seção.	  
    _oSect1_D:Finish()
    
-   //====================================================================================================
-   // Finaliza seção Zero.
-   //====================================================================================================	 	  
+   // Finaliza seção Zero.  
    _oSect0_D:Finish()
    
 End Sequence
@@ -957,22 +848,15 @@ Begin Sequence
    
    TRB_G->(DBGoTop())
    
-   //====================================================================================================
-   // Inicializando a seção _oSect0_F
-   //====================================================================================================		 
+   // Inicializando a seção _oSect0_F	 
    _oSect0_G:Init()
    _oSect0_G:Cell("EVENTO"):SetValue("R-2040-Documentos Fiscais(T013)")
    _oSect0_G:PrintLine()
    
-
-   //====================================================================================================
-   // Inicializando a primeira seção
-   //====================================================================================================		 
+   // Inicializando a primeira seção 
    _oSect1_G:Init()
 	     
-   //====================================================================================================
-   // Inicia processo de impressão.
-   //====================================================================================================		
+   // Inicia processo de impressão.	
    While !TRB_G->(Eof())
 		
       If _oReport:Cancel()
@@ -981,9 +865,7 @@ Begin Sequence
 
 	  _oReport:IncMeter()
 	          
-      //====================================================================================================
-      // Imprimindo a seção _oSect1_G
-      //====================================================================================================		 
+      // Imprimindo a seção _oSect1_G	 
       _oSect1_G:Cell("D1_FILIAL"):SetValue(TRB_G->D1_FILIAL)
       _oSect1_G:Cell("D1_DTDIGIT"):SetValue(TRB_G->D1_DTDIGIT)
       _oSect1_G:Cell("D1_EMISSAO"):SetValue(TRB_G->D1_EMISSAO)
@@ -1041,19 +923,14 @@ Begin Sequence
  
       TRB_G->(DBSkip())
    EndDo   
-   //====================================================================================================
+   
    // Imprime linha separadora.
-   //====================================================================================================	
    _oReport:ThinLine()
  	
-   //====================================================================================================
-   // Finaliza primeira seção.
-   //====================================================================================================	 	  
+   // Finaliza primeira seção. 
    _oSect1_G:Finish()
    
-   //====================================================================================================
-   // Finaliza seção Zero.
-   //====================================================================================================	 	  
+   // Finaliza seção Zero.  
    _oSect0_G:Finish()
    
 End Sequence
@@ -1100,37 +977,27 @@ Begin Sequence
    
    TRB_H->(DBGoTop())
    
-   //====================================================================================================
-   // Inicializando a seção _oSect0_H
-   //====================================================================================================		 
+   // Inicializando a seção _oSect0_H	 
    _oSect0_H:Init()
    _oSect0_H:Cell("EVENTO"):SetValue("R-2040-Faturas(T154)")
    _oSect0_H:PrintLine()
    
-   //====================================================================================================
-   // Inicializando a primeira seção
-   //====================================================================================================		 
+   // Inicializando a primeira seção	 
    _oSect1_H:Init()
    
-   //====================================================================================================
-   // Inicia processo de impressão.
-   //====================================================================================================		
+   // Inicia processo de impressão.	
    While !TRB_H->(Eof())
 		
       If _oReport:Cancel()
 		 Exit
       EndIf
 					
-      //====================================================================================================
-      // Inicializando a primeira seção
-      //====================================================================================================		 
+      // Inicializando a primeira seção		 
 	  _oSect1_H:Init()
 
 	  _oReport:IncMeter()
 	          
-      //====================================================================================================
-      // Imprimindo a seção _oSect1_H
-      //====================================================================================================		 
+      // Imprimindo a seção _oSect1_H	 
       _oSect1_H:Cell("E2_FILIAL"):SetValue(TRB_H->E2_FILIAL)
       _oSect1_H:Cell("E2_EMISSAO"):SetValue(TRB_H->E2_EMISSAO)
       _oSect1_H:Cell("E2_NUM"):SetValue(TRB_H->E2_NUM)
@@ -1165,19 +1032,14 @@ Begin Sequence
  
       TRB_H->(DBSkip())
    EndDo   
-   //====================================================================================================
+   
    // Imprime linha separadora.
-   //====================================================================================================	
    _oReport:ThinLine()
  	
-   //====================================================================================================
-   // Finaliza primeira seção.
-   //====================================================================================================	 	  
+   // Finaliza primeira seção.	  
    _oSect1_H:Finish()
    
-   //====================================================================================================
-   // Finaliza seção Zero.
-   //====================================================================================================	 	  
+   // Finaliza seção Zero.	  
    _oSect0_H:Finish()
    
 End Sequence
@@ -1202,13 +1064,6 @@ User Function RFIN016B()
 Local _aRet
 
 Begin Sequence
-  /*    _aRet := {"R-2010-Serviços Tomados",;
-                "R-2020-Serviços Prestados",;
-                "R-2030-Recebidos Associação Desportiva",;
-                "R-2040-Repassados Associação Desportiva",;
-                "R-2050-Produção Produtor Rural",; 
-                "R-2070-IR, CSLL, Cofins, PIS/PASEP"} 	
-*/
    _aRet := {"R-2010-Retenção Contribuição Previdenciária - Serviços Tomados",;
 			 "R-2020-Retenção Contribuição Previdenciária - Serviços Prestados",;  // "R-2030-Recursos Recebidos por Associação Desportiva",;
 			 "R-2040-Recursos Repassados para Associação Desportiva",;  // "R-2050-Comercialização da Produção por Produtor Rural PJ/Agroindústria",;
@@ -1298,7 +1153,13 @@ Begin Sequence
       _cQry +=  " A2_CGC "
       _cQry +=  " FROM "+RetSqlName("SE2")+ " SE2, " + RetSqlName("FK7") + " FK7, " + RetSqlName("FKF") + " FKF, "+RetSqlName("SA2")+ " SA2 " 
       _cQry +=  " WHERE SE2.D_E_L_E_T_ = ' ' AND FK7.D_E_L_E_T_ = ' ' AND FKF.D_E_L_E_T_ = ' ' AND SA2.D_E_L_E_T_ = ' ' "
-      _cQry +=  " AND (E2_FILIAL ||'|'||E2_PREFIXO||'|'||E2_NUM||'|'||E2_PARCELA||'|'||E2_TIPO||'|'||E2_FORNECE||'|'||E2_LOJA) = FK7_CHAVE "
+      _cQry +=  " AND E2_FILIAL  = FK7_FILTIT "
+      _cQry +=  " AND E2_PREFIXO = FK7_PREFIX "
+      _cQry +=  " AND E2_NUM     = FK7_NUM "
+      _cQry +=  " AND E2_PARCELA = FK7_PARCEL "
+      _cQry +=  " AND E2_TIPO    = FK7_TIPO "
+      _cQry +=  " AND E2_FORNECE = FK7_CLIFOR "
+      _cQry +=  " AND E2_LOJA    = FK7_LOJA "
       _cQry +=  " AND E2_FILIAL = FK7_FILIAL AND FK7_ALIAS = 'SE2' "
       _cQry +=  " AND E2_FORNECE = A2_COD AND E2_LOJA = A2_LOJA "
       _cQry +=  " AND FK7_FILIAL = FKF_FILIAL AND FK7_IDDOC = FKF_IDDOC "
@@ -1376,7 +1237,13 @@ Begin Sequence
       _cQry += " A1_CGC "
       _cQry += " FROM "+RetSqlName("SE1")+ " SE1, " + RetSqlName("FK7") + " FK7, " + RetSqlName("FKF") + " FKF, "+RetSqlName("SA1")+ " SA1 " 
       _cQry += " WHERE SE1.D_E_L_E_T_ = ' ' AND FK7.D_E_L_E_T_ = ' ' AND FKF.D_E_L_E_T_ = ' ' AND SA1.D_E_L_E_T_ = ' ' "
-      _cQry += " AND (E1_FILIAL ||'|'||E1_PREFIXO||'|'||E1_NUM||'|'||E1_PARCELA||'|'||E1_TIPO||'|'||E1_CLIENTE||'|'||E1_LOJA) = FK7_CHAVE "
+      _cQry += " AND E1_FILIAL   = FK7_FILTIT "
+      _cQry += " AND E1_PREFIXO  = FK7_PREFIX "
+      _cQry += " AND E1_NUM      = FK7_NUM "
+      _cQry += " AND E1_PARCELA  = FK7_PARCEL "
+      _cQry += " AND E1_TIPO     = FK7_TIPO "
+      _cQry += " AND E1_CLIENTE  = FK7_CLIFOR "
+      _cQry += " AND E1_LOJA     = FK7_LOJA "
       _cQry += " AND E1_FILIAL = FK7_FILIAL AND FK7_ALIAS = 'SE1' "
       _cQry += " AND E1_CLIENTE = A1_COD AND E1_LOJA = A1_LOJA "
       _cQry += " AND FK7_FILIAL = FKF_FILIAL AND FK7_IDDOC = FKF_IDDOC "
@@ -1421,7 +1288,6 @@ Begin Sequence
        _cQry += " FROM "+RetSqlName("SD1")+ " SD1, " + RetSqlName("SA2") + " SA2, " + RetSqlName("SB1") + " SB1, "  + RetSqlName("SF1") + " SF1 " 
        _cQry += " WHERE SD1.D_E_L_E_T_ = ' ' AND SA2.D_E_L_E_T_ = ' ' AND SB1.D_E_L_E_T_ = ' ' AND SF1.D_E_L_E_T_ = ' ' "
        _cQry += " AND D1_TPREPAS = ' ' AND D1_FORNECE = A2_COD AND D1_LOJA  = A2_LOJA AND A2_TIPO = 'J' AND A2_CGC <> ' ' AND A2_DESPORT = '1' "      //AND (A2_DESPORT = ' ' OR A2_DESPORT = '0') "
-       //_cQry += " AND B1_INSS = 'S' " 
        _cQry += " AND D1_FORNECE = F1_FORNECE AND D1_LOJA  = F1_LOJA AND D1_FILIAL = F1_FILIAL AND F1_DOC = D1_DOC AND F1_SERIE = D1_SERIE " 
        _cQry += " AND D1_VALINS > 0 AND D1_COD = B1_COD "
     
@@ -1461,7 +1327,13 @@ Begin Sequence
       _cQry += " A2_CGC "
       _cQry += " FROM "+RetSqlName("SE2")+ " SE2, " + RetSqlName("FK7") + " FK7, " + RetSqlName("FKF") + " FKF, "+RetSqlName("SA2")+ " SA2 " 
       _cQry += " WHERE SE2.D_E_L_E_T_ = ' ' AND FK7.D_E_L_E_T_ = ' ' AND FKF.D_E_L_E_T_ = ' ' AND SA2.D_E_L_E_T_ = ' '  "
-      _cQry += " AND (E2_FILIAL ||'|'||E2_PREFIXO||'|'||E2_NUM||'|'||E2_PARCELA||'|'||E2_TIPO||'|'||E2_FORNECE||'|'||E2_LOJA) = FK7_CHAVE "
+      _cQry += " AND E2_FILIAL   = FK7_FILTIT "
+      _cQry += " AND E2_PREFIXO  = FK7_PREFIX "
+      _cQry += " AND E2_NUM      = FK7_NUM "
+      _cQry += " AND E2_PARCELA  = FK7_PARCEL "
+      _cQry += " AND E2_TIPO     = FK7_TIPO "
+      _cQry += " AND E2_FORNECE  = FK7_CLIFOR "
+      _cQry += " AND E2_LOJA     = FK7_LOJA "
       _cQry += " AND E2_FILIAL = FK7_FILIAL AND FK7_ALIAS = 'SE2'  "
       _cQry += " AND E2_FORNECE = A2_COD AND E2_LOJA = A2_LOJA  "
       _cQry += " AND FK7_FILIAL = FKF_FILIAL AND FK7_IDDOC = FKF_IDDOC  "
@@ -1522,7 +1394,6 @@ Begin Sequence
       _cQry += " AND FT_FILIAL = D1_FILIAL AND FT_NFISCAL = D1_DOC AND FT_SERIE = D1_SERIE AND FT_CLIEFOR = D1_FORNECE AND FT_LOJA = D1_LOJA "
       _cQry += " AND FT_ITEM = D1_ITEM AND FT_PRODUTO = D1_COD "
       _cQry += " AND (A2_TIPORUR = 'F' OR A2_TIPORUR = 'L') "
-      //_cQry += " AND ( (D1_BSSENAR = 0 AND D1_BASEINS = 0 AND D1_BASEFUN = 0) OR (FT_INDISEN <> '1')) "  
 
       If ! Empty(MV_PAR01) // Filial  
          _cQry +=  " AND D1_FILIAL IN " + FormatIn(MV_PAR01,";")
@@ -1562,11 +1433,11 @@ User Function RFIN016L()
 Local _lRet := .T.
  
 Begin Sequence 
-   //====================================================================================================
+   
    // R-2070-Retenções na Fonte - IR, CSLL, Cofins, PIS/PASEP
    // Esta opção de relatório está aguardando liberação do governo para análie e lavantamento de dados.
    // Aguardando liberação de dados do governo para analise e desenvolvimento.
-   //====================================================================================================
+   
    If "R-2010" $ MV_PAR05 .Or. "R-2020" $ MV_PAR05 .Or. "R-2030" $ MV_PAR05 .Or. "R-2040" $ MV_PAR05 .Or. "R-2055" $ MV_PAR05  
       If "R-2070" $ MV_PAR05
          U_ITMsg("O relatório 'R-2070-Retenções na Fonte - IR, CSLL, Cofins, PIS/PASEP' não está disponível para emissão. Estamos aguardando liberação do governo para darmos inicio a análise e desenvolvimento.","Atenção", ,1) 
@@ -1617,23 +1488,17 @@ Begin Sequence
    
    TRB_I->(DBGoTop())
    
-   //====================================================================================================
-   // Inicializando a seção _oSect0_I
-   //====================================================================================================		 
+   // Inicializando a seção _oSect0_I 
    _oSect0_I:Init()
    _oSect0_I:Cell("EVENTO"):SetValue("R-2055 - Documentos Fiscais (T013)")
    _oSect0_I:PrintLine()
    
-   //====================================================================================================
-   // Inicializando a seção _oSect1_I
-   //====================================================================================================		 
+   // Inicializando a seção _oSect1_I	 
    _oSect1_I:Init()
 
    _oReport:IncMeter()
    
-   //====================================================================================================
-   // Inicia processo de impressão.
-   //====================================================================================================		
+   // Inicia processo de impressão.	
    While !TRB_I->(Eof())
 		
       If _oReport:Cancel()
@@ -1646,9 +1511,7 @@ Begin Sequence
          Loop
       EndIf     
 
-      //====================================================================================================
-      // Imprimindo a seção _oSect1_I
-      //====================================================================================================		 
+      // Imprimindo a seção _oSect1_I 
       _oSect1_I:Cell("D1_FILIAL"):SetValue(TRB_I->D1_FILIAL)  
       _oSect1_I:Cell("D1_DTDIGIT"):SetValue(TRB_I->D1_DTDIGIT)	 
       _oSect1_I:Cell("D1_EMISSAO"):SetValue(TRB_I->D1_EMISSAO)  
@@ -1664,7 +1527,7 @@ Begin Sequence
       _oSect1_I:Cell("A2_LOJA"):SetValue(TRB_I->A2_LOJA)  // Loja do fornecedor  
       _oSect1_I:Cell("A2_NOME"):SetValue(TRB_I->A2_NOME)  // Nome do fornecedor     
       _oSect1_I:Cell("A2_CGC"):SetValue(TRB_I->A2_CGC)  
-//------------------------------------------------------------------
+
       _cTexto := ""
       If TRB_I->A2_INDCP == "1"
          _cTexto := "Sobre a Producao"
@@ -1674,7 +1537,6 @@ Begin Sequence
          _cTexto := "Vazio"
       EndIf 
       _oSect1_I:Cell("A2_INDCP"):SetValue(_cTexto)  
-//------------------------------------------------------------------
 
       _oSect1_I:Cell("B1_DESC"):SetValue(TRB_I->B1_DESC)  // Descrição do produto. 
 
@@ -1701,19 +1563,14 @@ Begin Sequence
  
      TRB_I->(DBSkip())
    EndDo   
-   //====================================================================================================
+   
    // Imprime linha separadora.
-   //====================================================================================================	
    _oReport:ThinLine()
  	
-   //====================================================================================================
-   // Finaliza primeira seção.
-   //====================================================================================================	 	  
+   // Finaliza primeira seção.	  
    _oSect1_I:Finish()
    
-   //====================================================================================================
-   // Finaliza seção Zero.
-   //====================================================================================================	 	  
+   // Finaliza seção Zero.	  
    _oSect0_I:Finish()
 
 End Sequence
@@ -1723,5 +1580,3 @@ If Select("TRB_I") > 0
 EndIf
 
 Return
-
-
