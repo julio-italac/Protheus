@@ -39,7 +39,7 @@ User Function MOMS053()
        
     _bOK := {|aParam| MOMS053OK(aParam) }
 
-    cFile := tFileDialog( "*.csv|*.csv", "Selecao de Arquivo" ,, "C:\", .T., GETF_LOCALHARD + GETF_RETDIRECTORY)                     
+    cFile := tFileDialog( "*.csv|*.csv", "Selecao de Arquivo" ,, "C:\", .F., GETF_LOCALHARD)                     
     
     If cFile == ""
         U_ITMsg("Processo cancelado. Local do arquivo não informado.", "Falha!")
