@@ -875,7 +875,7 @@ Next _nX
 If _cTipo <> "TOTAL"
 	_oPrint:Line( _nLinha , _nColIni , _nLinha , _nColMax )
 	_nLinha += 050
-	_oPrint:Say( _nLinha,_aPosicao[1],"TOTAL "+SubStr(_aResumo[L-1,_nPosQbra],1,2)+"-"+SubStr(_aResumo[L-1,_nPosQbra],3)+"-"+_aResumo[L-1,_nPosQbra+1],_oFont1Cour )
+	_oPrint:Say( _nLinha,_aPosicao[1],"TOTAL "+SubStr(_aResumo[_nX-1,_nPosQbra],1,2)+"-"+SubStr(_aResumo[_nX-1,_nPosQbra],3)+"-"+_aResumo[_nX-1,_nPosQbra+1],_oFont1Cour )
 	_oPrint:Say( _nLinha,_aPosicao[_nPosTotal],TRANSF(_nTotalQBG,_cPicTotal),_oFont1Cour )
 	_nLinha += 050
 EndIf
