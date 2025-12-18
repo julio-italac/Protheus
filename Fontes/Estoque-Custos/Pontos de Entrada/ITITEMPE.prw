@@ -990,7 +990,6 @@ If !_lTudoZerado
 	_cMsgEml += '<br>'
 	_cMsgEml += '<table class="bordasimples" width="1300">'
 	_cMsgEml += '    <tr>'
-	//        01    02   03   04   05   06   07
 	_aSizes:={"05","05","10","10","18","07","45"}
 	If _lRet
 		_cMsgEml += ' <td align="center" colspan="'+AllTrim(Str(Len(_aSizes)))+'" class="grupos"><b>Valores e Quantidades de Filiais / Armazens Zerados</b></td>'
