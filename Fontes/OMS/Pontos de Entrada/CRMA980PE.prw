@@ -1,20 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Julio Paz     |01/07/2025| Chamado 51203. Ajustar as validações por limite de crédito para não validar quando For MSEXECAUTO dos 
-           |			 | fontes: GP010VALPE/GPE10MENU/MOMS003/MOMS055. 
-Lucas Borges  |23/07/2025| Chamado 51340. Trocado e-mail padrão para sistema@italac.com.br
-Lucas Borges  |02/10/2025| Chamado 51526. Modificada forma para recuperar a matrícula do usuário.
-===============================================================================================================================
-Analista         - Programador       - Inicio     - Envio      - Chamado - Motivo da Alteração
----------------------------------------------------------------------------------------------------------------------------------------------------------
-Antonio Ramos    - Igor Melgaço      - 11/09/2025 -            - 51346   - Ajuste para replicar A1_COND e A1_GRPVEN entre clientes com mesma base de CNPJ.
-===============================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 #Include "FWMVCDEF.CH"
 

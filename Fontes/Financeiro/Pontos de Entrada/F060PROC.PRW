@@ -1,15 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Igor Melgaço  |26/08/2025| Chamado 47930. Ajuste para gravação do ID CNAB com tamanho correto. 
-Igor Melgaço  |26/08/2025| Chamado 51023. Ajuste para escolha de banco do titulo de acordo com dado gravado na SA1. 
-Igor Melgaço  |26/08/2025| Chamado 51400. Ajuste para bloqueio na geração do arquivo. 
-===============================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 
 /*
@@ -265,7 +253,7 @@ _oMemo:bRClicked := { || AllwaysTrue() }
 _oMemo:oFont     := _oFont
 
 Define SButton From 153, 175 Type  1 Action _oDlg:End() Enable Of _oDlg Pixel // Apaga
-Define SButton From 153, 145 Type 13 Action ( _cFile := cGetFile( _cMask, "" ), If( _cFile == "", .T., ;
+Define SButton From 153, 145 Type 13 Action ( _cFile := tFileDialog( _cMask , "Selecione o Diretorio de Destino:" ,,,, GETF_RETDIRECTORY+GETF_LOCALHARD ), If( _cFile == "", .T., ;
 MemoWrite( _cFile, _cTexto ) ) ) Enable Of _oDlg Pixel
 
 Activate MsDialog _oDlg Center

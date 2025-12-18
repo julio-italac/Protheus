@@ -1,34 +1,25 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Igor Melgaço  |06/08/2021| Chamado 37363. Troca de chamada mata030 por CRMA980
-Igor Melgaço  |04/11/2021| Chamado 37363. Ajuste para troca do Execauto do CRMA980 pelo Mata030
-Lucas Borges  |04/09/2025| Chamado 51643. Incluída nova função no menu: AGPE003
-===============================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 
 /*
 ===============================================================================================================================
-Programa----------: GP10MENU
+Programa----------: GPE10OPC
 Autor-------------: Josué Danich Prestes
 Data da Criacao---: 13/06/2019
-Descrição---------: Ponto de Entrada para incluir item no menu do cadastro de funcionarios - Chamado 29648
+Descrição---------: Adiciona Opções no array aRotina da Menudef do cadastro de funcionarios - Chamado 29648
+                    https://tdn.totvs.com/pages/releaseview.action?pageId=1021200371
 Parametros--------: Nenhum
 Retorno-----------: Nenhum
 ===============================================================================================================================
 */
-User Function GPE10MENU
+User Function GPE10OPC() As Array
 
-aAdd(aRotina, { "Inclui Cliente", "U_IMPCLI()", 0, 7, 0, Nil })
-aAdd(aRotina, { "Inclui Fornecedor", "U_IMPFOR()", 0, 7, 0, Nil })
-aAdd(aRotina, { "Aj. Contrib. Sinfical","U_AGPE003()", 0, 4, 0, Nil })
+Local _aRotina := {} As Array
 
-Return
+aAdd(_aRotina, { "Inclui Cliente", "U_IMPCLI()", 0, 7, 0, Nil })
+aAdd(_aRotina, { "Inclui Fornecedor", "U_IMPFOR()", 0, 7, 0, Nil })
+aAdd(_aRotina, { "Aj. Contrib. Sinfical","U_AGPE003()", 0, 4, 0, Nil })
+
+Return _aRotina
 
 /*
 ===============================================================================================================================

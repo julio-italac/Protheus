@@ -1,14 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Igor Melgaço  |18/02/2022| Chamado 39208. Ajustes para execução de rotina de bloqueio em lote MFIN019.prw
-Igor Melgaço  |23/01/2025| Chamado 49056. Ajustes para gravação de historico de alterações de campo da SE2
-=============================================================================================================================== 
-*/
-
 #Include "TOTVS.ch"
 
 /*
@@ -120,8 +109,8 @@ If lContinua
                 ZE3->ZE3_CHAVE  := SE2->E2_FILIAL + "|" + SE2->E2_PREFIXO + "|" + SE2->E2_NUM + "|" + SE2->E2_PARCELA + "|" + SE2->E2_TIPO + "|" + SE2->E2_FORNECE + "|" + SE2->E2_LOJA
                 ZE3->ZE3_DATA   := dDatabase
                 ZE3->ZE3_HORA   := Time()
-                ZE3->ZE3_CODUSU := ZZL->ZZL_CODUSU
-                ZE3->ZE3_NOMUSU := ZZL->ZZL_NOME
+                ZE3->ZE3_CODUSU := FWSFAllUsers({__cUserId})[1][2]
+                ZE3->ZE3_NOMUSU := FWSFAllUsers({__cUserId},{"USR_NOME"})[1][3]
                 ZE3->ZE3_ACAO   := IIf(_cBloq == "1","Bloqueio","Desbloqueio")
                 ZE3->ZE3_ALTAPL := "E2_MSBLQL (" + AllTrim(Getsx3cache("E2_MSBLQL","X3_TITULO")) + ") = De: '" + _cAntes + "' Para: '" + _cApos +"' "
                 MSUnLock()

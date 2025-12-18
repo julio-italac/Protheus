@@ -2158,242 +2158,244 @@ Local _nConta  := nContPV := 0
 Local nPos     := 0
 Local _cTexto1 :=""
 Local _cTexto2 :=""
+Local lRet      := .T.
 
 Static _cDir := 'C:\'
 
-_cDir := cGetFile( "\" , "Selecione o Diretorio de Destino:" ,,_cDir,, GETF_RETDIRECTORY+GETF_LOCALHARD+GETF_NETWORKDRIVE)
+_cDir := tFileDialog( "\", "Selecione o Diretorio de Destino:" ,, _cDir, .T., GETF_MULTISELECT)
 
-If Empty(_cDir)
-	Return .F.
-EndIf
+If !Empty(_cDir)	
 
-While FILE(_cDir + _cFileCLI + ".TXT")
-	_cFileCLI:=Soma1(_cFileCLI)//renumera se já existir no destino
-EndDo
+	While FILE(_cDir + _cFileCLI + ".TXT")
+		_cFileCLI:=Soma1(_cFileCLI)//renumera se já existir no destino
+	EndDo
 
-While FILE(_cDir + _cFilePED + ".TXT")
-	_cFilePED:=Soma1(_cFilePED)//renumera se já existir no destino
-EndDo
+	While FILE(_cDir + _cFilePED + ".TXT")
+		_cFilePED:=Soma1(_cFilePED)//renumera se já existir no destino
+	EndDo
 
-If !(cDIRini == Upper(AllTrim(_cDir)))//deleta a origem se não For o mesmo diretorio
-   FErase(cDIRini + _cFileCLI + ".TXT")
-   FErase(cDIRini + _cFilePED + ".TXT")
-EndIf
-
-_nHd1 := FCreate(cDIRini + _cFileCLI + ".TXT")
-If _nHd1 = -1
-    U_ITMsg("O arquivo de nome "+cDIRini + _cFileCLI + ".TXT"+" nao pode ser criado!",'Atenção!',"Entre em contato com a TI",3)//ALERT
-	Return .F.
-EndIf
-
-_nHd2 := FCreate(cDIRini + _cFilePED + ".TXT")
-If _nHd2 = -1
-	FClose(_nHd1)
-    U_ITMsg("O arquivo de nome "+cDIRini + _cFilePED + ".TXT"+" nao pode ser criado!",'Atenção!',"Entre em contato com a TI",3)//ALERT
-	Return .F.
-EndIf
-
-Begin Sequence
-
-SA1->(DBSetOrder(1)) //
-SC9->(DBSetOrder(1)) // C9_FILIAL+C9_PEDIDO+C9_ITEM+C9_SEQUEN+C9_PRODUTO+C9_BLEST+C9_BLCRED
-SC5->(DBSetOrder(1)) // C5_FILIAL+C5_NUM
-SC6->(DBSetOrder(1)) // C6_FILIAL+C6_NUM+C6_ITEM+C6_PRODUTO
-
-TRBF->(DBSetOrder(2))//ORDEM DE PV
-TRBF->(DBGoTop())
-_cTot:= AllTrim(Str( TRBF->(LASTREC()) ))
-_aClientes:={}
-_aResultado:={}
-
-While TRBF->(!Eof())
-	// Somente pedidos selecionados pelo usuario
-	If oproc <> NIL
-		_nConta++
-		oproc:cCaption := ("Gerando Arquivos, PV: " + TRBF->TRBF_NUM + " [ "+ StrZero(_nConta,Len(_cTot)) +" de "+ _cTot+" ]" )
-		ProcessMessages()
+	If !(cDIRini == Upper(AllTrim(_cDir)))//deleta a origem se não For o mesmo diretorio
+	FErase(cDIRini + _cFileCLI + ".TXT")
+	FErase(cDIRini + _cFilePED + ".TXT")
 	EndIf
-	
-	If !Empty(TRBF->TRBF_OK)
-		//Posiciona tabelas
-		If !(SC5->(DBSeek(TRBF->TRBF_FILIA+TRBF->TRBF_NUM)))    //Se não achar na sc5 pula para próximo marcado
-			TRBF->(DBSkip())
-			Loop
-		EndIf
 
-		_lAchouSA1:=SA1->(DBSeek( xFilial("SA1")+SC5->C5_CLIENTE+SC5->C5_LOJACLI))
-		
-		_lTodoLiberado:=.F.
-		_lPVtemCarga:=.F.
-		If SC9->(DBSeek(TRBF->TRBF_FILIA+TRBF->TRBF_NUM))
-			_lTodoLiberado:=.T.
-			While SC9->( !Eof() ) .And. SC9->( C9_FILIAL + C9_PEDIDO ) == TRBF->TRBF_FILIA+TRBF->TRBF_NUM
-				If !Empty(SC9->C9_CARGA)
-					_lPVtemCarga:=.T.
-					Exit
-				EndIf
-				If !Empty(SC9->C9_BLEST)
-					_lTodoLiberado:=.F.
-					Exit
-				EndIf
-				SC9->(DBSkip())
-			EndDo
+	_nHd1 := FCreate(cDIRini + _cFileCLI + ".TXT")
+	If _nHd1 = -1
+		U_ITMsg("O arquivo de nome "+cDIRini + _cFileCLI + ".TXT"+" nao pode ser criado!",'Atenção!',"Entre em contato com a TI",3)//ALERT
+		Return .F.
+	EndIf
+
+	_nHd2 := FCreate(cDIRini + _cFilePED + ".TXT")
+	If _nHd2 = -1
+		FClose(_nHd1)
+		U_ITMsg("O arquivo de nome "+cDIRini + _cFilePED + ".TXT"+" nao pode ser criado!",'Atenção!',"Entre em contato com a TI",3)//ALERT
+		Return .F.
+	EndIf
+
+	Begin Sequence
+
+	SA1->(DBSetOrder(1)) //
+	SC9->(DBSetOrder(1)) // C9_FILIAL+C9_PEDIDO+C9_ITEM+C9_SEQUEN+C9_PRODUTO+C9_BLEST+C9_BLCRED
+	SC5->(DBSetOrder(1)) // C5_FILIAL+C5_NUM
+	SC6->(DBSetOrder(1)) // C6_FILIAL+C6_NUM+C6_ITEM+C6_PRODUTO
+
+	TRBF->(DBSetOrder(2))//ORDEM DE PV
+	TRBF->(DBGoTop())
+	_cTot:= AllTrim(Str( TRBF->(LASTREC()) ))
+	_aClientes:={}
+	_aResultado:={}
+
+	While TRBF->(!Eof())
+		// Somente pedidos selecionados pelo usuario
+		If oproc <> NIL
+			_nConta++
+			oproc:cCaption := ("Gerando Arquivos, PV: " + TRBF->TRBF_NUM + " [ "+ StrZero(_nConta,Len(_cTot)) +" de "+ _cTot+" ]" )
+			ProcessMessages()
 		EndIf
 		
-		If !_lTodoLiberado .Or. _lPVtemCarga
-			If _lPVtemCarga
-               _cMen:="Pedido esta na Carga: "+SC9->C9_CARGA+"."
-            Else
-               _cMen:="Pedido NÃO liberado ou com Bloqueio de Estoque. Não é permitido gerar."
+		If !Empty(TRBF->TRBF_OK)
+			//Posiciona tabelas
+			If !(SC5->(DBSeek(TRBF->TRBF_FILIA+TRBF->TRBF_NUM)))    //Se não achar na sc5 pula para próximo marcado
+				TRBF->(DBSkip())
+				Loop
 			EndIf
-			aAdd(_aResultado,{ .F.,;            //01
-			                  TRBF->TRBF_FILIA,;//02
-			                  TRBF->TRBF_NUM  ,;//03
-		                  	  DToC(TRBF->TRBF_DTEMI),;//04
-			                  SC5->C5_CLIENTE+SC5->C5_LOJACLI+" - "+AllTrim(SA1->A1_NREDUZ),;//05
-			                  ""              ,;//06
-		                      ""              ,;//07
-			                  ""              ,;//08
-			                  ""              ,;//09
-			                  ""              ,;//10
-			                  _cMen;//11
-			                  })
+
+			_lAchouSA1:=SA1->(DBSeek( xFilial("SA1")+SC5->C5_CLIENTE+SC5->C5_LOJACLI))
 			
-			TRBF->(DBSkip())
-			Loop
+			_lTodoLiberado:=.F.
+			_lPVtemCarga:=.F.
+			If SC9->(DBSeek(TRBF->TRBF_FILIA+TRBF->TRBF_NUM))
+				_lTodoLiberado:=.T.
+				While SC9->( !Eof() ) .And. SC9->( C9_FILIAL + C9_PEDIDO ) == TRBF->TRBF_FILIA+TRBF->TRBF_NUM
+					If !Empty(SC9->C9_CARGA)
+						_lPVtemCarga:=.T.
+						Exit
+					EndIf
+					If !Empty(SC9->C9_BLEST)
+						_lTodoLiberado:=.F.
+						Exit
+					EndIf
+					SC9->(DBSkip())
+				EndDo
+			EndIf
+			
+			If !_lTodoLiberado .Or. _lPVtemCarga
+				If _lPVtemCarga
+				_cMen:="Pedido esta na Carga: "+SC9->C9_CARGA+"."
+				Else
+				_cMen:="Pedido NÃO liberado ou com Bloqueio de Estoque. Não é permitido gerar."
+				EndIf
+				aAdd(_aResultado,{ .F.,;            //01
+								TRBF->TRBF_FILIA,;//02
+								TRBF->TRBF_NUM  ,;//03
+								DToC(TRBF->TRBF_DTEMI),;//04
+								SC5->C5_CLIENTE+SC5->C5_LOJACLI+" - "+AllTrim(SA1->A1_NREDUZ),;//05
+								""              ,;//06
+								""              ,;//07
+								""              ,;//08
+								""              ,;//09
+								""              ,;//10
+								_cMen;//11
+								})
+				
+				TRBF->(DBSkip())
+				Loop
+			EndIf
+			
+			If _lAchouSA1 .And. aScan(_aClientes,SC5->C5_CLIENTE+SC5->C5_LOJACLI) = 0
+				aAdd(_aClientes,SC5->C5_CLIENTE+SC5->C5_LOJACLI)
+				
+				_cQueryRDC:="SELECT CODCLI,LATITU,LONGIT FROM RDCITL.TGA221 WHERE CODCLI = '"+AllTrim(SA1->A1_CGC)+"' "
+				_cQueryRDC := ChangeQuery(_cQueryRDC)
+				MPSysOpenQuery(_cQueryRDC,"QRYRDC")
+
+				_cTexto1:=""
+				_cTexto1+=AllTrim(SA1->A1_COD)+AllTrim(SA1->A1_LOJA)+";"
+				_cTexto1+=AllTrim(SA1->A1_CGC   )+";"
+				_cTexto1+=AllTrim(SA1->A1_CEP   )+";"
+				_cTexto1+=AllTrim(SA1->A1_NOME  )+";"
+				_cTexto1+=AllTrim(SA1->A1_NREDUZ)+";"
+				_cTexto1+=AllTrim(SA1->A1_END   )+";"
+				_cTexto1+=AllTrim(SA1->A1_BAIRRO)+";"
+				_cTexto1+=AllTrim(SA1->A1_MUN   )+";"
+				_cTexto1+=AllTrim(SA1->A1_EST   )+";"
+				_cTexto1+=AllTrim(StrTran(QRYRDC->LATITU,",","."))+";"
+				_cTexto1+=AllTrim(StrTran(QRYRDC->LONGIT,",","."))+";"
+				
+				FWrite( _nHd1 , _cTexto1 + CHR(13) + CHR(10) )
+				
+				QRYRDC->(DBCloseArea())
+				DBSelectArea("TRBF")
+				
+			EndIf
+			
+			_aResulAux:={}
+			If SC6->( DBSeek( TRBF->TRBF_FILIA+TRBF->TRBF_NUM ) )
+			nContPV++
+			EndIf   
+			While SC6->( !Eof() ) .And. SC6->( C6_FILIAL + C6_NUM ) == TRBF->TRBF_FILIA+TRBF->TRBF_NUM
+				
+				_cTipoCarga := Posicione("SB1",1,xFilial("SB1")+SC6->C6_PRODUTO,"B1_TIPCAR")
+				
+				_cTexto2:=""
+				_cTexto2+=AllTrim(SC5->C5_CLIENTE)+AllTrim(SC5->C5_LOJACLI)+";"
+				_cTexto2+=AllTrim(SC5->C5_NUM)+";"
+				_cTexto2+=AllTrim(SubStr(DToS(SC5->C5_I_DTENT),7,2)+SubStr(DToS(SC5->C5_I_DTENT),5,2)+SubStr(DToS(SC5->C5_I_DTENT),1,4))+";"
+				_cTexto2+=AllTrim(Str(SC6->C6_UNSVEN ,15,2))+";"
+				_cTexto2+=AllTrim(Str(SC6->C6_I_PTBRU,16,4))+";"
+				_cTexto2+=AllTrim(Str(SC6->C6_VALOR  ,15,2))+";"
+				_cTexto2+=If(_cTipoCarga='000002','R','S')+";"
+				_cTexto2+=AllTrim(SC6->C6_PRODUTO)+";"
+				_cTexto2+=AllTrim(SC6->C6_DESCRI)+";"
+				_cTexto2+=If(_cTipoCarga='000002','1','2')+";"
+				_cTexto2+=If(_cTipoCarga='000002','R','S')+";"
+				_cTexto2+=AllTrim(StrTran(StrTran(StrTran(SC5->C5_MENNOTA,CRLF,' '),CHR(13),' '),CHR(10),' '))
+				
+				FWrite( _nHd2 , _cTexto2 + CRLF )
+				
+				// Grava o Array _aResulAux com todos os itens de um pedidos de vendas para grava na arrary _aResultado dentro da função Ver_Est_PV()
+				aAdd(_aResulAux,{ .T.,;             //01
+								SC6->C6_FILIAL  ,;//02
+								SC6->C6_NUM     ,;//03
+								DToC(TRBF->TRBF_DTEMI),;//04
+								SC5->C5_CLIENTE+SC5->C5_LOJACLI+" - "+AllTrim(SA1->A1_NREDUZ),;//05
+								SC6->C6_ITEM    ,;//06
+								AllTrim(SC6->C6_PRODUTO)+" - "+AllTrim(SC6->C6_DESCRI) ,;//07
+								SC6->C6_LOCAL   ,;//08
+								SC6->C6_QTDVEN,;//09
+								SC6->C6_VALOR ,;//10
+								"Gerado com Sucesso";//11
+								})
+				
+				SC6->( DBSkip() )
+				
+			EndDo
+			
+			For nPos := 1 TO Len(_aResulAux)
+				aAdd(_aResultado,ACLONE(_aResulAux[nPos]))
+			Next nPos
+			
 		EndIf
 		
-		If _lAchouSA1 .And. aScan(_aClientes,SC5->C5_CLIENTE+SC5->C5_LOJACLI) = 0
-			aAdd(_aClientes,SC5->C5_CLIENTE+SC5->C5_LOJACLI)
-			
-			_cQueryRDC:="SELECT CODCLI,LATITU,LONGIT FROM RDCITL.TGA221 WHERE CODCLI = '"+AllTrim(SA1->A1_CGC)+"' "
-			_cQueryRDC := ChangeQuery(_cQueryRDC)
-			MPSysOpenQuery(_cQueryRDC,"QRYRDC")
+		TRBF->(DBSkip())
+		
+	EndDo
 
-			_cTexto1:=""
-			_cTexto1+=AllTrim(SA1->A1_COD)+AllTrim(SA1->A1_LOJA)+";"
-			_cTexto1+=AllTrim(SA1->A1_CGC   )+";"
-			_cTexto1+=AllTrim(SA1->A1_CEP   )+";"
-			_cTexto1+=AllTrim(SA1->A1_NOME  )+";"
-			_cTexto1+=AllTrim(SA1->A1_NREDUZ)+";"
-			_cTexto1+=AllTrim(SA1->A1_END   )+";"
-			_cTexto1+=AllTrim(SA1->A1_BAIRRO)+";"
-			_cTexto1+=AllTrim(SA1->A1_MUN   )+";"
-			_cTexto1+=AllTrim(SA1->A1_EST   )+";"
-			_cTexto1+=AllTrim(StrTran(QRYRDC->LATITU,",","."))+";"
-			_cTexto1+=AllTrim(StrTran(QRYRDC->LONGIT,",","."))+";"
+	End Sequence
+
+	FClose(_nHd1)
+	FClose(_nHd2)
+
+	If !(cDIRini == Upper(AllTrim(_cDir)))
+		
+		_lOKCli:=__CopyFile( cDIRini + _cFileCLI + ".TXT", _cDir +  _cFileCLI + ".TXT" )
+		
+		_lOKPED:=__CopyFile( cDIRini + _cFilePED + ".TXT", _cDir +  _cFilePED + ".TXT" )
+		
+		
+		If _lOKCli .And. _lOKPED
 			
-			FWrite( _nHd1 , _cTexto1 + CHR(13) + CHR(10) )
+			FErase(cDIRini + _cFileCLI + ".TXT")
+			FErase(cDIRini + _cFilePED + ".TXT")
+			U_ITMsg("TXTs salvo com SUCESSO em: "+CHR(13)+CHR(10)+ Upper(_cDir+_cFileCLI) + ".TXT e "+CHR(13)+CHR(10)+Upper(_cDir+_cFilePED) + ".TXT","Atenção",,2)
 			
-			QRYRDC->(DBCloseArea())
-			DBSelectArea("TRBF")
+		Else
 			
+			If !_lOKCli
+				U_ITMsg("Operação de salvar o TXT: "+ _cDir + _cFileCLI + ".TXT FALHOU!","Atenção","Verifique o nome do arquivo e do diretorio e tente novamente.",1)
+			EndIf
+			
+			If !_lOKPED
+				U_ITMsg("Operação de salvar o TXT: "+ _cDir + _cFilePED + ".TXT FALHOU!","Atenção","Verifique o nome do arquivo e do diretorio e tente novamente.",1)
+			EndIf
+
 		EndIf
-		
-		_aResulAux:={}
-		If SC6->( DBSeek( TRBF->TRBF_FILIA+TRBF->TRBF_NUM ) )
-		   nContPV++
-		EndIf   
-		While SC6->( !Eof() ) .And. SC6->( C6_FILIAL + C6_NUM ) == TRBF->TRBF_FILIA+TRBF->TRBF_NUM
-			
-			_cTipoCarga := Posicione("SB1",1,xFilial("SB1")+SC6->C6_PRODUTO,"B1_TIPCAR")
-			
-			_cTexto2:=""
-			_cTexto2+=AllTrim(SC5->C5_CLIENTE)+AllTrim(SC5->C5_LOJACLI)+";"
-			_cTexto2+=AllTrim(SC5->C5_NUM)+";"
-			_cTexto2+=AllTrim(SubStr(DToS(SC5->C5_I_DTENT),7,2)+SubStr(DToS(SC5->C5_I_DTENT),5,2)+SubStr(DToS(SC5->C5_I_DTENT),1,4))+";"
-			_cTexto2+=AllTrim(Str(SC6->C6_UNSVEN ,15,2))+";"
-			_cTexto2+=AllTrim(Str(SC6->C6_I_PTBRU,16,4))+";"
-			_cTexto2+=AllTrim(Str(SC6->C6_VALOR  ,15,2))+";"
-			_cTexto2+=If(_cTipoCarga='000002','R','S')+";"
-			_cTexto2+=AllTrim(SC6->C6_PRODUTO)+";"
-			_cTexto2+=AllTrim(SC6->C6_DESCRI)+";"
-			_cTexto2+=If(_cTipoCarga='000002','1','2')+";"
-			_cTexto2+=If(_cTipoCarga='000002','R','S')+";"
-			_cTexto2+=AllTrim(StrTran(StrTran(StrTran(SC5->C5_MENNOTA,CRLF,' '),CHR(13),' '),CHR(10),' '))
-			
-			FWrite( _nHd2 , _cTexto2 + CRLF )
-			
-			// Grava o Array _aResulAux com todos os itens de um pedidos de vendas para grava na arrary _aResultado dentro da função Ver_Est_PV()
-			aAdd(_aResulAux,{ .T.,;             //01
-			                 SC6->C6_FILIAL  ,;//02
-			                 SC6->C6_NUM     ,;//03
-			                 DToC(TRBF->TRBF_DTEMI),;//04
-			                 SC5->C5_CLIENTE+SC5->C5_LOJACLI+" - "+AllTrim(SA1->A1_NREDUZ),;//05
-			                 SC6->C6_ITEM    ,;//06
-			                 AllTrim(SC6->C6_PRODUTO)+" - "+AllTrim(SC6->C6_DESCRI) ,;//07
-			                 SC6->C6_LOCAL   ,;//08
-			                 SC6->C6_QTDVEN,;//09
-			                 SC6->C6_VALOR ,;//10
-			                 "Gerado com Sucesso";//11
-			                 })
-			
-			SC6->( DBSkip() )
-			
-		EndDo
-		
-		For nPos := 1 TO Len(_aResulAux)
-			aAdd(_aResultado,ACLONE(_aResulAux[nPos]))
-		Next nPos
-		
-	EndIf
-	
-	TRBF->(DBSkip())
-	
-EndDo
-
-End Sequence
-
-FClose(_nHd1)
-FClose(_nHd2)
-
-If !(cDIRini == Upper(AllTrim(_cDir)))
-	
-	_lOKCli:=__CopyFile( cDIRini + _cFileCLI + ".TXT", _cDir +  _cFileCLI + ".TXT" )
-	
-	_lOKPED:=__CopyFile( cDIRini + _cFilePED + ".TXT", _cDir +  _cFilePED + ".TXT" )
-	
-	
-	If _lOKCli .And. _lOKPED
-		
-        FErase(cDIRini + _cFileCLI + ".TXT")
-        FErase(cDIRini + _cFilePED + ".TXT")
-		U_ITMsg("TXTs salvo com SUCESSO em: "+CHR(13)+CHR(10)+ Upper(_cDir+_cFileCLI) + ".TXT e "+CHR(13)+CHR(10)+Upper(_cDir+_cFilePED) + ".TXT","Atenção",,2)
 		
 	Else
 		
-		If !_lOKCli
-			U_ITMsg("Operação de salvar o TXT: "+ _cDir + _cFileCLI + ".TXT FALHOU!","Atenção","Verifique o nome do arquivo e do diretorio e tente novamente.",1)
-		EndIf
+		U_ITMsg("TXTs salvo com SUCESSO em " +CRLF+ Upper(cDIRini+_cFileCLI) + ".TXT e  "+CRLF+Upper(cDIRini+_cFilePED)+".TXT","Atenção","Diretorio de destino ["+Upper(_cDir)+"] igual ao de Origem",2)
 		
-		If !_lOKPED
-			U_ITMsg("Operação de salvar o TXT: "+ _cDir + _cFilePED + ".TXT FALHOU!","Atenção","Verifique o nome do arquivo e do diretorio e tente novamente.",1)
-		EndIf
-
 	EndIf
-	
+
+
+	If !Empty(_aResultado)
+		
+		_cMsgTop:=AllTrim(Str(Len(_aClientes)))+" Clientes Gerados / "+AllTrim(Str(nContPV))+" Pedidos Gerados "
+		_cTitAux:="Resultado dos Pedidos de Vendas de Varejo Gerados: "+_cMsgTop
+		_aCab:={" ","Filial","Pedido","Emissao","Cliente","Item","Produto","Arm.","Qtde","Valor","Resultado"}
+		_aSize:={05,10      ,15      ,15        ,125     ,10    ,150      ,20     ,35   ,35     ,200        }
+		//ITListBox(_cTitAux, _aHeader , _aCols     , _lMaxSiz , _nTipo , _cMsgTop , _lSelUnc , _aSizes , _nCampo , bOk , bCancel, _abuttons )
+		U_ITLISTBOX(_cTitAux, _aCab    , _aResultado, .T.      , 4      , _cMsgTop ,          , _aSize  ,         ,     ,        , )
+		
+	EndIf
+
+	TRBF->(DBSetOrder(1))
+	TRBF->(DBGoTop())
 Else
-	
-	U_ITMsg("TXTs salvo com SUCESSO em " +CRLF+ Upper(cDIRini+_cFileCLI) + ".TXT e  "+CRLF+Upper(cDIRini+_cFilePED)+".TXT","Atenção","Diretorio de destino ["+Upper(_cDir)+"] igual ao de Origem",2)
-	
-EndIf
+	lRet := .F.
+Endif
 
-
-If !Empty(_aResultado)
-	
-	_cMsgTop:=AllTrim(Str(Len(_aClientes)))+" Clientes Gerados / "+AllTrim(Str(nContPV))+" Pedidos Gerados "
-	_cTitAux:="Resultado dos Pedidos de Vendas de Varejo Gerados: "+_cMsgTop
-	_aCab:={" ","Filial","Pedido","Emissao","Cliente","Item","Produto","Arm.","Qtde","Valor","Resultado"}
-	_aSize:={05,10      ,15      ,15        ,125     ,10    ,150      ,20     ,35   ,35     ,200        }
-	//ITListBox(_cTitAux, _aHeader , _aCols     , _lMaxSiz , _nTipo , _cMsgTop , _lSelUnc , _aSizes , _nCampo , bOk , bCancel, _abuttons )
-	U_ITLISTBOX(_cTitAux, _aCab    , _aResultado, .T.      , 4      , _cMsgTop ,          , _aSize  ,         ,     ,        , )
-	
-EndIf
-
-TRBF->(DBSetOrder(1))
-TRBF->(DBGoTop())
-
-Return .T.
+Return lRet
 
 /*
 ===============================================================================================================================

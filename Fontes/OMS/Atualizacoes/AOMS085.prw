@@ -1,20 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  |14/09/2025| Chamado 50617. Modificada a chamada dos parâmetros para a SX6
-Jose Gavetti  |26/11/2025| Chamado 51341. __cUserId não deve ter seu conteúdo alterado orientação TOTVS.
-===============================================================================================================================
-Analista         - Programador       - Inicio     - Envio      - Chamado - Motivo da Alteração
----------------------------------------------------------------------------------------------------------------------------------------------------------
-Vanderlei Alves  -  Julio Paz        - 05/02/24   - 10/06/25   - 45229   - Desenvolvimento das rotinas Integração Webservice Cargas/Veiculos/Motoristas.
-Vanderlei Alves  -  Julio Paz        - 05/02/24   - 12/06/25   - 45229   - Correções na rotina de integração de Cargas.
-Vanderlei Alves  -  Igor Melgaco     - 27/06/25   - 27/06/25   - 45229   - Correcao de url.
-=========================================================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 #Include "APWEBSRV.CH"
 #Include "TBICONN.CH"
@@ -2552,7 +2535,8 @@ Begin Sequence
 	  DAK->DAK_TRANSP := _cCnpjTran // _cCodTransp // SA2->A2_COD      // SA2->A2_COD que tenha a2_cgc  igual a cnpj de transportadora do xml
 	  DAK->DAK_I_VRPE := _nValPedag  // U_CARGA:PEDAGIO
 
-	  _cMailUsrCarga := Posicione("ZZL",5,xFilial("ZZL")+_cCodUsuario,"ZZL_EMAIL") //Posicione("ZZL",5,xFilial("ZZL")+AllTrim(Str(U_CARGA:USUCAD,_nTamCodUser)),"ZZL_EMAIL") // E-mail do usuário que criou a carga utilizado na rotina de envio de e-mail da carga.
+	  _cMailUsrCarga := FWSFAllUsers({_cCodUsuario},{"USR_EMAIL"})[1][3]
+
 	  If Empty(_cMailUsrCarga)
 	     _cMailUsrCarga := ""
 	  EndIf
