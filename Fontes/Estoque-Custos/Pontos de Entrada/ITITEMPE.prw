@@ -809,7 +809,7 @@ Next _nX
 
 aSort(_aLog,,,{|X,Y| (X[2]+X[3]) < (Y[2]+Y[3]) })//ORDEM DE FILIAL + ARMAZEM
 
-ITEMLOG(_aLog,oProc,_lRet)
+ITEMLOG(_aLog,oProc,_lRet,_lTudoZerado)
 
 Return _lRet
 
@@ -823,7 +823,7 @@ Parametros--------: _aLog,oProc,_lRet
 Retorno-----------: Nenhum
 ===============================================================================================================================
 */
-Static Function ITEMLOG(_aLog,oProc,_lRet)
+Static Function ITEMLOG(_aLog,oProc,_lRet,_lTudoZerado)
 
 Local _aCab	:={} As Array
 Local _aSize:={} As Array 
@@ -847,11 +847,11 @@ If Len(_aLog) > 0 //Monta aheader
 	aAdd(_aSize,150)
 
     nPosResu:=Len(_aCab)//Posiçao do "Resultado"
-    ITEMEMAIL(_aLog,_aCab,oProc,_lRet)
+    ITEMEMAIL(_aLog,_aCab,oProc,_lRet,_lTudoZerado)
 
     aBotoes:={}                                           
     aAdd( aBotoes , { "" , {|| AVISO("ATENCAO",oLbxAux:aArray[oLbxAux:nAt][ nPosResu ],{"Fechar"},3) }	, "" , "Ver Resultado"		  } )
-    aAdd( aBotoes , { "" , {|| ITEMEMAIL(_aLog,_aCab,oProc,_lRet) }	, "" , "Re-Envio de e-mail"		  } )
+    aAdd( aBotoes , { "" , {|| ITEMEMAIL(_aLog,_aCab,oProc,_lRet,_lTudoZerado) }	, "" , "Re-Envio de e-mail"		  } )
 //          ITListBox(__cTitAux              , _aHeader , _aCols  , _lMaxSiz , _nTipo , _cMsgTop , _lSelUnc , _aSizes , _nCampo , bOk , bCancel, _abuttons )
    _lRet:=U_ITLISTBOX("Armazens Processados", _aCab    , _aLog   , .T.      , 4      ,          ,          , _aSize  ,         ,     ,        , aBotoes)
 EndIf
@@ -868,7 +868,7 @@ Parametros--------: _aTLinhas,_aCab,oProc
 Retorno-----------: Nenhum
 ===============================================================================================================================
 */
-Static Function ITEMEMAIL(_aTLinhas,_aCab,oProc,_lRet)
+Static Function ITEMEMAIL(_aTLinhas,_aCab,oProc,_lRet,_lTudoZerado)
 
 Local _aConfig	:= U_ITCFGEML('')																As Array
 Local _cEmlLog	:= ""																			As Character
@@ -888,6 +888,8 @@ Local _cGetAssun := "Alterações do Produto "+AllTrim(SB1->B1_COD)+"-"+AllTrim(M-
 Local _cOKLista  := ""                                                                          As Character
 Local _cGetLista := ""																			As Character
 Local _lEnvia    := .F. 																		As Logical
+
+Default _lTudoZerado := .F.
 
 If SB1->B1_UM <> M->B1_UM 
    _cTit     +='Alteração da 1a U.M. <b>De: "'+SB1->B1_UM+'" Para: "'+M->B1_UM+'"</b>'+CHR(13)+CHR(10)
