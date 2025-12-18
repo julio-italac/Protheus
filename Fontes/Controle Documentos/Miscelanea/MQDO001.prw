@@ -492,7 +492,7 @@ While .T.
 
    Define MSDialog _oDlg Title _cTit From 000,000 To 420,800 Pixel
    
-	@ _nLinha, _nCol1 Button "Selecione o Diretorio:" Size 75,12 PIXEL OF _oDlg ACTION(cPath0:=tFileDialog("","SELECIONE O DIRETORIO",,,.T.,GETF_MULTISELECT+GETF_LOCALHARD + GETF_RETDIRECTORY) , AGLTLista("VARIOS")) when lMostra
+	@ _nLinha, _nCol1 Button "Selecione o Diretorio:" Size 75,12 PIXEL OF _oDlg ACTION(cPath0:=tFileDialog("","SELECIONE O DIRETORIO",,,.F.,GETF_MULTISELECT+GETF_LOCALHARD) , AGLTLista("VARIOS")) when lMostra
 	@ _nLinha, _nCol2+20 MSGet _oTeor VAR cPath0  Picture "@!" Size 300,11 OF _oDlg Pixel WHEN .F.
 	_nLinha+=_nPula
 

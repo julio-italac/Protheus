@@ -32,7 +32,7 @@ DEFINE MSDIALOG oDlg TITLE "IMPORTAÇÃO DE ARQUIVOS DE PEDIDO DE COMPRA" FROM C(3
 
 	// Cria Componentes Padroes do Sistema
 	@ C(014),C(017) Say "Esta rotina ira efetuar a importação dos arquivos de pedidos de compra fornecidos pelos clientes para o sistema MICROSIGA gerando um relatório para inserção do pedido de venda para cada arquivo de pedido de compra do cliente, qualquer problema que ocorra nesta importação favor contactar o departamento de informática da ITALAC. É necessário que o usuário infomre o diretório onde os arquivos foram armazenados." Size C(233),C(038) COLOR CLR_BLACK PIXEL OF oDlg
-	@ C(078),C(110) Button "Localização Arquivos" Size C(052),C(012) PIXEL OF oDlg ACTION(cPath:=tFileDialog("","SELECIONE O DIRETORIO ONDE SE ECONTRA OS PEDIDOS DO CLIENTE",,,.T.,GETF_LOCALHARD + GETF_RETDIRECTORY))
+	@ C(078),C(110) Button "Localização Arquivos" Size C(052),C(012) PIXEL OF oDlg ACTION(cPath:=tFileDialog("","SELECIONE O DIRETORIO ONDE SE ECONTRA OS PEDIDOS DO CLIENTE",,,.F.,GETF_MULTISELECT+GETF_LOCALHARD))
 	@ C(078),C(173) Button "Cancelar" Size C(045),C(012) PIXEL OF oDlg ACTION( oDlg:End() )
 	@ C(078),C(051) Button "Importar Pedidos" Size C(047),C(012) PIXEL OF oDlg ACTION(ImportaPed())
 
