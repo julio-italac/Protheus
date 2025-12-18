@@ -1,15 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-André Lisboa  |22/09/2016| Chamado 17011. Correção no valor do custo a importar da planilha
-André Lisboa  |01/04/2024| Chamado 46767. Permitir importar valores com 5 casas decimais e negativos                   |
-Lucas Borges  |08/10/2024| Chamado 48465. Retirada manipulação do SX1
-===============================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 
 /*
@@ -397,42 +385,42 @@ Local _nI   := 0
 
 Aviso("Salvar Log em TXT", "Este programa ira gerar um arquivo texto com o Log do processamento executado", {"Ok"}, 1, "Geração de Arquivo Texto")
 
-_cArq := cGetFile("Documento Texto |*.TXT",OemToAnsi("Salvar Arquivo Como..."),0,"C:\",.T.,GETF_LOCALHARD+GETF_NETWORKDRIVE)
+_cArq := tFileDialog( "Documento Texto |*.TXT","Salvar Arquivo Como...",, "C:\", .T., GETF_LOCALHARD + GETF_RETDIRECTORY)
 
-If Empty(_cArq)
-	Return
-EndIf
+If !Empty(_cArq)
 
-_nPos := At(".TXT",Upper(_cArq))
+	_nPos := At(".TXT",Upper(_cArq))
 
-If _nPos == 0
-	_cArq := AllTrim(_cArq) + ".TXT"
-EndIf
-
-_nHdl := FCreate(_cArq)
-
-If _nHdl == -1
-	MsgAlert("O arquivo de nome "+_cArq+" nao pode ser executado! Verifique os parametros.","Atencao!")
-	Return
-EndIf
-
-ProcRegua(Len(_aLog))
-
-For _nI := 1 To Len(_aLog)
-	
-	FWrite(_nHdl, _aLog[_nI] + chr(13) + chr(10))
-	
-	If FError() # 0
-		MsgAlert ("ERRO GRAVANDO ARQUIVO, ERRO: " + Str(FError()))
-		Exit
+	If _nPos == 0
+		_cArq := AllTrim(_cArq) + ".TXT"
 	EndIf
-	
-	IncProc()
-	
-Next _nI
 
-FClose(_nHdl)
+	_nHdl := FCreate(_cArq)
 
-MsgInfo("Arquivo TXT gerado com sucesso!")
+	If _nHdl == -1
+		MsgAlert("O arquivo de nome "+_cArq+" nao pode ser executado! Verifique os parametros.","Atencao!")
+		Return
+	EndIf
+
+	ProcRegua(Len(_aLog))
+
+	For _nI := 1 To Len(_aLog)
+		
+		FWrite(_nHdl, _aLog[_nI] + chr(13) + chr(10))
+		
+		If FError() # 0
+			MsgAlert ("ERRO GRAVANDO ARQUIVO, ERRO: " + Str(FError()))
+			Exit
+		EndIf
+		
+		IncProc()
+		
+	Next _nI
+
+	FClose(_nHdl)
+
+	MsgInfo("Arquivo TXT gerado com sucesso!")
+
+EndIf
 
 Return

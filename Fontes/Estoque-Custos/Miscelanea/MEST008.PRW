@@ -1,15 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Alex Wallauer |04/10/2019| Chamado 30768. Ajustes de layout de tela para versão nova.
-Lucas Borges  |09/05/2025| Chamado 50617. Corrigir chamada estática no nome das tabelas do sistema
-Alex Wallauer |06/05/2025| Chamado 50525. Ajuste para remoção de diretório Local C:\SMARTCLIENT\.
-===============================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 
 /*
@@ -603,7 +591,7 @@ While (_cAliasSB1)->(!Eof())
 	
 EndDo
 
-_cAliasSB1->(DBCloseArea())
+(_cAliasSB1)->(DBCloseArea())
 
 U_ITLOGACS('MEST008')
 
@@ -1215,43 +1203,43 @@ Local _nI	:= 0
 
 Aviso( "Salvar Log em TXT" , "Este programa ira gerar um arquivo texto com o Log do processamento executado" , {"Ok"} , 1 , "Geração de Arquivo Texto" )
 
-_cArq := cGetFile( "Documento Texto |*.TXT", "Salvar Arquivo Como..." , 0 , "C:\" , .T. , GETF_LOCALHARD+GETF_NETWORKDRIVE)
+_cArq := tFileDialog( "Documento Texto |*.TXT","Salvar Arquivo Como...",, "C:\", .T., GETF_LOCALHARD + GETF_RETDIRECTORY)
 
-If Empty(_cArq)
-     Return
-EndIf
+If !Empty(_cArq)
 
-_nPos := At( ".TXT" , Upper(_cArq) )
+	_nPos := At( ".TXT" , Upper(_cArq) )
 
-If _nPos == 0
-     _cArq := AllTrim(_cArq) + ".TXT"
-EndIf
-
-_nHdl := FCreate(_cArq)
-
-If _nHdl == -1
-     MsgAlert( "O arquivo de nome "+_cArq+" nao pode ser criado!" , "Atencao!" )
-     Return
-EndIf
-
-ProcRegua( Len(_aLog) )
-
-For _nI := 1 To Len(_aLog)
-		
-	FWrite( _nHdl , _aLog[_nI] + chr(13) + chr(10) )
-	
-	If FError() # 0
-   		MsgAlert ( "ERRO AO GRAVAR NO ARQUIVO: "+ Str( FError() ) )
-   		Exit
+	If _nPos == 0
+		_cArq := AllTrim(_cArq) + ".TXT"
 	EndIf
-	
-	IncProc()
 
-Next _nI
+	_nHdl := FCreate(_cArq)
 
-FClose(_nHdl)
+	If _nHdl == -1
+		MsgAlert( "O arquivo de nome "+_cArq+" nao pode ser criado!" , "Atencao!" )
+		Return
+	EndIf
 
-MsgInfo( "Arquivo TXT gerado com sucesso!" )
+	ProcRegua( Len(_aLog) )
+
+	For _nI := 1 To Len(_aLog)
+			
+		FWrite( _nHdl , _aLog[_nI] + chr(13) + chr(10) )
+		
+		If FError() # 0
+			MsgAlert ( "ERRO AO GRAVAR NO ARQUIVO: "+ Str( FError() ) )
+			Exit
+		EndIf
+		
+		IncProc()
+
+	Next _nI
+
+	FClose(_nHdl)
+
+	MsgInfo( "Arquivo TXT gerado com sucesso!" )
+
+EndIf	
 
 Return
 
