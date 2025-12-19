@@ -1,17 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Julio Paz     |19/08/2025| Chamado 51506. Ajustes na rotina para obtenção da TES de transferência quando um pedido estiver sendo 
-              |          | incluido pela rotina de transferência de pedidos de vendas.
-julio Paz     |10/09/2025| Chamado 51687. Ajustar as validações e mensagens da gravação do Pedido de Vendas para validar 
-              |          | corretamente as permissões do usuário por Armazém.
-Lucas Borges  |18/09/2025| Chamado 50617. Migração dos parâmetros da ZP1 para SX6
-===============================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 
 /*
@@ -2705,6 +2691,18 @@ If lRet .And. !_lAoms112 .And. !_l108 .And. !_laoms074 .And. M->C5_I_OPER $ "15|
 
    EndCase
 EndIf
+
+//==============================================================
+// Solicitação do fiscal. Sempre validar M->C5_I_OPER == "15".
+//==============================================================
+If lRet 
+   If M->C5_I_OPER = "15" .And. !(SA1->A1_TIPO == "F" .And. M->C5_TIPOCLI=="F" .And. (AllTrim(Upper(SA1->A1_INSCR)) == "ISENTO" .Or. Empty(SA1->A1_INSCR)))
+      lRet := .F.
+      U_MT_ITMSG("Para operação 15 só é permitido clientes do Tipo Consumidor Final com Inscrição Estatual preenchida como ISENTO ou não preenchida.",;
+                 "Atenção",;
+                 "Selecione outro Cliente ou troque a operação.",1)
+   EndIf  
+EndIf 
 
 // NOVAS VALIDAÇOES SEM GRAVAÇÃO NA BASE E SEM TELA "COLOQUE AQUI" ACIMA, ANTES DO End Sequence
 
