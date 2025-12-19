@@ -1,15 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Igor Melgaço  |17/07/2023| Chamado 44493. Ajuste para não incluir funcionários demitidos na listagem. 
-Alex Wallauer |14/10/2024| Chamado 48760. Adicionados os campos: RA_MAE / RA_EMAIL / RA_DDDCELU / RA_NUMCELU
-Julio Paz     |17/04/2025| Chamado 49948. Alterações no Layout do relatório para filiais especificadas em parâmetros.
-===============================================================================================================================
-*/
-
 #Include	"Protheus.Ch"
 
 /*
@@ -58,6 +46,8 @@ While .T.
 
    If lSair
       Exit
+   Else
+      MsgInfo( "Arquivo gerado com sucesso!" )   
    EndIf
 
 EndDo
@@ -80,24 +70,17 @@ Retorno-----------: cDir - Caminho do diretório selecionado
 User Function MGPE20DIR()
 
 While .T.
-//         cGetFile (cMascara], [ cTitulo]                     ,[ nMascpadrao],cDirinicial, [ lSalvar], [ nOpcoes]                                        , [ lArvore], [ lKeepCase] )
-   cDir := cGetFile( "\" , "Selecione o Diretorio de Destino:" ,              ,MV_PAR01   ,           , GETF_RETDIRECTORY+GETF_LOCALHARD+GETF_NETWORKDRIVE,.T. )
+   cDir := tFileDialog( "Documento Texto |*.TXT","Selecione o Diretorio de Destino:" ,, MV_PAR01, .T., GETF_LOCALHARD + GETF_RETDIRECTORY)
    cDir := AllTrim(cDir)
-   //Verifica a existência do diretório e tenta criar caso não exista   
-   If !Empty(cDir) .And. !ExistDir(cDir)
-	
+   If !Empty(cDir) .And. !ExistDir(cDir) //Verifica a existência do diretório e tenta criar caso não exista   
 		nCriaDir := MakeDir( cDir )
-		
 		If nCriaDir <> 0
-		
 			U_ITMsg("Não foi possível criar ou utilizar o diretório:"+ CRLF + CRLF + cDir,;
-					            "Alerta", " Verificar permissões para Gravação na Pasta de destino.",1)
+					"Alerta", " Verificar permissões para Gravação na Pasta de destino.",1)
 			Loop
-			
 		EndIf
-		
 	EndIf
-    Exit
+   Exit
 EndDo 
 
 If !Empty(cDir)

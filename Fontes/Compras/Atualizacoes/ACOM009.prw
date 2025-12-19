@@ -1,15 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Alex Wallauer |05/04/2023| Chamado 43472. Acrescentada a opcao NF no campo C1_I_URGEN : S(SIM), N(NAO) F(NF).
-Alex Wallauer |20/02/2024| Chamado 46303. Andre. Correção da limpeza dos Campos da indicação do Comprador.
-Alex Wallauer |05/09/2025| Chamado 51785. Ajustes dos campos custumizados da capa para o tema Dark.
-Jose Gavetti  |25/11/2025| Chamado 52473. Perguntas Solicitacao e Comprador retirando a opção de até para multiplas seleções.
-===============================================================================================================================
-*/
 
 #Include "TOTVS.ch"
 #Include "FWBROWSE.CH"
@@ -260,8 +248,9 @@ If !Empty(MV_PAR08)
 EndIf
 If !Empty(MV_PAR04)
 	cWhere += " SC1.C1_CODCOMP IN "+cComprador+" AND "
+Else
+	cWhere += " SC1.C1_I_INDIC = ' ' AND "
 EndIf
-cWhere += " SC1.C1_QUJE < SC1.C1_QUANT AND "
 cWhere += " SC1.C1_APROV = 'L' AND "
 cWhere += " SC1.C1_RESIDUO <> 'S' "
 cWhere += "%"

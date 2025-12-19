@@ -1,28 +1,7 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
- Autor        |    Data    |                              Motivo                      										 
--------------------------------------------------------------------------------------------------------------------------------
-Josué Danich  | 26/12/2018 | Ajuste de leitura de limite de crédito - Chamado 26928
--------------------------------------------------------------------------------------------------------------------------------
-Alex Wallauer | 13/03/2019 | Ajuste no "Grava TXT" para reenvio do email do aquivo da cisp com Data do dia - Chamado 28402
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  | 11/10/2019 | Removidos os Warning na compilação da release 12.1.25. Chamado 28346
---------------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  | 23/07/2025 | Chamado 51340. Ajustar função para validação de ambiente de teste
-===============================================================================================================================
-*/
-
-//====================================================================================================
-// Definicoes de Includes da Rotina.
-//====================================================================================================
 #Include "RWMake.ch"
 #Include "TopConn.ch"
 #Include "TOTVS.ch"
 #Include "FileIO.ch"	
-
-#DEFINE ENTER	Chr(13)+Chr(10)
 
 Static dDataRef := Date()
 Static lViaSch	:= GetRemoteType() == -1
@@ -326,55 +305,55 @@ u_itconout("Atualização de Clientes [ Processo 01 de 03 ] - Lendo registros...")
 //===========================================================================
 //| Monta a consulta de atualização do Cadastro de Clientes na base da CISP |
 //===========================================================================
-cQuery := " SELECT "+ENTER
-cQuery += " 	'1'				   		AS PCTIPO	,"+ENTER
-cQuery += " 	'"+ cCodCisp +"'   		AS PCCASS	,"+ENTER
-cQuery += " 	SubStr(SA1.A1_CGC,1,8)	AS PCCCLI	,"+ENTER
-cQuery += " 	'00000000'		   		AS PCDDAT	,"+ENTER
-cQuery += " 	MIN(SA1.A1_I_DTCAD)		AS PCDCDD	,"+ENTER
-cQuery += " 	'00000000'		 		AS PCDUCM	,"+ENTER
-cQuery += " 	'000000000000000'  		AS PCVULC	,"+ENTER
-cQuery += " 	'00000000'		   		AS PDCMAC	,"+ENTER
-cQuery += " 	'000000000000000'  		AS PCVMAC	,"+ENTER
-cQuery += " 	'000000000000000'  		AS PCVSAT	,"+ENTER
-cQuery += " 	'000000000000000'  		AS PCVLCR	,"+ENTER
-cQuery += " 	'000000'		   		AS PCQPAG	,"+ENTER
-cQuery += " 	'000000'		   		AS PCQDAP	,"+ENTER
-cQuery += " 	'000000000000000'  		AS PCVDAV	,"+ENTER
-cQuery += " 	'000000'		   		AS PCMDAV	,"+ENTER
-cQuery += " 	'000000'		   		AS PCMPMV	,"+ENTER
-cQuery += " 	'000000000000000'  		AS PCDATV	,"+ENTER
-cQuery += " 	'0000'			   		AS PCMTV	,"+ENTER
-cQuery += " 	'000000000000000'		AS PCV15D	,"+ENTER
-cQuery += " 	'0000'					AS PCM15D	,"+ENTER
-cQuery += " 	'000000000000000'		AS PCV30D	,"+ENTER
-cQuery += " 	'0000'					AS PCM30D	,"+ENTER
-cQuery += " 	'00000000'				AS PCDTPC	,"+ENTER
-cQuery += " 	'000000000000000'		AS PCVPCO	,"+ENTER
-cQuery += " 	'2'						AS PCVSIT	,"+ENTER
-cQuery += " 	'0'						AS PCTIPG	,"+ENTER
-cQuery += " 	'00'					AS PCGGA	,"+ENTER
-cQuery += " 	'00000000'				AS PCDTG	,"+ENTER
-cQuery += " 	'000000000000000'		AS PCVLG	,"+ENTER
-cQuery += " 	'000000000000000'		AS PCVPA	,"+ENTER
-cQuery += " 	'  '					AS PCSVV	 "+ENTER
-cQuery += " FROM "+ RetSqlName("SA1") +" SA1 "+ENTER
+cQuery := " SELECT "
+cQuery += " 	'1'				   		AS PCTIPO	,"
+cQuery += " 	'"+ cCodCisp +"'   		AS PCCASS	,"
+cQuery += " 	SubStr(SA1.A1_CGC,1,8)	AS PCCCLI	,"
+cQuery += " 	'00000000'		   		AS PCDDAT	,"
+cQuery += " 	MIN(SA1.A1_I_DTCAD)		AS PCDCDD	,"
+cQuery += " 	'00000000'		 		AS PCDUCM	,"
+cQuery += " 	'000000000000000'  		AS PCVULC	,"
+cQuery += " 	'00000000'		   		AS PDCMAC	,"
+cQuery += " 	'000000000000000'  		AS PCVMAC	,"
+cQuery += " 	'000000000000000'  		AS PCVSAT	,"
+cQuery += " 	'000000000000000'  		AS PCVLCR	,"
+cQuery += " 	'000000'		   		AS PCQPAG	,"
+cQuery += " 	'000000'		   		AS PCQDAP	,"
+cQuery += " 	'000000000000000'  		AS PCVDAV	,"
+cQuery += " 	'000000'		   		AS PCMDAV	,"
+cQuery += " 	'000000'		   		AS PCMPMV	,"
+cQuery += " 	'000000000000000'  		AS PCDATV	,"
+cQuery += " 	'0000'			   		AS PCMTV	,"
+cQuery += " 	'000000000000000'		AS PCV15D	,"
+cQuery += " 	'0000'					AS PCM15D	,"
+cQuery += " 	'000000000000000'		AS PCV30D	,"
+cQuery += " 	'0000'					AS PCM30D	,"
+cQuery += " 	'00000000'				AS PCDTPC	,"
+cQuery += " 	'000000000000000'		AS PCVPCO	,"
+cQuery += " 	'2'						AS PCVSIT	,"
+cQuery += " 	'0'						AS PCTIPG	,"
+cQuery += " 	'00'					AS PCGGA	,"
+cQuery += " 	'00000000'				AS PCDTG	,"
+cQuery += " 	'000000000000000'		AS PCVLG	,"
+cQuery += " 	'000000000000000'		AS PCVPA	,"
+cQuery += " 	'  '					AS PCSVV	 "
+cQuery += " FROM "+ RetSqlName("SA1") +" SA1 "
 
-cQuery += " WHERE "+ENTER
-cQuery += " 		SA1.D_E_L_E_T_			= ' ' "+ENTER
-cQuery += " AND		SA1.A1_PESSOA			= 'J' "+ENTER
-cQuery += " AND		SA1.A1_FILIAL			= '"+ xFilial("SA1") +"' "+ENTER
-cQuery += " AND		SubStr(SA1.A1_CGC,1,8)	<> '"+ Space(08) +"' "+ENTER
-cQuery += " AND		SubStr(SA1.A1_CGC,1,8)	<> '00000000' "+ENTER
-cQuery += " AND		SA1.A1_I_DTCAD			< '"+ DToS(dDataRef) +"' "+ENTER
-cQuery += " AND		NOT EXISTS				( SELECT SZY.ZY_PCCCLI FROM "+ RetSqlName("SZY") +" SZY WHERE TRIM(SZY.ZY_PCCCLI) = TRIM(SubStr(SA1.A1_CGC,1,8)) AND TRIM(SZY.D_E_L_E_T_) IS NULL ) "+ENTER
+cQuery += " WHERE "
+cQuery += " 		SA1.D_E_L_E_T_			= ' ' "
+cQuery += " AND		SA1.A1_PESSOA			= 'J' "
+cQuery += " AND		SA1.A1_FILIAL			= '"+ xFilial("SA1") +"' "
+cQuery += " AND		SubStr(SA1.A1_CGC,1,8)	<> '"+ Space(08) +"' "
+cQuery += " AND		SubStr(SA1.A1_CGC,1,8)	<> '00000000' "
+cQuery += " AND		SA1.A1_I_DTCAD			< '"+ DToS(dDataRef) +"' "
+cQuery += " AND		NOT EXISTS				( SELECT SZY.ZY_PCCCLI FROM "+ RetSqlName("SZY") +" SZY WHERE TRIM(SZY.ZY_PCCCLI) = TRIM(SubStr(SA1.A1_CGC,1,8)) AND TRIM(SZY.D_E_L_E_T_) IS NULL ) "
 cQuery += " AND		SA1.A1_COD				> '000001' "
-cQuery += " AND		SubStr(SA1.A1_CGC,1,8)  BETWEEN '"+ MV_PAR01 +"' AND '"+ MV_PAR02 +"' "+ENTER
-cQuery += " AND		SA1.A1_COD  BETWEEN '"+ MV_PAR03 +"' AND '"+ MV_PAR04 +"' "+ENTER
+cQuery += " AND		SubStr(SA1.A1_CGC,1,8)  BETWEEN '"+ MV_PAR01 +"' AND '"+ MV_PAR02 +"' "
+cQuery += " AND		SA1.A1_COD  BETWEEN '"+ MV_PAR03 +"' AND '"+ MV_PAR04 +"' "
 cQuery += " AND      SA1.A1_FILIAL = '" + xFilial("SA1") + "'"
 
-cQuery += " GROUP BY SubStr(SA1.A1_CGC,1,8) "+ENTER
-cQuery += " ORDER BY SubStr(SA1.A1_CGC,1,8) "+ENTER
+cQuery += " GROUP BY SubStr(SA1.A1_CGC,1,8) "
+cQuery += " ORDER BY SubStr(SA1.A1_CGC,1,8) "
 
 //===========================================================================
 //| Verifica e inicializa os dados para análise                             |
@@ -483,44 +462,43 @@ u_itconout("Atualização de Valores [ Processo 02 de 03 ] - Lendo registros...")
 //===========================================================================
 //| Monta consulta para análise dos Valores dos Clientes                    |
 //===========================================================================
-cQuery := " SELECT "+ENTER
-cQuery += " 	SubStr(SA1.A1_CGC,1,8)	AS CNPJ, "+ENTER
-cQuery += " 	SA1.A1_COD AS A1_COD, "+ENTER
-cQuery += " 	SA1.A1_LOJA AS A1_LOJA, "+ENTER
-cQuery += " 	SE1.E1_EMISSAO			AS DATACC, "+ENTER
-cQuery += " 	SE1.E1_VALOR + SE1.E1_SDACRES + SE1.E1_JUROS - SE1.E1_SDDECRE AS VALOR, "+ENTER
-cQuery += " 	SE1.E1_SALDO			AS SALDO, "+ENTER
-cQuery += " 	SE1.E1_VENCREA AS VENCTO, "+ENTER
-cQuery += " 	SE1.E1_FILIAL			, "+ENTER
-cQuery += " 	SE1.E1_PREFIXO			, "+ENTER
-cQuery += " 	SE1.E1_NUM			, "+ENTER
-cQuery += " 	SE1.E1_PARCELA			, "+ENTER
-cQuery += " 	SE1.E1_TIPO			, "+ENTER
-cQuery += " 	SE1.E1_CLIENTE			, "+ENTER
-cQuery += " 	SE1.E1_LOJA			, "+ENTER
-cQuery += " 	1              AS ORDEM "+ENTER
+cQuery := " SELECT "
+cQuery += " 	SubStr(SA1.A1_CGC,1,8)	AS CNPJ, "
+cQuery += " 	SA1.A1_COD AS A1_COD, "
+cQuery += " 	SA1.A1_LOJA AS A1_LOJA, "
+cQuery += " 	SE1.E1_EMISSAO			AS DATACC, "
+cQuery += " 	SE1.E1_VALOR + SE1.E1_SDACRES + SE1.E1_JUROS - SE1.E1_SDDECRE AS VALOR, "
+cQuery += " 	SE1.E1_SALDO			AS SALDO, "
+cQuery += " 	SE1.E1_VENCREA AS VENCTO, "
+cQuery += " 	SE1.E1_FILIAL			, "
+cQuery += " 	SE1.E1_PREFIXO			, "
+cQuery += " 	SE1.E1_NUM			, "
+cQuery += " 	SE1.E1_PARCELA			, "
+cQuery += " 	SE1.E1_TIPO			, "
+cQuery += " 	SE1.E1_CLIENTE			, "
+cQuery += " 	SE1.E1_LOJA			, "
+cQuery += " 	1              AS ORDEM "
 
-cQuery += " FROM "+ RetSqlName("SE1") +" SE1 "+ENTER
+cQuery += " FROM "+ RetSqlName("SE1") +" SE1 "
 
-cQuery += " INNER JOIN "+ RetSqlName("SA1") +" SA1 ON "+ENTER
-cQuery += " 	SE1.E1_CLIENTE			= SA1.A1_COD "+ENTER
-cQuery += " AND	SE1.E1_LOJA				= SA1.A1_LOJA "+ENTER
-cQuery += " AND	SA1.D_E_L_E_T_			= ' ' "+ENTER
-cQuery += " AND	SA1.A1_FILIAL			= '"+ xFilial("SA1") +"' "+ENTER
-cQuery += " AND	SA1.A1_PESSOA			= 'J' "+ENTER
+cQuery += " INNER JOIN "+ RetSqlName("SA1") +" SA1 ON "
+cQuery += " 	SE1.E1_CLIENTE			= SA1.A1_COD "
+cQuery += " AND	SE1.E1_LOJA				= SA1.A1_LOJA "
+cQuery += " AND	SA1.D_E_L_E_T_			= ' ' "
+cQuery += " AND	SA1.A1_FILIAL			= '"+ xFilial("SA1") +"' "
+cQuery += " AND	SA1.A1_PESSOA			= 'J' "
 
-cQuery += " WHERE "+ENTER
-cQuery += " 	SE1.D_E_L_E_T_			= ' ' "+ENTER
-cQuery += " AND	SE1.E1_I_AVACC <> 'N' " +ENTER
-cQuery += " AND	SE1.E1_TIPO				NOT IN ('NCC','RA', 'NDC') "+ENTER
-cQuery += " AND	SE1.E1_CLIENTE			> '000001' "+ENTER
-cQuery += " AND	SubStr(SA1.A1_CGC,1,8)	BETWEEN '"+ MV_PAR01 +"' AND '"+ MV_PAR02 +"' "+ENTER
-cQuery += " AND	SE1.E1_EMISSAO			< '"+ DToS( dDataRef ) +"' "+ENTER
-cQuery += " AND SE1.E1_VENCREA > '" + DToS(dDataRef - 1825) +"' "+ENTER
-cQuery += " AND	SA1.A1_COD  BETWEEN '"+ MV_PAR03 +"' AND '"+ MV_PAR04 +"' "+ENTER     
+cQuery += " WHERE "
+cQuery += " 	SE1.D_E_L_E_T_			= ' ' "
+cQuery += " AND	SE1.E1_I_AVACC <> 'N' " 
+cQuery += " AND	SE1.E1_TIPO				NOT IN ('NCC','RA', 'NDC') "
+cQuery += " AND	SE1.E1_CLIENTE			> '000001' "
+cQuery += " AND	SubStr(SA1.A1_CGC,1,8)	BETWEEN '"+ MV_PAR01 +"' AND '"+ MV_PAR02 +"' "
+cQuery += " AND	SE1.E1_EMISSAO			< '"+ DToS( dDataRef ) +"' "
+cQuery += " AND SE1.E1_VENCREA > '" + DToS(dDataRef - 1825) +"' "
+cQuery += " AND	SA1.A1_COD  BETWEEN '"+ MV_PAR03 +"' AND '"+ MV_PAR04 +"' "     
 cQuery += " AND SA1.A1_FILIAL = '" + xFilial("SA1") + "'"
-cQuery += " ORDER BY CNPJ, DATACC, ORDEM "+ENTER
-
+cQuery += " ORDER BY CNPJ, DATACC, ORDEM "
 
 If Select(cAlias) > 0
 	(cAlias)->( DBCloseArea() )
@@ -737,10 +715,10 @@ While !(cAlias)->(Eof())
 			_cQuery += "      SE1.D_E_L_E_T_ = ' ' "   
 			_cQuery += " AND  SE1.E1_CLIENTE = '"+ _ccodcli +"' "
 			_cQuery += " AND  SE1.E1_TIPO    NOT IN ('NCC','RA','NDC') "
-			_cQuery += " AND  SE1.E1_I_AVACC <> 'N' " +ENTER
+			_cQuery += " AND  SE1.E1_I_AVACC <> 'N' "
 			_cQuery += " AND  SE1.E1_CLIENTE > '000001' "
-			_cQuery += " AND  SE1.E1_VENCREA > '" + DToS(dDataRef - 1825) +"' "+ENTER
-			_cQuery += " AND  SE1.E1_EMISSAO < '"+ DToS( dDataRef ) +"' "+ENTER
+			_cQuery += " AND  SE1.E1_VENCREA > '" + DToS(dDataRef - 1825) +"' "
+			_cQuery += " AND  SE1.E1_EMISSAO < '"+ DToS( dDataRef ) +"' "
 	
 			
 			If Select(_cAlias) > 0
@@ -851,7 +829,7 @@ While !(cAlias)->(Eof())
 			_cQuery += " WHERE "
 			_cQuery += "      SF2.D_E_L_E_T_ = ' ' "
 			_cQuery += " AND  SF2.F2_CLIENTE = '"+ _ccodcli +"' "
-			_cQuery += " AND  SF2.F2_EMISSAO < '"+ DToS( dDataRef ) +"' "+ENTER
+			_cQuery += " AND  SF2.F2_EMISSAO < '"+ DToS( dDataRef ) +"' "
 			_cQuery += " GROUP BY SF2.F2_EMISSAO"
 			_cQuery += " ORDER BY SF2.F2_EMISSAO DESC"
 			
@@ -1177,7 +1155,7 @@ Else
 	
 	If !lEnvMail
 	
-		_nOp:=Aviso( "Atenção!","A rotina atual permite gerar o arquivo em um Local específico ou processar o envio automático por e-mail." +ENTER+ENTER+;
+		_nOp:=Aviso( "Atenção!","A rotina atual permite gerar o arquivo em um Local específico ou processar o envio automático por e-mail." +CRLF+CRLF+;
 								"Selecione a saída desejada:"	,;
 								{"Arquivo","E-mail","Cancela"} )
 								//1          2        3
@@ -1187,7 +1165,7 @@ Else
 			
 				@005,005 Say "Diretório de Destino:"	SIZE 065,010 PIXEL OF oDlg COLOR CLR_HBLUE
 				@014,005 MSGET cDir PICTURE "@!"		SIZE 195,010 PIXEL OF oDlg
-				@014,200 BUTTON "..."					SIZE 013,012 PIXEL OF oDlg ACTION cDir := cGetFile( "\" , "Selecione o Diretorio de Destino:" ,,,, GETF_RETDIRECTORY+GETF_LOCALHARD )
+				@014,200 BUTTON "..."					SIZE 013,012 PIXEL OF oDlg ACTION cDir := tFileDialog( "\" , "Selecione o Diretorio de Destino:" ,,,, GETF_RETDIRECTORY+GETF_LOCALHARD )
 				
 				@004,245 BUTTON "&Ok"					SIZE 030,011 PIXEL OF oDlg ACTION ( nOpc := 1 , oDlg:End() )
 				@016,245 BUTTON "&Cancelar"				SIZE 030,011 PIXEL OF oDlg ACTION ( nOpc := 0 , oDlg:End() )
@@ -1326,7 +1304,7 @@ If File( _cNArq1 )
 	If !lProcOk
 	
 		If !(lThread)
-			U_ITMsg( "Não foi possível excluir o arquivo existente: "+ ENTER + ENTER + _cNArq1 , "Atenção!" , ,1 )
+			U_ITMsg( "Não foi possível excluir o arquivo existente: "+ CRLF + CRLF + _cNArq1 , "Atenção!" , ,1 )
 		EndIf
 		
 		Return
@@ -1345,7 +1323,7 @@ If lProcOk
 	If nHandle == -1
 	
 		If !(lThread)
-			U_ITMsg( "Não foi possível criar o arquivo: "+ ENTER + ENTER + _cNArq1 , "Atenção!" ,"Verifique o destino e tente novamente..." ,  ,1 )
+			U_ITMsg( "Não foi possível criar o arquivo: "+ CRLF + CRLF + _cNArq1 , "Atenção!" ,"Verifique o destino e tente novamente..." ,  ,1 )
 		EndIf
 		
 		Return
@@ -1491,7 +1469,7 @@ While (cAlias)->(!Eof())
 	//| Tratativa para não gerar linha em branco no fim do arquivo              |
 	//===========================================================================
 	If nRegOk > 1
-		cLinha += ENTER
+		cLinha += CRLF
 	EndIf
 	
 	clinha += (cAlias)->ZY_PCTIPO												// | 01 | Identif. (1-CNPJ / 2-CPF / 3-RG / 4-Export. / 5-Insc.Prod./ 9-Outros)
@@ -1552,7 +1530,7 @@ EndIf
 If nRegOk > 0
 	
 	If !(lThread)
-		U_ITMsg(  "Arquivo:"+ ENTER + ENTER + _cNArq1 + ENTER + ENTER +"gerado com Sucesso!" ,"Concluído!",,2 )
+		U_ITMsg(  "Arquivo:"+ CRLF + CRLF + _cNArq1 + CRLF + CRLF +"gerado com Sucesso!" ,"Concluído!",,2 )
 	EndIf
 	
 	If lEnvMail
@@ -2269,39 +2247,39 @@ EndIf
 //===========================================================================
 //| Monta o cabeçalho do arquivo                                            |
 //===========================================================================
-cCabHtml	:= "<!-- Created with AEdiX by Kirys Tech 2000,http://www.kt2k.com --> "				+ENTER
-cCabHtml	+= "<!DOCTYPE html Public '-//W3C//DTD HTML 4.01 Transitional//EN'>"	 				+ENTER
-cCabHtml	+= "<html>"															 					+ENTER
-cCabHtml	+= "<head>"															 					+ENTER
-cCabHtml	+= "  <title>Centro de custo</title>"									 				+ENTER
-cCabHtml	+= "  <meta name='GENERATOR' content='AEdiX by Kirys Tech 2000,http://www.kt2k.com'>"	+ENTER
-cCabHtml	+= "</head>"																			+ENTER
-cCabHtml	+= "<body bgcolor='#FFFFFF'>"															+ENTER
+cCabHtml	:= "<!-- Created with AEdiX by Kirys Tech 2000,http://www.kt2k.com --> "				+CRLF
+cCabHtml	+= "<!DOCTYPE html Public '-//W3C//DTD HTML 4.01 Transitional//EN'>"	 				+CRLF
+cCabHtml	+= "<html>"															 					+CRLF
+cCabHtml	+= "<head>"															 					+CRLF
+cCabHtml	+= "  <title>Centro de custo</title>"									 				+CRLF
+cCabHtml	+= "  <meta name='GENERATOR' content='AEdiX by Kirys Tech 2000,http://www.kt2k.com'>"	+CRLF
+cCabHtml	+= "</head>"																			+CRLF
+cCabHtml	+= "<body bgcolor='#FFFFFF'>"															+CRLF
 
-cRodHtml	:= "</body>"																			+ENTER
+cRodHtml	:= "</body>"																			+CRLF
 cRodHtml	+= "</html>"
 
 cFileCont	:= cCabHtml
 
-cLinFile	:= "<table border='1' cellpadding='3' cellspacing='0' bordercolor='#8B8B83' bgColor='#FFFFFF'>"							+ENTER
-cLinFile	+= "<TR>"																												+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Documento</b></TD>"							+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Parcela</b></TD>"								+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Emissao</b></TD>"								+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Cnpj</b></TD>"									+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Fatura</b></TD>"								+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Pagto.</b></TD>"								+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Dt.Operacao</b></TD>"							+ENTER
-cLinFile	+= "<TD bgcolor='#6E8B3D' align='center'><FONT face=' Arial ' size=1 color='#FFFFFF'><b>Saldo</b></FONT></TD>"			+ENTER
-cLinFile	+= "<TD bgcolor='#6E8B3D' align='center'><FONT face=' Arial ' size=1 color='#FFFFFF'><b>Maior Ac.</b></FONT></TD>"		+ENTER
-cLinFile	+= "<TD bgcolor='#6E8B3D' align='center'><FONT face=' Arial ' size=1 color='#FFFFFF'><b>Data M.A.</b></FONT></TD>"		+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Vcto Real</b></TD>"			  				+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Dt.Baixa</b></TD>"			 					+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Atraso</b></TD>"								+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Vlr.Atraso</b></TD>"							+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Dias AV</b></TD>"								+ENTER
-cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Vlr.AV</b></TD>"								+ENTER
-cLinFile	+= "</TR>"																												+ENTER
+cLinFile	:= "<table border='1' cellpadding='3' cellspacing='0' bordercolor='#8B8B83' bgColor='#FFFFFF'>"							+CRLF
+cLinFile	+= "<TR>"																												+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Documento</b></TD>"							+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Parcela</b></TD>"								+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Emissao</b></TD>"								+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Cnpj</b></TD>"									+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Fatura</b></TD>"								+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Pagto.</b></TD>"								+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Dt.Operacao</b></TD>"							+CRLF
+cLinFile	+= "<TD bgcolor='#6E8B3D' align='center'><FONT face=' Arial ' size=1 color='#FFFFFF'><b>Saldo</b></FONT></TD>"			+CRLF
+cLinFile	+= "<TD bgcolor='#6E8B3D' align='center'><FONT face=' Arial ' size=1 color='#FFFFFF'><b>Maior Ac.</b></FONT></TD>"		+CRLF
+cLinFile	+= "<TD bgcolor='#6E8B3D' align='center'><FONT face=' Arial ' size=1 color='#FFFFFF'><b>Data M.A.</b></FONT></TD>"		+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Vcto Real</b></TD>"			  				+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Dt.Baixa</b></TD>"			 					+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Atraso</b></TD>"								+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Vlr.Atraso</b></TD>"							+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Dias AV</b></TD>"								+CRLF
+cLinFile	+= "<TD align='center' style='Background: #9AC0CD; font-style: Bold;'><b>Vlr.AV</b></TD>"								+CRLF
+cLinFile	+= "</TR>"																												+CRLF
 
 cFileCont	+= cLinFile
 cLinFile	:= ""
@@ -2324,28 +2302,28 @@ For nI := 1 To nTotReg
 			
 			If CTOD( aDadosAux[nI][07] ) > YEARSUB( dDataRef , 1 )
 			
-				cLinFile		:= "<TR>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ aDadosAux[nI][03]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+ENTER
+				cLinFile		:= "<TR>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ aDadosAux[nI][03]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+CRLF
                 If Val( StrTran( StrTran( aDadosAux[nI][05] ,".","" ) , "," , "." ) ) > 0
-      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b> </b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b> </b></FONT></TD>"+CRLF
                 Else
-      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b> </b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b> </b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
                 EndIf
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+ENTER
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+CRLF
 				cLinFile		+= "</TR>"
 				
  			Else
@@ -2354,54 +2332,54 @@ For nI := 1 To nTotReg
 					( SZY->ZY_PCVPCO == Val( StrTran( StrTran( aDadosAux[nI][06] ,".","" ) , "," , "." ) )	.And. SZY->ZY_PCDTPC == CTOD( aDadosAux[nI][03] ) )	.OR.;
 					( SZY->ZY_PCVULC == Val( StrTran( StrTran( aDadosAux[nI][06] ,".","" ) , "," , "." ) )	.And. SZY->ZY_PCDUCM == CTOD( aDadosAux[nI][03] ) )
 
-					cLinFile	:= "<TR>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ aDadosAux[nI][03]				+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+ENTER
+					cLinFile	:= "<TR>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ aDadosAux[nI][03]				+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+ AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+CRLF
                     If Val( StrTran( StrTran( aDadosAux[nI][05] ,".","" ) , "," , "." ) ) > 0
-     				  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
-     				  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b> </b></FONT></TD>"+ENTER
+     				  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
+     				  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b> </b></FONT></TD>"+CRLF
                     Else
-         			  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b> </b></FONT></TD>"+ENTER
-      	    		  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
+         			  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b> </b></FONT></TD>"+CRLF
+      	    		  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
                     EndIf
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+ENTER
-    				cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+ENTER
-	    			cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+ENTER
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+CRLF
+    				cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+CRLF
+	    			cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+CRLF
 					cLinFile	+= "</TR>"
 
                  Else
 
 					cLinFile	:= "<TR>"
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][03]				+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+ENTER
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][03]				+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+CRLF
                     If Val( StrTran( StrTran( aDadosAux[nI][05] ,".","" ) , "," , "." ) ) > 0
-     				  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
-         			  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+ENTER
+     				  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
+         			  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+CRLF
                     Else
-       		    	  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+ENTER
-       			      cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
+       		    	  cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+CRLF
+       			      cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
                     EndIf
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+ENTER
-    				cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+ENTER
-	    			cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+ENTER
-					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+ENTER
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+CRLF
+    				cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+CRLF
+	    			cLinFile	+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+CRLF
+					cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+CRLF
 					cLinFile	+= "</TR>"
 					
 			     EndIf
@@ -2413,53 +2391,53 @@ For nI := 1 To nTotReg
 			If	CTOD( aDadosAux[nI][07] ) > YEARSUB( dDataRef , 1 )
 
 				cLinFile		:= "<TR>"
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][03]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+ENTER
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][03]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+CRLF
                 If Val( StrTran( StrTran( aDadosAux[nI][05] ,".","" ) , "," , "." ) ) > 0
-      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b> </b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b> </b></FONT></TD>"+CRLF
                 Else
-      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b> </b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b> </b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
                 EndIf
-    			cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+ENTER
+    			cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+CRLF
 				cLinFile		+= "</TR>"
 				
 			Else
 			
 				cLinFile := "<TR>"
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][03]		 		+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+ENTER
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][03]		 		+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+CRLF
 	            If Val( StrTran( StrTran( aDadosAux[nI][05] ,".","" ) , "," , "." ) ) > 0
-      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+CRLF
                 Else
-      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
                 EndIf
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+ENTER
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#FFFFFF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+CRLF
 				cLinFile		+= "</TR>"
 				
 			EndIf
@@ -2476,54 +2454,54 @@ For nI := 1 To nTotReg
 			
 			If CTOD( aDadosAux[nI][07] ) > YEARSUB( dDataRef , 1 )
 			
-				cLinFile		:= "<TR>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][03]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+ENTER
+				cLinFile		:= "<TR>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][03]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+CRLF
                 If Val( StrTran( StrTran( aDadosAux[nI][05] ,".","" ) , "," , "." ) ) > 0
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b> </b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b> </b></FONT></TD>"+CRLF
                 Else
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b> </b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b> </b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
                 EndIf
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+ENTER
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#FF0000' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#FF0000' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+CRLF
 				cLinFile		+= "</TR>"
 				
 			Else
 			
 				cLinFile		:= "<TR>"
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][03]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+ENTER
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][03]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+CRLF
                 If Val( StrTran( StrTran( aDadosAux[nI][05] ,".","" ) , "," , "." ) ) > 0
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+CRLF
                 Else
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
                 EndIf
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+ENTER
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+CRLF
 				cLinFile		+= "</TR>"				
 
 			EndIf
@@ -2533,53 +2511,53 @@ For nI := 1 To nTotReg
 			If	CTOD( aDadosAux[nI][07] ) > YEARSUB( dDataRef , 1 )
 			
 				cLinFile		:= "<TR>"
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][03]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+ENTER
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][03]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+CRLF
                 If Val( StrTran( StrTran( aDadosAux[nI][05] ,".","" ) , "," , "." ) ) > 0
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>&nbsp</b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>&nbsp</b></FONT></TD>"+CRLF
                 Else
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>&nbsp</b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>&nbsp</b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
                 EndIf
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+ENTER
-    			cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+ENTER
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+CRLF
+    			cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#27408B' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+CRLF
 				cLinFile		+= "</TR>"
 				
 			Else
 			
-				cLinFile		:= "<TR>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][03]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+ENTER
+				cLinFile		:= "<TR>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][01] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][02] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][03]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][04] )	+"</b></FONT></TD>"+CRLF
                 If Val( StrTran( StrTran( aDadosAux[nI][05] ,".","" ) , "," , "." ) ) > 0
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+CRLF
                 Else
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+ENTER
-      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+ENTER
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b> </b></FONT></TD>"+CRLF
+      				cLinFile	+= "<TD bgcolor='#C6E2FF' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][06] )	+"</b></FONT></TD>"+CRLF
                 EndIf
-	    		cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+ENTER
-		        cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+ENTER
-     			cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+ENTER
-				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+ENTER
+	    		cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][07]				+"</b></FONT></TD>"+CRLF
+		        cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][08] )	+"</b></FONT></TD>"+CRLF
+     			cLinFile		+= "<TD bgcolor='#CAFF70' align='right'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][09] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#CAFF70' align='center'><FONT face=' Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][10]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][11]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	aDadosAux[nI][12]				+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][13] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][14] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][17] )	+"</b></FONT></TD>"+CRLF
+				cLinFile		+= "<TD bgcolor='#C6E2FF' align='right'><FONT face='Arial ' size=1 color='#8B8989' ><b>"+	AllTrim( aDadosAux[nI][18] )	+"</b></FONT></TD>"+CRLF
 				cLinFile		+= "</TR>"
 				
 			EndIf
@@ -2595,138 +2573,138 @@ For nI := 1 To nTotReg
 	
 Next nI
 
-cLinFile := "</Table>"+ENTER
+cLinFile := "</Table>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<table border='1' cellpadding='3' cellspacing='0' bordercolor='#8B8B83' bgColor='#FFFFFF'>"+ENTER
-cLinFile += "<TR>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<table border='1' cellpadding='3' cellspacing='0' bordercolor='#8B8B83' bgColor='#FFFFFF'>"+CRLF
+cLinFile += "<TR>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#6E8B3D' align='center'><FONT face=' Arial ' size=1 color='#FFFFFF'><b>Data Informação</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#6E8B3D' align='center'><FONT face=' Arial ' size=1 color='#FFFFFF'><b>"+DToC(SZY->ZY_PCDDAT)+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#6E8B3D' align='center'><FONT face=' Arial ' size=1 color='#FFFFFF'><b>Data Informação</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#6E8B3D' align='center'><FONT face=' Arial ' size=1 color='#FFFFFF'><b>"+DToC(SZY->ZY_PCDDAT)+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Cnpj</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+SZY->ZY_PCCCLI+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Cnpj</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+SZY->ZY_PCCCLI+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Data Cad.</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+DToC(SZY->ZY_PCDCDD)+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Data Cad.</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+DToC(SZY->ZY_PCDCDD)+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Vlr.Maior.Acum.</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCVMAC,"@E 9,999,999,999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Vlr.Maior.Acum.</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCVMAC,"@E 9,999,999,999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Data M.Acum</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+DToC(SZY->ZY_PCDMAC)+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Data M.Acum</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+DToC(SZY->ZY_PCDMAC)+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile ) 
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Deb.Atual Total</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCVSAT,"@E 9,999,999,999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Deb.Atual Total</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCVSAT,"@E 9,999,999,999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Penúlt.Compra</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCVPCO,"@e 9,999,999,999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Penúlt.Compra</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCVPCO,"@e 9,999,999,999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Data Penúlt.Cp.</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+DToC(SZY->ZY_PCDTPC)+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Data Penúlt.Cp.</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+DToC(SZY->ZY_PCDTPC)+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Ultima Compra.</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCVULC,"@E 9,999,999,999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Ultima Compra.</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCVULC,"@E 9,999,999,999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Data Ult.Compra</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+DToC(SZY->ZY_PCDUCM)+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Data Ult.Compra</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+DToC(SZY->ZY_PCDUCM)+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Med.Pond.Atraso</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCQPAG,"@E 999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Med.Pond.Atraso</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCQPAG,"@E 999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Med.Aritm.Atraso</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCQDAP,"@E 999.99")+"</b></FONT></TD>"+ENTER  
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Med.Aritm.Atraso</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCQDAP,"@E 999.99")+"</b></FONT></TD>"+CRLF  
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Vlr.Deb.a Venc.</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCVDAV,"@E 9,999,999,999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Vlr.Deb.a Venc.</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCVDAV,"@E 9,999,999,999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Med.Pond.A Vc.</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCMDAV,"@E 999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Med.Pond.A Vc.</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCMDAV,"@E 999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Prazo Med. Vd.</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCMPMV,"@E 999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Prazo Med. Vd.</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCMPMV,"@E 999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Vencido +5 dias</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCDATV,"@E 9,999,999,999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Vencido +5 dias</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCDATV,"@E 9,999,999,999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Med.Pond.+5 dias</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCMPTV,"@E 999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Med.Pond.+5 dias</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCMPTV,"@E 999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Vencido +15 dias</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCV15D,"@E 9,999,999,999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Vencido +15 dias</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCV15D,"@E 9,999,999,999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Med.Pond.+15 dias</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCM15D,"@E 999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Med.Pond.+15 dias</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCM15D,"@E 999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Vencido +30 dias</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCV30D,"@E 9,999,999,999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Vencido +30 dias</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCV30D,"@E 9,999,999,999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
-cLinFile := "<TR>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Med.Pond.+30 dias</b></FONT></TD>"+ENTER
-cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCM30D,"@E 9,999.99")+"</b></FONT></TD>"+ENTER
-cLinFile += "</TR>"+ENTER
+cLinFile := "<TR>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#0000CD' ><b>Med.Pond.+30 dias</b></FONT></TD>"+CRLF
+cLinFile += "<TD bgcolor='#C6E2FF' align='center'><FONT face='Arial ' size=1 color='#000000' ><b>"+Transform(SZY->ZY_PCM30D,"@E 9,999.99")+"</b></FONT></TD>"+CRLF
+cLinFile += "</TR>"+CRLF
 FWrite( nHandle , cLinFile )
 
 //-- Acrescenta o rodape do html --//
@@ -2805,110 +2783,110 @@ Static Function MOMS027CD1(cnpj)
 Local _dDataDE2	:= YEARSUB( dDataRef , 1 )
 Local cQuery	:= ""
 
-cQuery := " SELECT "+ ENTER
-cQuery += " 	E1_NUM,"+ENTER
-cQuery += " 	E1_PARCELA,"+ENTER
-cQuery += " 	E1_EMISSAO,"+ENTER
-cQuery += " 	SubStr(A1_CGC,1,8) AS CNPJ,"+ENTER
-cQuery += " 	E1_VALOR,"+ENTER
-cQuery += " 	F2_VALFAT,"+ENTER
-cQuery += " 	E1_EMISSAO AS DATACC,"+ENTER
-cQuery += " 	0 AS SALDO,"+ENTER
-cQuery += " 	E1_VENCREA,"+ ENTER
-cQuery += " 	Case WHEN E1_VENCREA >= '"+ DToS(_dDataDE2) +"' THEN ' ' Else E1_BAIXA END AS E1_BAIXA , "+ENTER
-cQuery += " 	0 AS DIATRA ,"+ENTER
-cQuery += " 	0 AS VLRCALC, "+ENTER
-cQuery += " 	'' AS DATAM,"+ENTER
-cQuery += " 	0 AS VLRM,"+ENTER
-cQuery += " 	Case WHEN E1_VENCREA >= '"+ DToS(Date()) +"' THEN E1_VALOR Else 0 END AS VLRDAV,"+ENTER
-cQuery += " 	Case WHEN E1_VENCREA > '"+ DToS(Date()) +"' THEN ABS( TO_DATE(E1_EMISSAO,'YYYYMMDD')-TO_DATE(E1_VENCREA,'YYYYMMDD') ) Else 0 END AS DIASAV, "+ENTER
-cQuery += " 	Case WHEN E1_VENCREA > '"+ DToS(Date()) +"' THEN ABS( TO_DATE(E1_EMISSAO,'YYYYMMDD')-TO_DATE(E1_VENCREA,'YYYYMMDD') ) * E1_VALOR Else 0 END AS VLRAVC,"+ENTER
-cQuery += " 	A1_LC,"+ENTER
-cQuery += " 	1 AS ORDEM"+ENTER
+cQuery := " SELECT "
+cQuery += " 	E1_NUM,"
+cQuery += " 	E1_PARCELA,"
+cQuery += " 	E1_EMISSAO,"
+cQuery += " 	SubStr(A1_CGC,1,8) AS CNPJ,"
+cQuery += " 	E1_VALOR,"
+cQuery += " 	F2_VALFAT,"
+cQuery += " 	E1_EMISSAO AS DATACC,"
+cQuery += " 	0 AS SALDO,"
+cQuery += " 	E1_VENCREA,"
+cQuery += " 	Case WHEN E1_VENCREA >= '"+ DToS(_dDataDE2) +"' THEN ' ' Else E1_BAIXA END AS E1_BAIXA , "
+cQuery += " 	0 AS DIATRA ,"
+cQuery += " 	0 AS VLRCALC, "
+cQuery += " 	'' AS DATAM,"
+cQuery += " 	0 AS VLRM,"
+cQuery += " 	Case WHEN E1_VENCREA >= '"+ DToS(Date()) +"' THEN E1_VALOR Else 0 END AS VLRDAV,"
+cQuery += " 	Case WHEN E1_VENCREA > '"+ DToS(Date()) +"' THEN ABS( TO_DATE(E1_EMISSAO,'YYYYMMDD')-TO_DATE(E1_VENCREA,'YYYYMMDD') ) Else 0 END AS DIASAV, "
+cQuery += " 	Case WHEN E1_VENCREA > '"+ DToS(Date()) +"' THEN ABS( TO_DATE(E1_EMISSAO,'YYYYMMDD')-TO_DATE(E1_VENCREA,'YYYYMMDD') ) * E1_VALOR Else 0 END AS VLRAVC,"
+cQuery += " 	A1_LC,"
+cQuery += " 	1 AS ORDEM"
 
-cQuery += " FROM "+ RetSqlName("SE1") +" SE1"+ENTER
+cQuery += " FROM "+ RetSqlName("SE1") +" SE1"
 
-cQuery += " INNER JOIN "+ RetSqlName("SA1") +" SA1 ON"+ENTER
-cQuery += " 		SE1.E1_CLIENTE	= SA1.A1_COD "+ENTER
-cQuery += " AND 	SE1.E1_LOJA		= SA1.A1_LOJA "+ENTER
-cQuery += " AND		SA1.A1_FILIAL	= '"+ xFilial("SA1") +"' "+ENTER
+cQuery += " INNER JOIN "+ RetSqlName("SA1") +" SA1 ON"
+cQuery += " 		SE1.E1_CLIENTE	= SA1.A1_COD "
+cQuery += " AND 	SE1.E1_LOJA		= SA1.A1_LOJA "
+cQuery += " AND		SA1.A1_FILIAL	= '"+ xFilial("SA1") +"' "
 
-cQuery += " INNER JOIN "+ RetSqlName("SF2") +" SF2 ON "+ENTER
-cQuery += " 	SE1.E1_FILIAL			= SF2.F2_FILIAL "+ENTER
-cQuery += " AND	SE1.E1_NUM				= SF2.F2_DOC "+ENTER
-cQuery += " AND	SE1.E1_PREFIXO			= SF2.F2_SERIE "+ENTER
-cQuery += " AND SE1.E1_CLIENTE			= SF2.F2_CLIENTE "+ENTER
-cQuery += " AND	SE1.E1_LOJA				= SF2.F2_LOJA "+ENTER
-cQuery += " AND	SF2.D_E_L_E_T_			= ' ' "+ENTER
+cQuery += " INNER JOIN "+ RetSqlName("SF2") +" SF2 ON "
+cQuery += " 	SE1.E1_FILIAL			= SF2.F2_FILIAL "
+cQuery += " AND	SE1.E1_NUM				= SF2.F2_DOC "
+cQuery += " AND	SE1.E1_PREFIXO			= SF2.F2_SERIE "
+cQuery += " AND SE1.E1_CLIENTE			= SF2.F2_CLIENTE "
+cQuery += " AND	SE1.E1_LOJA				= SF2.F2_LOJA "
+cQuery += " AND	SF2.D_E_L_E_T_			= ' ' "
 
-cQuery += " WHERE"+ENTER
-cQuery += " 		SE1.E1_EMISSAO	<= '"+ DToS(Date())	+"'"+ENTER
-cQuery += " AND (	SE1.E1_BAIXA	>= '"+ DToS(_dDataDE2)	+"' OR TRIM(SE1.E1_BAIXA) IS NULL )"+ENTER
-cQuery += " AND		SE1.E1_TIPO		NOT IN ( 'NCC' , 'RA', 'NDC' ) "+ENTER
-cQuery += " AND		SE1.D_E_L_E_T_	= ' ' "+ENTER
-cQuery += " AND	    SE1.E1_I_AVACC <> 'N' " +ENTER
-cQuery += " AND     SE1.E1_VENCREA > '" + DToS(dDataRef - 1825) +"' "+ENTER
-cQuery += " AND		SA1.D_E_L_E_T_	= ' ' "+ENTER
-cQuery += " AND		SubStr(A1_CGC,1,8)	BETWEEN '"+CNPJ+"' AND '"+CNPJ+"' "+ENTER
+cQuery += " WHERE"
+cQuery += " 		SE1.E1_EMISSAO	<= '"+ DToS(Date())	+"'"
+cQuery += " AND (	SE1.E1_BAIXA	>= '"+ DToS(_dDataDE2)	+"' OR TRIM(SE1.E1_BAIXA) IS NULL )"
+cQuery += " AND		SE1.E1_TIPO		NOT IN ( 'NCC' , 'RA', 'NDC' ) "
+cQuery += " AND		SE1.D_E_L_E_T_	= ' ' "
+cQuery += " AND	    SE1.E1_I_AVACC <> 'N' " 
+cQuery += " AND     SE1.E1_VENCREA > '" + DToS(dDataRef - 1825) +"' "
+cQuery += " AND		SA1.D_E_L_E_T_	= ' ' "
+cQuery += " AND		SubStr(A1_CGC,1,8)	BETWEEN '"+CNPJ+"' AND '"+CNPJ+"' "
 
-cQuery += " UNION ALL"+ENTER
+cQuery += " UNION ALL"
 
-cQuery += " SELECT"+ENTER
-cQuery += " 	E1_NUM,"+ENTER
-cQuery += " 	E1_PARCELA,"+ENTER
-cQuery += " 	E1_EMISSAO,"+ENTER
-cQuery += " 	SubStr(A1_CGC,1,8) AS CNPJ, "+ENTER
-cQuery += " 	Case WHEN TRIM(E1_BAIXA) IS NOT NULL THEN (E1_VALOR*-1) END AS E1_VALOR,"+ENTER
-cQuery += " 	0 AS F2_VALFAT,"+ENTER
-cQuery += " 	Case WHEN TRIM(E1_BAIXA) IS NOT NULL THEN E1_BAIXA END AS DATACC,"+ENTER
-cQuery += " 	0 AS SALDO,"+ENTER
-cQuery += " 	E1_VENCREA,"+ENTER
-cQuery += " 	E1_BAIXA,"+ENTER
-cQuery += " 	Case "+ENTER
-cQuery += " 		WHEN ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE(E1_BAIXA,'YYYYMMDD') ) >= 0	THEN ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE(E1_BAIXA,'YYYYMMDD') ) "+ENTER
-cQuery += " 		WHEN TRIM(E1_BAIXA) IS NOT NULL AND E1_BAIXA > E1_VENCREA					THEN ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE('"+ DToS(Date()) +"','YYYYMMDD') ) "+ENTER
-cQuery += " 		WHEN TRIM(E1_BAIXA) IS NULL AND E1_VENCREA < '"+ DToS(Date())+"'		THEN ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE('"+ DToS(Date()) +"','YYYYMMDD') ) "+ENTER
-cQuery += " 		Else 0 END AS DIATRA,"+ENTER
-cQuery += " 	Case "+ENTER
-cQuery += " 		WHEN ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE(E1_BAIXA,'YYYYMMDD') ) >= 0	THEN ( E1_VALOR * ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE(E1_BAIXA,'YYYYMMDD') ) ) "+ENTER
-cQuery += " 		WHEN TRIM(E1_BAIXA) IS NOT NULL AND E1_BAIXA > E1_VENCREA					THEN ( E1_VALOR * ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE('"+ DToS(Date()) +"','YYYYMMDD') ) )"+ENTER
-cQuery += " 		WHEN TRIM(E1_BAIXA) IS NULL AND E1_VENCREA < '"+DToS(Date())+"'		THEN ( E1_VALOR * ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE('"+ DToS(Date()) +"','YYYYMMDD') ) )"+ENTER
-cQuery += " 		Else 0 END AS VLRCALC,"+ENTER
-cQuery += " 	'' AS DATAM,"+ENTER
-cQuery += " 	0 AS VLRM,"+ENTER
-cQuery += " 	0 AS VLRDAV,"+ENTER
-cQuery += " 	0 AS DIASAV,"+ENTER
-cQuery += " 	0 AS VLRAVC,"+ENTER
-cQuery += " 	A1_LC,"+ENTER
-cQuery += " 	2 AS ORDEM"+ENTER
-cQuery += " FROM "+ RetSqlName("SE1") +" SE1 "+ENTER
+cQuery += " SELECT"
+cQuery += " 	E1_NUM,"
+cQuery += " 	E1_PARCELA,"
+cQuery += " 	E1_EMISSAO,"
+cQuery += " 	SubStr(A1_CGC,1,8) AS CNPJ, "
+cQuery += " 	Case WHEN TRIM(E1_BAIXA) IS NOT NULL THEN (E1_VALOR*-1) END AS E1_VALOR,"
+cQuery += " 	0 AS F2_VALFAT,"
+cQuery += " 	Case WHEN TRIM(E1_BAIXA) IS NOT NULL THEN E1_BAIXA END AS DATACC,"
+cQuery += " 	0 AS SALDO,"
+cQuery += " 	E1_VENCREA,"
+cQuery += " 	E1_BAIXA,"
+cQuery += " 	Case "
+cQuery += " 		WHEN ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE(E1_BAIXA,'YYYYMMDD') ) >= 0	THEN ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE(E1_BAIXA,'YYYYMMDD') ) "
+cQuery += " 		WHEN TRIM(E1_BAIXA) IS NOT NULL AND E1_BAIXA > E1_VENCREA					THEN ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE('"+ DToS(Date()) +"','YYYYMMDD') ) "
+cQuery += " 		WHEN TRIM(E1_BAIXA) IS NULL AND E1_VENCREA < '"+ DToS(Date())+"'		THEN ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE('"+ DToS(Date()) +"','YYYYMMDD') ) "
+cQuery += " 		Else 0 END AS DIATRA,"
+cQuery += " 	Case "
+cQuery += " 		WHEN ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE(E1_BAIXA,'YYYYMMDD') ) >= 0	THEN ( E1_VALOR * ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE(E1_BAIXA,'YYYYMMDD') ) ) "
+cQuery += " 		WHEN TRIM(E1_BAIXA) IS NOT NULL AND E1_BAIXA > E1_VENCREA					THEN ( E1_VALOR * ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE('"+ DToS(Date()) +"','YYYYMMDD') ) )"
+cQuery += " 		WHEN TRIM(E1_BAIXA) IS NULL AND E1_VENCREA < '"+DToS(Date())+"'		THEN ( E1_VALOR * ABS( TO_DATE(E1_VENCREA,'YYYYMMDD')-TO_DATE('"+ DToS(Date()) +"','YYYYMMDD') ) )"
+cQuery += " 		Else 0 END AS VLRCALC,"
+cQuery += " 	'' AS DATAM,"
+cQuery += " 	0 AS VLRM,"
+cQuery += " 	0 AS VLRDAV,"
+cQuery += " 	0 AS DIASAV,"
+cQuery += " 	0 AS VLRAVC,"
+cQuery += " 	A1_LC,"
+cQuery += " 	2 AS ORDEM"
+cQuery += " FROM "+ RetSqlName("SE1") +" SE1 "
 
-cQuery += " INNER JOIN "+ RetSqlName("SA1") +" SA1 ON"+ENTER
-cQuery += " 		SE1.E1_CLIENTE	= SA1.A1_COD"+ENTER
-cQuery += " AND	SE1.E1_LOJA		= SA1.A1_LOJA"+ENTER
-cQuery += " AND	SA1.D_E_L_E_T_	= ' ' "+ENTER
-cQuery += " AND	SA1.A1_FILIAL	= '"+ xFilial("SA1") +"' "+ENTER
+cQuery += " INNER JOIN "+ RetSqlName("SA1") +" SA1 ON"
+cQuery += " 		SE1.E1_CLIENTE	= SA1.A1_COD"
+cQuery += " AND	SE1.E1_LOJA		= SA1.A1_LOJA"
+cQuery += " AND	SA1.D_E_L_E_T_	= ' ' "
+cQuery += " AND	SA1.A1_FILIAL	= '"+ xFilial("SA1") +"' "
 
-cQuery += " INNER JOIN "+ RetSqlName("SF2") +" SF2 ON "+ENTER
-cQuery += " 	SE1.E1_FILIAL			= SF2.F2_FILIAL "+ENTER
-cQuery += " AND	SE1.E1_NUM				= SF2.F2_DOC "+ENTER
-cQuery += " AND	SE1.E1_PREFIXO			= SF2.F2_SERIE "+ENTER
-cQuery += " AND SE1.E1_CLIENTE			= SF2.F2_CLIENTE "+ENTER
-cQuery += " AND	SE1.E1_LOJA				= SF2.F2_LOJA "+ENTER
-cQuery += " AND	SF2.D_E_L_E_T_			= ' ' "+ENTER
+cQuery += " INNER JOIN "+ RetSqlName("SF2") +" SF2 ON "
+cQuery += " 	SE1.E1_FILIAL			= SF2.F2_FILIAL "
+cQuery += " AND	SE1.E1_NUM				= SF2.F2_DOC "
+cQuery += " AND	SE1.E1_PREFIXO			= SF2.F2_SERIE "
+cQuery += " AND SE1.E1_CLIENTE			= SF2.F2_CLIENTE "
+cQuery += " AND	SE1.E1_LOJA				= SF2.F2_LOJA "
+cQuery += " AND	SF2.D_E_L_E_T_			= ' ' "
 
-cQuery += " WHERE"+ENTER
-cQuery += " 		SE1.E1_EMISSAO	<= '"+ DToS(Date()) +"'"+ENTER
-cQuery += " AND	SE1.E1_TIPO		NOT IN ( 'NCC' , 'RA', 'NDC' ) "+ENTER
-cQuery += " AND	SE1.D_E_L_E_T_	= ' ' "+ENTER
-cQuery += " AND	SE1.E1_I_AVACC <> 'N' " +ENTER
-cQuery += " AND	SE1.E1_BAIXA	<> ' ' "+ENTER
-cQuery += " AND	SE1.E1_BAIXA	>= '"+ DToS(_dDataDE2) +"'"+ENTER
-cQuery += " AND	SE1.E1_VENCREA	< '"+ DToS(Date()) +"'"+ENTER
-cQuery += " AND SE1.E1_VENCREA > '" + DToS(dDataRef - 1825) +"' "+ENTER
-cQuery += " AND	SubStr(SA1.A1_CGC,1,8) BETWEEN  '"+CNPJ+"' AND '"+CNPJ+"' "+ENTER
+cQuery += " WHERE"
+cQuery += " 		SE1.E1_EMISSAO	<= '"+ DToS(Date()) +"'"
+cQuery += " AND	SE1.E1_TIPO		NOT IN ( 'NCC' , 'RA', 'NDC' ) "
+cQuery += " AND	SE1.D_E_L_E_T_	= ' ' "
+cQuery += " AND	SE1.E1_I_AVACC <> 'N' " 
+cQuery += " AND	SE1.E1_BAIXA	<> ' ' "
+cQuery += " AND	SE1.E1_BAIXA	>= '"+ DToS(_dDataDE2) +"'"
+cQuery += " AND	SE1.E1_VENCREA	< '"+ DToS(Date()) +"'"
+cQuery += " AND SE1.E1_VENCREA > '" + DToS(dDataRef - 1825) +"' "
+cQuery += " AND	SubStr(SA1.A1_CGC,1,8) BETWEEN  '"+CNPJ+"' AND '"+CNPJ+"' "
 
-cQuery += " ORDER BY CNPJ , DATACC , E1_NUM , E1_PARCELA , ORDEM "+ENTER
+cQuery += " ORDER BY CNPJ , DATACC , E1_NUM , E1_PARCELA , ORDEM "
 
 If Select("TRB1") > 0
 	TRB1->( DBCloseArea() )
@@ -3738,7 +3716,7 @@ If !Empty(aValid)
 	
 	For nI := 1 To Len(aValid)
 	    
-		cLinha := "Cliente: "+ aValid[nI][01] +" - "+ aValid[nI][02] + ENTER
+		cLinha := "Cliente: "+ aValid[nI][01] +" - "+ aValid[nI][02] + CRLF
 		
 		FWrite( nHandle , cLinha )
 		
@@ -3830,18 +3808,17 @@ Static Function MOMS0278(_atitulos)
 
 Local _aextrato := {{_atitulos[11],_atitulos[7], "P"}}
 Local cQuery := ""
-
 	
-cQuery += " 	SELECT e5_data, e5_valor, e5_recpag "+ENTER
-cQuery += " 				FROM "+ RetSqlName("SE5") +" SE5S WHERE "+ENTER
-cQuery += " 					SE5S.E5_FILORIG   = '" + _atitulos[3] + "'	AND	SE5S.E5_PREFIXO  = '" +  _atitulos[4] + "' "+ENTER
-cQuery += " 				AND	SE5S.E5_FILIAL   = '" + _atitulos[3] + "' " +ENTER
-cQuery += " 				AND	SE5S.E5_NUMERO   = '" + _atitulos[5] + "'			AND	SE5S.E5_PARCELA  = '" + _atitulos[6] + "' "+ENTER
-cQuery += " 				AND	SE5S.E5_TIPO     = '" + _atitulos[8] + "'			AND	SE5S.E5_CLIFOR   = '" + _atitulos[9] + "' "+ENTER
-cQuery += " 				AND	SE5S.E5_LOJA     = '" + _atitulos[10] + "'			AND	SE5S.D_E_L_E_T_  = ' ' "+ENTER
-cQuery += " 				AND	SE5S.E5_SITUACA  NOT IN ( 'C' , 'X' )	AND	SE5S.E5_TIPO     NOT IN ( 'NCC' , 'RA', 'NDC' ) "+ENTER
-cQuery += " 				AND	SE5S.E5_VALOR    > 0			" +ENTER
-cQuery += " 				AND	SE5S.E5_TIPODOC  IN ( 'VL' , 'ES' , 'CP' , 'BA' , 'DC' )  "+ENTER
+cQuery += " 	SELECT e5_data, e5_valor, e5_recpag "
+cQuery += " 				FROM "+ RetSqlName("SE5") +" SE5S WHERE "
+cQuery += " 					SE5S.E5_FILORIG   = '" + _atitulos[3] + "'	AND	SE5S.E5_PREFIXO  = '" +  _atitulos[4] + "' "
+cQuery += " 				AND	SE5S.E5_FILIAL   = '" + _atitulos[3] + "' " 
+cQuery += " 				AND	SE5S.E5_NUMERO   = '" + _atitulos[5] + "'			AND	SE5S.E5_PARCELA  = '" + _atitulos[6] + "' "
+cQuery += " 				AND	SE5S.E5_TIPO     = '" + _atitulos[8] + "'			AND	SE5S.E5_CLIFOR   = '" + _atitulos[9] + "' "
+cQuery += " 				AND	SE5S.E5_LOJA     = '" + _atitulos[10] + "'			AND	SE5S.D_E_L_E_T_  = ' ' "
+cQuery += " 				AND	SE5S.E5_SITUACA  NOT IN ( 'C' , 'X' )	AND	SE5S.E5_TIPO     NOT IN ( 'NCC' , 'RA', 'NDC' ) "
+cQuery += " 				AND	SE5S.E5_VALOR    > 0			" 
+cQuery += " 				AND	SE5S.E5_TIPODOC  IN ( 'VL' , 'ES' , 'CP' , 'BA' , 'DC' )  "
 
 If Select("SE5T") > 0
 	SE5T->( DBCloseArea() )

@@ -1,21 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Julio Paz     |25/07/2025| Chamado 48915. Desenvolvimento da rotina de monitoramento das integrações de notas fiscais e exportação
-              |          | dos dados das integração de notas fiscais em CSV.
-Lucas Borges  |14/09/2025| Chamado 51799. Implementada função para validar ambiente de teste totvs.framework.environment.Type.get()
-Julio Paz     |23/09/2025| Chamado 51973. Ajustes para permitir a integração manual de Extratos/Demonstrativos e Notas Fiscais.
-===============================================================================================================================
-Analista      - Programador   - Inicio   - Envio    - Chamado - Motivo da Alteração
-======================================================================================================================================================================================================================================================
-Washington    - Julio Paz     - 14/11/25 - 14/11/25 - 52917   - Alterar as querys de leituras de coletas, notas fiscais e extratos para ler os dados a partir de uma data. 
-Washington    - Julio Paz     - 14/11/25 - 24/11/25 - 52917   - Ajustar as integrações de Produtores, Associação/Cooperativa e Coletas de Leite para gravar nas tabelas de muro o Json completo enviado para Evomilk, para as rejeições de integração.
-======================================================================================================================================================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 #Include "TBICONN.CH"
 #Include "FWPrintSetup.ch"
@@ -1206,7 +1188,7 @@ Begin Sequence
    _cTot:=AllTrim(Str(_nTotRegs))
    nConta:=0
    TRBCAB->(DBGoTop())
-   _nIntervalo:=15
+   _nIntervalo := 5 // 15
 
    _cJSonEnv  := ""   
    _cJSonGrp  := ""
@@ -1225,13 +1207,13 @@ Begin Sequence
          _cKey := U_MGLT032T(_cChamada) // Obtem o Token de acesso.
 
          If Empty(_cKey)
-            If _nIntervalo = 10// já adiou uma vez não adia mais
+            If _nIntervalo == 5 // 10// já adiou uma vez não adia mais
                If _cChamada == "M" // Chamada via menu.
                   U_ITMsg("Erro ao na obtenção do Token.","Atenção","Rotina de Integração de Produtores cancelada.",1)
                EndIf
                Break
             EndIf
-            _nIntervalo:=10
+            _nIntervalo := 5 // 10
             _cKey:=AllTrim(_cKeyOld)
          EndIf
 
@@ -1913,6 +1895,7 @@ Local _LinkCerto := ""
 Local _cTenantid := SUPERGETMV('IT_TENAIDE',.F., "LATITATE1")
 Local _aColetas  := {}
 Local _cJsonComp := ""
+Local _nIntervalo
 
 Private _cNrIdent
 Private _cNrMatr
@@ -2000,6 +1983,7 @@ Begin Sequence
    _cErro    := ""
    _aSucesso := {}
    _aErro    := {}
+   _nIntervalo := 5
 
    _nI := 1
 
@@ -2020,7 +2004,7 @@ Begin Sequence
       _cHoraFin := Time()
       _cMinutos := ElapTime (_cHoraIni , _cHoraFin)
       _nMinutos := Val(SubStr(_cMinutos,4,2))
-      If _nMinutos > 5 // 28 // minutos
+      If _nMinutos > _nIntervalo // 5 // 28 // minutos
          _cKey := U_MGLT032T(_cChamada) // Obtem o Token de acesso.
 
          If Empty(_cKey)
@@ -2761,6 +2745,7 @@ Local _aColetaEnv
 Local _cDataCol
 Local _nRecno := 0
 Local _cTenantid := SUPERGETMV('IT_TENAIDE',.F., "LATITATE1")
+Local _nIntervalo 
 
 Private _cNrIdent
 Private _cNrMatr
@@ -2840,6 +2825,7 @@ Begin Sequence
    _cJSonColeta := "["
    _cJSonGrp    := ""
    _nI := 1
+   _nIntervalo := 5
 
    _aColetaEnv := {}
 
@@ -2855,7 +2841,7 @@ Begin Sequence
       _cHoraFin := Time()
       _cMinutos := ElapTime (_cHoraIni , _cHoraFin)
       _nMinutos := Val(SubStr(_cMinutos,4,2))
-      If _nMinutos > 5 // 28 // minutos
+      If _nMinutos > _nIntervalo // 5 // 28 // minutos
          _cKey := U_MGLT032T(_cChamada) // Obtem o Token de acesso.
 
          If Empty(_cKey)
@@ -4115,7 +4101,7 @@ Begin Sequence
    _cTot:=AllTrim(Str(_nTotRegs))
    nConta:=0
    TRBCAB->(DBGoTop())
-   _nIntervalo:=15
+   _nIntervalo := 5 // 15
 
    _cJSonEnv  := ""   
    _cJSonGrp  := ""
@@ -4132,13 +4118,13 @@ Begin Sequence
          _cKey := U_MGLT032T(_cChamada) // Obtem o Token de acesso.
 
          If Empty(_cKey)
-            If _nIntervalo = 10// já adiou uma vez não adia mais
+            If _nIntervalo == 5 // 10// já adiou uma vez não adia mais
                If _cChamada == "M" // Chamada via menu.
                   U_ITMsg("Erro ao na obtenção do Token.","Atenção","Rotina de Integração de Produtores cancelada.",1)
                EndIf
                Break
             EndIf
-            _nIntervalo:=10
+            _nIntervalo := 5 // 10
             _cKey:=AllTrim(_cKeyOld)
          EndIf
 
@@ -4791,6 +4777,7 @@ Local _cLinkSoc
 Local _nI 
 Local _aCabMail, _cCabMail, _cCabJson, _nY
 Local _aDetMail, _cDetMail, _cDetJson
+Local _nIntervalo
 
             // Cabeçalho
 Private _cIdProdut := ""            
@@ -5054,6 +5041,7 @@ Begin Sequence
    _cJSonProd := "["
    _cJSonGrp := ""
    _nI := 1
+   _nIntervalo := 5 
 
    _aProdEnv := {}
 
@@ -5070,7 +5058,7 @@ Begin Sequence
       _cHoraFin := Time()
       _cMinutos := ElapTime (_cHoraIni , _cHoraFin)
       _nMinutos := Val(SubStr(_cMinutos,4,2))      
-      If _nMinutos > 5 // 28 //  minutos 
+      If _nMinutos > _nIntervalo // 5 // 28 //  minutos 
          _cKey := U_MGLT032T(_cChamada) // Obtem o Token de acesso.
 
          If Empty(_cKey)
@@ -5510,6 +5498,7 @@ Local _LinkCerto := ""
 Local _cTenantid := SUPERGETMV('IT_TENAIDE',.F., "LATITATE1")
 Local _aColetas  := {}
 Local _cJsonComp := ""
+Local _nIntervalo
 
 Private _cNrIdent
 Private _cNrMatr
@@ -5601,9 +5590,10 @@ Begin Sequence
    _nI := 1
 
    _aColetaEnv := {}
-   _cTot:=AllTrim(Str(_nTotRegs))
-   _cLidos:= _cTot
-   nConta:=0
+   _cTot       := AllTrim(Str(_nTotRegs))
+   _cLidos     := _cTot
+   nConta      := 0
+   _nIntervalo := 5
 
    TRBCOL->(DBGoTop())
    While ! TRBCOL->(Eof())
@@ -5617,7 +5607,7 @@ Begin Sequence
       _cHoraFin := Time()
       _cMinutos := ElapTime (_cHoraIni , _cHoraFin)
       _nMinutos := Val(SubStr(_cMinutos,4,2))
-      If _nMinutos > 5 // 28 // minutos
+      If _nMinutos > _nIntervalo // 5 // 28 // minutos
          _cKey := U_MGLT032T(_cChamada) // Obtem o Token de acesso.
 
          If Empty(_cKey)
@@ -6396,6 +6386,7 @@ Local _nTotRegEnv := 1 // 100  // Total de registros para envio.
 Local _nI , _oRetJSon, _lResult 
 Local _cQry := ""
 Local _cTenantid := ""
+Local _nIntervalo
 
 Private _cEcod64Ex
 Private _cEcod64Nf
@@ -6473,6 +6464,7 @@ Begin Sequence
    _cJSonNFE := "["
    _cJSonGrp    := ""
    _nI := 1
+   _nIntervalo := 5
    
    // Efetua a leitura de dados para integração.
 
@@ -6514,7 +6506,7 @@ Begin Sequence
       _cHoraFin := Time()
       _cMinutos := ElapTime (_cHoraIni , _cHoraFin)
       _nMinutos := Val(SubStr(_cMinutos,4,2))      
-      If _nMinutos > 5 // 28 // minutos 
+      If _nMinutos > _nIntervalo // 5 // 28 // minutos 
          If _lSchedule
             _cKey := U_MGLT032T("S") // Obtem o Token de acesso. S=Schedule
          Else 
@@ -7062,6 +7054,7 @@ Local _nTotRegEnv := 1 // Total de registros para envio.
 Local _nI , _oRetJSon, _lResult 
 Local _cQry := ""
 Local _cTenantid := ""
+Local _nIntervalo
 
 Private _cEcod64Ex
 Private _cEcod64Nf
@@ -7138,6 +7131,7 @@ Begin Sequence
    _cJSoNext := "["
    _cJSonGrp    := ""
    _nI := 1
+   _nIntervalo := 5
    
    // Efetua a leitura de dados para integração.
    _cQry := " SELECT ZBX.R_E_C_N_O_ REGZBX, SF1.R_E_C_N_O_  REGSF1 "       // numero_identificador: "06019"
@@ -7179,7 +7173,7 @@ Begin Sequence
       _cMinutos := ElapTime (_cHoraIni , _cHoraFin)
       _nMinutos := Val(SubStr(_cMinutos,4,2))      
 
-      If _nMinutos > 5 // 28 // minutos 
+      If _nMinutos > _nIntervalo // 5 // 28 // minutos 
          If _lSchedule
             _cKey := U_MGLT032T("S") // Obtem o Token de acesso. S=Schedule
          Else 

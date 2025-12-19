@@ -1,15 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  |25/04/2025| Chamado 50532. Incluído filtro de CFOP
-Lucas Borges  |01/10/2025| Chamado 52143. Incluido filtro para fornecedore Centro Leite
-Lucas Borges  |01/10/2025| Chamado 52144. Incluído tratamento para o campo ZLX_PEDANT - Pedágio Antecipado
-===============================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 
 /*
@@ -359,7 +347,7 @@ SELECT ZZX_FILIAL, ZZX_CODPRD, X5_DESCRI DESCRI, ZLX_TIPOLT, ORD_PRC, A2_NREDUZ,
           SUM(SD2.D2_TOTAL) D2_TOTAL, SUM(SD2.D2_VALICM) D2_VALICM,
           SUM(F2D_VALOR + SD1.D1_VALFUND) FUNDESA,
           NVL(SUM(SD1.D1_VLSENAR + SD1.D1_VALFUN + SD1.D1_VALINS),0)
-                       -NVL(SUM(SD2.D2_VLSENAR + SD2.D2_VALFUN + SD2.D2_VALINS),0)
+                       -NVL(SUM(ROUND(D2_TOTAL * 0.015, 2)),0)
                        +NVL(SUM(COMP.D1_VLSENAR + COMP.D1_VALFUN + COMP.D1_VALINS),0) FUNRURAL
        FROM %Table:SD1% SD1, %Table:SF1% SF1, %Table:SC7% SC7, %Table:SD1% COMP, %Table:SD2% SD2,
         (SELECT F2D_IDREL, F2D_VALOR FROM %Table:F2D% F2D, %Table:F2B% F2B

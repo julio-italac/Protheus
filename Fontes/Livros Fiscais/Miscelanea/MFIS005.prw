@@ -1,15 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  |16/04/2025| Chamado 50480. Incluída validação para documentos recusados
-Lucas Borges  |29/05/2025| Chamado 50833. Incluído evento 610110
-Lucas Borges  |30/07/2025| Chamado 51396. Removido changequery indevido
-===============================================================================================================================
-*/
-
 #Include "TOTVS.ch"
 
 /*
@@ -30,9 +18,7 @@ Local _cPerg		:= "MFIS005" As Character
 Local _cTitulo		:= "Workflow Inconsistências Fiscais" As Character
 Local _cTexto		:= "Rotina para avaliar possíveis inconsistências na escrituração de documentos fiscais, bem como nos Livros Fiscais." As Character
 
-//============================================
 //Cria interface principal
-//============================================
 tNewProcess():New(	_cPerg						,; // cFunction. Nome da função que está chamando o objeto
 					_cTitulo					,; // cTitle. Título da árvore de opções
 					{|_oSelf| MFIS005P(_oSelf) },; // bProcess. Bloco de execução que será executado ao confirmar a tela
@@ -142,9 +128,7 @@ Else
 	//Realiza o envio do e-mail
 	MFIS005E(_cArqLog)
 
-	//==================================================================
 	//Verifica e apaga o arquivo temporario ao final do processamento
-	//==================================================================
 	_oArquivo:erase()
 	_oArquivo:= FWFileWriter():New(StrTran(_cArqLog,".htm",".zip"))
 	_oArquivo:erase()
@@ -275,7 +259,7 @@ ElseIf (_nX >= 2 .And. _nX <= 17) .Or. _nX == 27
 		_cFiltro += " 		AND SF3.F3_ESPECIE = B.F3_ESPECIE) "
 	ElseIf _nX == 8
 		_cFiltro := "% AND F3_CFO < '5000' "
-		_cFiltro += " AND F3_ESPECIE IN ('SPED','CTE','CTEOS','NF3E') "
+		_cFiltro += " AND F3_ESPECIE IN ('SPED','CTE','CTEOS','NF3E','NFCOM') "
 		_cFiltro += " AND (REGEXP_LIKE(F3_SERIE, '[A-Z]','i') OR REGEXP_LIKE(F3_SERIE,'^ ','i')) "
 	ElseIf _nX == 9
 		_cFiltro := "% AND F3_ESPECIE NOT IN ('SPED','NFA') "
@@ -314,10 +298,11 @@ ElseIf (_nX >= 2 .And. _nX <= 17) .Or. _nX == 27
 		_cFiltro += " 										 		AND	ROWNUM = 1) "
 	ElseIf _nX == 14
 		_cFiltro := "% AND F3_CHVNFE <> ' ' "
-		_cFiltro += " AND (F3_ESPECIE NOT IN ('SPED', 'CTE', 'CTEOS', 'NF3E') "
+		_cFiltro += " AND (F3_ESPECIE NOT IN ('SPED', 'CTE', 'CTEOS', 'NF3E', 'NFCOM') "
 		_cFiltro += " OR ( SubStr(F3_CHVNFE,21,2) <> '55' AND F3_ESPECIE = 'SPED') "
 		_cFiltro += " OR (SubStr(F3_CHVNFE,21,2) <> '57' AND F3_ESPECIE = 'CTE' ) "
 		_cFiltro += " OR (SubStr( F3_CHVNFE,21,2) <> '67' AND F3_ESPECIE = 'CTEOS') "
+		_cFiltro += " OR (SubStr( F3_CHVNFE,21,2) <> '62' AND F3_ESPECIE = 'NFCOM') "
 		_cFiltro += " OR (SubStr( F3_CHVNFE,21,2) <> '66' AND F3_ESPECIE = 'NF3E')) "
 	ElseIf _nX == 15
 		_cFiltro := "% AND F3_CODRSEF IN ('101','155') "
@@ -963,9 +948,7 @@ Local _nY		:= 0 As Numeric
 Local _nJ		:= 0 As Numeric
 
 If _nX == 1 //No primeiro registro, monto o cabeçalho
-	//=====================================
 	//Monta o cabeçalho do HTML
-	//=====================================
 	_cText += '<HTML>'+CRLF
 	_cText += '<HEAD><TITLE>:: WF - Analise de NF ::</TITLE></HEAD>'+CRLF
 	_cText += '<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">'+CRLF
@@ -991,9 +974,7 @@ If _nX == 1 //No primeiro registro, monto o cabeçalho
 	_cText += '<br>'+CRLF
 	
 EndIf
-//=================================
 //Grava cabeçalho das colunas
-//=================================
 _cText += '<table class="bordasimples" align="center" width="100%">'+CRLF
 _cText += '  <tr>'+CRLF
 _cText += '    <td class="titulos" align="center" colspan="'+AllTrim(Str(Len(_aCabec)))+'"><b>'+_aTitulos[_nX][01]+' - '+_aTitulos[_nX][02]+'</b></td>'+CRLF
@@ -1003,9 +984,7 @@ For _nY := 1 to Len(_aCabec)
 	_cText += '    <td class="citens" align="center"><font size="1" face="Verdana"><b>'+_aCabec[_nY]+'</b></td>'+CRLF
 Next _nY
 _cText += '  </tr>'+CRLF
-//=================================
 //Grava itens das colunas
-//=================================
 For _nY := 1 to Len(_aDocs)
 	_cText += '  <tr>'+CRLF
 	For _nJ := 1 to Len(_aDocs[_nY])
@@ -1018,9 +997,7 @@ _cText	+= '</table>'+CRLF
 _cText	+= '<br>'+CRLF
 
 If _nX == Len(_aTitulos)
-	//=================================
 	//Finaliza o arquivo html
-	//=================================
 	_cText += '</body>'+CRLF
 	_cText += '</html>'+CRLF
 	_oArquivo:Write(_cText)
@@ -1054,9 +1031,7 @@ If FZip(_cArqZip,{_cArqLog},SuperGetMV("MV_RELT",.F.,"\spool\")) <> 0
 	FWLogMsg("WARN"/*cSeverity*/, /*cTransactionId*/, "SCHEDULE"/*cGroup*/, FunName()/*cCategory*/, /*cStep*/, "MFIS005002"/*cMsgId*/, "O arquivo não pode ser compactado. O e-mail não será enviado!"/*cMessage*/, /*nMensure*/, /*nElapseTime*/, /*aMessage*/)
 Else
 		
-	//=====================================
 	//Monta a mensagem do corpo do e-mail
-	//=====================================
 	_cMensagem := ' <HTML>
 	_cMensagem += ' <HEAD>
 	_cMensagem += ' 	<TITLE>:: WF - Analise dos documentos fiscais ::</TITLE>

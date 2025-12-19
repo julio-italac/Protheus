@@ -1,21 +1,3 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-   Autor      |   Data   |                              Motivo                                                          
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  |14/09/2025| Chamado 50617. Modificada a chamada dos parâmetros para a SX6
-===========================================================================================================================================================================================================================================================
- Analista       - Programador  - Inicio   - Envio    - Chamado - Motivo da Alteração
-============================================================================================================================================================================================================================================================
-Vanderlei Alves - Igor Melgaço - 06/06/25 - 10/06/25 - 45229   - Ajuste do parâmetro p/determinar se a integração WebS.será TMS Multiembarcador ou RDC
-Vanderlei Alves - Alex Wallauer- 09/06/25 - 10/06/25 - 45229   - Tratamento para validar FWIsInCallStack("U_AOMS085B") junto com FWIsInCallStack("U_ALTERAP")
-Vanderlei Alves - Alex Wallauer- 09/06/25 - 12/06/25 - 45229   - Correções na gravação do campo filial de integração com o RDC, campo: ZFQ_FILRDC
-Jerry           - Julio Paz    - 08/09/25 - 18/09/25 - 51806   - Ajuste na query de Reprocessamento de Pedidos de Vendas para não considerar pedidos com tipo de agendamenteo igual a R/P/N.E para ler apenas Pedidos sem nota fiscal.
-Jerry           - Alex Wallauer- 02/10/25 - 02/10/25 - 52340   - Ajusta no campo ZFQ_OBSCPA para concatenar a descrição "A VISTA / PAG. ANTECIPADO" quando a condição de pagamento for igual a '001'.
-===========================================================================================================================================================================================================================================================
-*/
-
 #Include "APWEBSRV.CH"
 #Include "TOTVS.ch"
 #Include "TBICONN.CH"
@@ -1009,7 +991,7 @@ Begin Sequence
 
             aAdd(_aDadosZFQ,ZFQ->(Recno()))
 
-          ElseIf SC5->C5_FILIAL == '40' .Or. (SC5->C5_FILIAL == '01') .Or. ( SC5->C5_FILIAL = '90' .And. SC6->C6_LOCAL == '36') .Or. SC5->C5_FILIAL == '20' .Or. SC5->C5_FILIAL == '23' .Or. SC5->C5_FILIAL == '93'  .Or. SC5->C5_FILIAL == '10' .Or. SC5->C5_FILIAL == '31' // ( SC5->C5_FILIAL = '90' .And. SC6->C6_LOCAL == '36')
+          ElseIf SC5->C5_FILIAL == '40' .Or. (SC5->C5_FILIAL == '01') .Or. ( SC5->C5_FILIAL = '90' .And. SC6->C6_LOCAL == '36') .Or. SC5->C5_FILIAL == '20' .Or. SC5->C5_FILIAL == '23' .Or. SC5->C5_FILIAL == '93'  .Or. SC5->C5_FILIAL == '10' .Or. SC5->C5_FILIAL == '31' .Or. SC5->C5_FILIAL == '30' // ( SC5->C5_FILIAL = '90' .And. SC6->C6_LOCAL == '36')
 
              If Empty(SC5->C5_NOTA) //Só manda o que ainda não tem nota
 
@@ -2235,9 +2217,6 @@ Begin Sequence
    _otemp:AddIndex( "01", {"ZFR_ITEM"} )
    _otemp:Create()
 
-
-
-//------------------------------------------------------------------------------------------------ <<<<<<<<<<
    //================================================================================
    // Carrega os dados da tabela ZFQ
    //================================================================================

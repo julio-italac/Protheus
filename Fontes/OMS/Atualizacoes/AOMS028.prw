@@ -1,22 +1,5 @@
-/*
-===============================================================================================================================
-               ULTIMAS ATUALIZAÇÕES EFETUADAS - CONSULTAR LOG DO VERSIONADOR PARA HISTORICO COMPLETO
-===============================================================================================================================
-Autor         |    Data    |                              Motivo                      										 
--------------------------------------------------------------------------------------------------------------------------------
-Lucas Borges  | 14/10/2019 | Chamado 28346. Removidos os Warning na compilação da release 12.1.25
-Alex Wallauer | 26/10/2020 | Chamado 34262. Remoção de bugs apontados pelo Totvs CodeAnalysis
-Lucas Borges  | 11/02/2025 | Chamado 49877. Removido tratamento sobre a versão do Mix
-===============================================================================================================================
-*/
-
-//====================================================================================================
-// Definicoes de Includes da Rotina.
-//====================================================================================================
 #Include "TOTVS.ch"
 #Include 'FWMVCDef.ch'
-
-#Define CRLF	Chr(13)+Chr(10)
 
 /*
 ===============================================================================================================================
@@ -41,9 +24,7 @@ Private bFullName   := {|x| UsrFullName(x) }
 //Grava log de utilização
 u_itlogacs()
 
-//====================================================================================================
 // Validacao para verificar se o Usuario tem acesso à rotina de manutenção de TES
-//====================================================================================================
 If ValType(_xValid) == 'C' .And. !Empty(_xValid) .And. _xValid $ ('12')
 
 	U_ITUNQSX2( 'ZF7' , 'ZF7_FILIAL+ZF7_CODIGO'						)
@@ -840,10 +821,8 @@ ElseIf _nOpc == 2
 				
 				If U_ITMsg( 'Deseja devolver todos os ítens da programação? (Sim para todos, Não para devolver indiviudalmente)' , "Atenção",,3,2,2 ) 
 				
-					//====================================================================================================
-					// Devolução Total
-					// Tratativa para devolução parcial - quando já existem itens faturados
-					//====================================================================================================
+				
+					// Devolução Total. Tratativa para devolução parcial - quando já existem itens faturados
 					DBSelectArea('ZF8')
 					ZF8->( DBSetOrder(1) )
 					If ZF8->( DBSeek( xFilial('ZF8') + ZF7->ZF7_CODIGO ) )
@@ -885,9 +864,8 @@ ElseIf _nOpc == 2
 						
 					EndIf
 					
-					//====================================================================================================
+					
 					// Se não houver pedidos atendidos devolve a programação inteira
-					//====================================================================================================
 					If Empty( _aPedAtn )
 					
 						RecLock( 'ZF7' , .F. )
@@ -901,9 +879,7 @@ ElseIf _nOpc == 2
 						
 						U_AOMS028H( { ZF7->ZF7_CODIGO , '3' , AllTrim( _cGet1 ) } )
 					
-					//====================================================================================================
 					// Se tiver pedidos atendidos, encerra a programação atual e gera outra somente com os pendentes.
-					//====================================================================================================
 					Else
 						
 						RecLock( 'ZF7' , .F. )
@@ -915,17 +891,15 @@ ElseIf _nOpc == 2
 						
 						ZF7->( MSUnLock() )
 						
-						//====================================================================================================
+						
 						// Grava histórico na origem para manter fácil a localização e atualização das programações
-						//====================================================================================================
 						_cNewCod := AOMS028NCD()
 						
 						U_AOMS028H( { ZF7->ZF7_CODIGO , '3' , 'Foi feita uma devolução parcial que gerou a programação: '+ _cNewCod } )
 						U_AOMS028H( { ZF7->ZF7_CODIGO , '5' , 'Programação encerrada automaticamente.' } )
 						
-						//====================================================================================================
+						
 						// Duplica a programação e transfere somente os pedidos pendentes
-						//====================================================================================================
 						_aDadZF7 := {	ZF7->ZF7_FILIAL		,;
 										_cNewCod			,; //ZF7->ZF7_CODIGO
 										ZF7->ZF7_DATA		,;
@@ -997,10 +971,8 @@ ElseIf _nOpc == 2
 				
 				Else
 				
-					//====================================================================================================
-					// Devolução Individual
-					// Verifica quais pedidos podem ser devolvidos (pendentes)
-					//====================================================================================================
+					
+					// Devolução Individual. Verifica quais pedidos podem ser devolvidos (pendentes)
 					DBSelectArea('ZF8')
 					ZF8->( DBSetOrder(1) )
 					If ZF8->( DBSeek( xFilial('ZF8') + ZF7->ZF7_CODIGO ) )
@@ -1073,9 +1045,7 @@ ElseIf _nOpc == 2
 											DBSetOrder(1)
 											DBSeek(_aPedAtn[_nI][02] + _aPedAtn[_nI][03])
 											
-											//================================================================================================
 											// Se o pedido principal tiver pedido de pallet, este será automaticamente adicionado na devolução
-											//================================================================================================
 											If !Empty(SC5->C5_I_NPALE) .And. C5_I_PEDPA <> "S"
 												If !_aPedAtn[aScan(_aPedAtn,{|x| x[3] == SC5->C5_I_NPALE })][1]
 													_aPedAtn[aScan(_aPedAtn,{|x| x[3] == SC5->C5_I_NPALE })][1] := .T.
@@ -1098,9 +1068,7 @@ ElseIf _nOpc == 2
 										
 									Else
 									
-										//====================================================================================================
 										// Verifica se deve encerrar a programação atual.
-										//====================================================================================================
 										If _nCntAtn == 0 .And. _nCntDev == _nCntTot
 										
 											RecLock( 'ZF7' , .F. )
@@ -1116,9 +1084,7 @@ ElseIf _nOpc == 2
 										
 										Else
 											
-											//====================================================================================================
 											// Grava histórico na origem para manter fácil a localização e atualização das programações
-											//====================================================================================================
 											_cNewCod := AOMS028NCD()
 											U_AOMS028H( { ZF7->ZF7_CODIGO , '3' , 'Foi feita uma devolução parcial que gerou a programação: '+ _cNewCod } )
 											
@@ -1137,9 +1103,7 @@ ElseIf _nOpc == 2
 												
 											EndIf
 											
-											//====================================================================================================
 											// Duplica a programação e transfere somente os pedidos pendentes selecionados
-											//====================================================================================================
 											_aDadZF7 := {	ZF7->ZF7_FILIAL		,;
 															_cNewCod			,; //ZF7->ZF7_CODIGO
 															ZF7->ZF7_DATA		,;
@@ -1364,9 +1328,7 @@ ElseIf _nOpc == 6
 				
 				ACTIVATE MSDIALOG _oDlg CENTERED
 				
-				//====================================================================================================
 				// Verifica quais pedidos podem ser removidos (pendentes)
-				//====================================================================================================
 				DBSelectArea('ZF8')
 				ZF8->( DBSetOrder(1) )
 				If ZF8->( DBSeek( xFilial('ZF8') + ZF7->ZF7_CODIGO ) )
@@ -1451,9 +1413,7 @@ ElseIf _nOpc == 6
 									
 								Else
 								
-									//====================================================================================================
 									// Verifica se deve cancelar a programação atual.
-									//====================================================================================================
 									If _nCntAtn == 0 .And. _nCntDev == _nCntTot
 									
 										RecLock( 'ZF7' , .F. )
@@ -1580,7 +1540,7 @@ ElseIf _nOpc == 7
 				
 				If ParamBox( _aParBox , "Informar o usuário da logística que receberá as programações:" , @_aParRet , {|| AOMS028VUL( _aParRet[01] ) } ,, .T. , , , , , .F. , .F. )
 					
-					If U_ITMsg(	'Confirma a transferência das programações para o usuário: '+ CRLF		+;
+					If U_ITMsg(	'Confirma a transferência das programações para o usuário: '		+;
 									_aParRet[01] +' - '+ Capital( AllTrim( EVAL(bFullName,  _aParRet[01] ) ) )	,;
 									'Atenção!',,3,2,2																 )
 						
@@ -1946,9 +1906,9 @@ For _nI := 1 To Len( _aDados )
 			_oPrt:Say( _nLinha , _nColIni + 2570 , AllTrim( _aPedidos[_nX][09] )											, _oFont02 )
 			_oPrt:Say( _nLinha , _nColIni + 3250 , AllTrim( Transform( _aPedidos[_nX][10] , '@E 999,999,999' ) ) +' Kg'		, _oFont02 ,,,, 1 )
 			
-			//====================================================================================================
+			
 			// Verifica se o pedido do cliente está amarrado à pedidos de transferências
-			//====================================================================================================
+			
 			_cPedTran := ''
 			
 			DBSelectArea('ZF8')
@@ -2140,9 +2100,9 @@ For _nI := 1 To Len( _aDados )
 		
 		AOMS028ICR( @_oPrt , @_nLinha , .T. )
 		
-		//====================================================================================================
+		
 		// Informações complementares somente no modo analítico
-		//====================================================================================================
+		
 		DBSelectArea('ZF9')
 		ZF9->( DBSetOrder(1) )
 		If ZF9->( DBSeek( xFilial('ZF9') + ZF7->ZF7_CODIGO ) )
@@ -2231,9 +2191,9 @@ For _nI := 1 To Len( _aDados )
 		_nLinha += 100
 		
 		AOMS028ICR( @_oPrt , @_nLinha , .T. )
-		//====================================================================================================
+		
 		// Informações de entregas somente no modo analítico
-		//====================================================================================================
+		
 		_oPrt:Line( _nLinha - 005 , _nColIni , _nLinha - 005 , _nColFim )
 		_oPrt:Say( _nLinha , ( _nColIni / 2 ) + ( _nColFim / 2 ) , 'Entregas da programação' , _oFntSub ,,,, 2 )
 		_oPrt:Line( _nLinha + 045 , _nColIni , _nLinha + 045 , _nColFim )
@@ -3018,22 +2978,11 @@ If Empty(_cStatus)
 	
 EndIf
 
-DBSelectArea('ZZL')
-ZZL->( DBSetOrder(3) )
-If ZZL->( DBSeek( xFilial('ZZL') + ZF7->ZF7_USRLOG ) )
-	
-	_cEmail := AllTrim( ZZL->ZZL_EMAIL )
-	
+_cEmail := FWSFAllUsers({ZF7->ZF7_USRLOG},{"USR_EMAIL"})[1][3]
+If !Empty(_cEmail)
+	_cEmail += ','
 EndIf
-
-DBSelectArea('ZZL')
-ZZL->( DBSetOrder(3) )
-If ZZL->( DBSeek( xFilial('ZZL') + ZF7->ZF7_USRPRG ) )
-	
-	IIf( !Empty(_cEmail) , _cEmail += ',' , Nil )
-	_cEmail += AllTrim( ZZL->ZZL_EMAIL )
-	
-EndIf
+_cEmail += FWSFAllUsers({ZF7->ZF7_USRPRG},{"USR_EMAIL"})[1][3]
 
 If Empty( _cEmail )
 	
@@ -3571,9 +3520,7 @@ DBSelectArea(_cAlias)
 (_cAlias)->( DBGoTop() )
 While (_cAlias)->( !Eof() )
 	
-	//====================================================================================================
 	// Tratativa para filtrar itens faturados no relatório
-	//====================================================================================================
 	If _lRelat
 	
 		DBSelectArea('ZF8')
